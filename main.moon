@@ -4,6 +4,16 @@ require "lovekit.all"
 
 paused = false
 
+fixed_time_step = (rate, fn) ->
+  target_dt = 1 / rate
+  accum = 0
+
+  (real_dt) =>
+    accum += real_dt
+    while accum > target_dt
+      fn @, target_dt
+      accum -= target_dt
+
 class Player extends Entity
   speed: 100
   on_ground: false
@@ -52,7 +62,7 @@ class Game
     @entities\draw!
     @viewport\pop!
 
-  update: (dt) =>
+  update: fixed_time_step 60, (dt) =>
     @entities\update dt, @world
 
 love.load = ->
