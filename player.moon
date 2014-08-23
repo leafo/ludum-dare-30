@@ -26,7 +26,7 @@ class Player extends Entity
     @velocity = Vec2d 0,0
     @facing = "left"
 
-    rate = 0.15
+    rate = 0.08
 
     with @sprite
       @anim = StateAnim "stand_left", {
@@ -307,7 +307,7 @@ class Player extends Entity
     return if @attacking
 
     @attacking = @seqs\add Sequence ->
-      wait 0.15 * 6
+      wait 0.08 * 6
       @attacking = false
 
   jump: (world) =>
