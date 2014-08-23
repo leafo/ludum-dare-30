@@ -103,6 +103,8 @@ class Player extends Entity
           "104,170,21,26"
           "135,170,21,26"
           "168,170,21,26"
+          ox: 6
+          oy: 2
           flip_x: true
           :rate
         }
@@ -114,6 +116,8 @@ class Player extends Entity
           "104,170,21,26"
           "135,170,21,26"
           "168,170,21,26"
+          ox: 4
+          oy: 2
           :rate
         }
       }
