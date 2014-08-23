@@ -91,6 +91,28 @@ return {
           height = 0,
           visible = true,
           properties = {}
+        },
+        {
+          name = "enemy",
+          type = "",
+          shape = "rectangle",
+          x = 197,
+          y = 269,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "enemy",
+          type = "",
+          shape = "rectangle",
+          x = 129,
+          y = 268,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
         }
       }
     }

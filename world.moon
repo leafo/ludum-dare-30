@@ -114,17 +114,21 @@ class World
   gravity: Vec2d 0, 500
 
   new: (@game) =>
+    @entities = DrawList!
+
     @map = PlatformMap\from_tiled "maps.dev", {
       object: (o) ->
         switch o.name
           when "spawn"
             @spawn_x = o.x
             @spawn_y = o.y
+          when "enemy"
+            import Enemy from require "enemies"
+            @entities\add Enemy o.x, o.y
     }
 
     @map_box = @map\to_box!
     @particles = DrawList!
-    @entities = DrawList!
     @ledge_zones = @map\find_ledge_zones!
 
   collides: (thing) =>
@@ -145,7 +149,7 @@ class World
     COLOR\pop!
 
   update: (dt) =>
-    @entities\update dt
-    @particles\update dt
+    @entities\update dt, @
+    @particles\update dt, @
 
 { :World }
