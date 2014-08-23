@@ -99,9 +99,12 @@ class Player extends Entity
     vx += dx * @speed * @dampen_movement
 
     cx, cy = @fit_move vx * dt, vy * dt, @world
+    wx, wy = @wall_test_coords!
 
-    if cx
-      @wall_run!
+    if cx and @world\collides_pt wx, wy
+      root_tile = @world.map\get_wall_root wx, wy
+      -- try to initiate wall run
+      @wall_run root_tile
 
     if cy
       if @velocity[2] > 0
@@ -111,20 +114,29 @@ class Player extends Entity
       if math.floor(@velocity[2] * dt) != 0
         @on_ground = false
 
-  against_wall: (world) =>
+    if @on_ground == true
+      print "clearing last wall tile?"
+      @last_wall_tile = nil
+
+  wall_test_coords: (dir=@facing) =>
     ep = 0.1
     cy = @y + @h * 4 / 5 -- around the feet?
 
-    cx = switch @wall_run_up_key
+    cx = switch dir
       when "left"
         @x - ep
       when "right"
         @x + @w + ep
 
-    world\collides_pt cx, cy
+    cx, cy
 
-  wall_run: =>
+  against_wall: (world) =>
+    world\collides_pt @wall_test_coords @wall_run_up_key
+
+  wall_run: (wall_tile) =>
     return if @wall_running
+    return if wall_tile == @last_wall_tile
+    @last_wall_tile = wall_tile
 
     -- cancel the jump
     if @jumping
@@ -179,6 +191,5 @@ class Player extends Entity
       cx - 20, cy
     else
       cx + 20, cy
-
 
 { :Player }
