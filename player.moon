@@ -157,6 +157,10 @@ class Player extends Entity
 
     true
 
+  update_for_ledge_grab: (dt) =>
+    dx, dy = unpack CONTROLLER\movement_vector! * dt * @speed
+    @on_ground = false
+
   update_for_wall_run: (dt) =>
     dx, dy = unpack CONTROLLER\movement_vector! * dt * @speed
     @on_ground = false
@@ -191,6 +195,10 @@ class Player extends Entity
 
     cx, cy = @fit_move @velocity[1] * dt, @velocity[2] * dt, @world
 
+    -- see if hit ledge zone
+    for zone in *@world.ledge_zones\get_touching @
+      print "enter the ledge zone", zone.tid, zone.is_left
+      break
 
     moving_away = if @wall_run_up_key == "left"
       dx > 0

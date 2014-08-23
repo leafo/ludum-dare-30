@@ -60,8 +60,11 @@ class Game
 
   mousepressed: (x,y) =>
     x,y = @viewport\unproject x, y
-    import DirtEmitter from require "particles"
-    @world.particles\add DirtEmitter @world, x,y
+    idx = @world.map\pt_to_idx x, y
+    print "ledge tile", @world.map\is_ledge_tile idx
+
+    -- import DirtEmitter from require "particles"
+    -- @world.particles\add DirtEmitter @world, x,y
     -- @root = @world.map\get_wall_root x, y
 
 load_font = (img, chars)->
