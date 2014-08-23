@@ -48,7 +48,7 @@ class Player extends Entity
     dx, dy = unpack CONTROLLER\movement_vector! * dt * @speed
 
     if CONTROLLER\is_down @wall_run_up_key
-      @velocity[2] = -dx * @speed
+      @velocity[2] = -math.abs(dx) * @speed
     else
       if @velocity[2] < 0
         @velocity[2] = 0
@@ -57,7 +57,12 @@ class Player extends Entity
 
     cx, cy = @fit_move @velocity[1] * dt, @velocity[2] * dt, @world
 
-    if not cx or cy
+    moving_away = if @wall_run_up_key == "left"
+      dx > 0
+    else
+      dx < 0
+
+    if not cx or cy or moving_away
       @seqs\remove @wall_running
       @end_wall_run!
 
