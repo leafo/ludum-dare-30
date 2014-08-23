@@ -169,7 +169,6 @@ class Player extends Entity
           unless @wall_running
             @feet_emitter = false
             return false
-          -- see if it should stop
           DirtEmitter.update ...
 
       @world.particles\add @feet_emitter
@@ -289,6 +288,11 @@ class Player extends Entity
     if @jumping
       @seqs\remove @jumping
       @jumping = false
+
+    -- cancel attack
+    if @attacking
+      @seqs\remove @attacking
+      @attacking = false
 
     @wall_running = @seqs\add Sequence ->
       @wall_run_up_key = @facing
