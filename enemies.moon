@@ -1,5 +1,6 @@
 
 class Enemy extends Entity
+  is_enemy: true
   lazy sprite: -> Spriter "images/lilguy.png"
 
   new: (x,y) =>

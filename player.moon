@@ -11,6 +11,8 @@ show_properties = (t) ->
 -- can_wall_jump: allowed to wall jump, set to true when jump key released
 -- ledge_grabbing: currently attached to ledge
 class Player extends Entity
+  is_player: true
+
   speed: 100
   on_ground: false
   movement_locked: false
