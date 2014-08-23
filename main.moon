@@ -51,6 +51,7 @@ class Game
     @viewport\pop!
 
   update: fixed_time_step 60, (dt) =>
+    @world\update dt
     @viewport\update dt
     -- @viewport\center_on @player, @world.map_box, dt
     @viewport\center_on @player, nil, dt
@@ -59,7 +60,9 @@ class Game
 
   mousepressed: (x,y) =>
     x,y = @viewport\unproject x, y
-    @root = @world.map\get_wall_root x, y
+    import DirtEmitter from require "particles"
+    @world.particles\add DirtEmitter @world, x,y
+    -- @root = @world.map\get_wall_root x, y
 
 load_font = (img, chars)->
   font_image = imgfy img

@@ -1,6 +1,8 @@
 
 {graphics: g} = love
 
+import DirtEmitter from require "particles"
+
 show_properties = (t) ->
   require("moon").p { k,v for k,v in pairs t when type(v) != "table" }
 
@@ -161,6 +163,19 @@ class Player extends Entity
 
     @anim\set_state "wall_run_#{@wall_run_up_key}"
 
+    unless @feet_emitter
+      @feet_emitter = with DirtEmitter @world, @x, @y, @wall_run_up_key
+        .update = (...) ->
+          unless @wall_running
+            @feet_emitter = false
+            return false
+          -- see if it should stop
+          DirtEmitter.update ...
+
+      @world.particles\add @feet_emitter
+
+    @feet_emitter.x, @feet_emitter.y = @feet_position!
+
     if CONTROLLER\is_down @wall_run_up_key
       @velocity[2] = -math.abs(dx) * @speed
     else
@@ -240,6 +255,14 @@ class Player extends Entity
 
     if @on_ground == true
       @last_wall_tile = nil
+
+  feet_position: =>
+    return unless @wall_running
+
+    if @wall_run_up_key == "left"
+      @x, @y + @h - 5
+    else
+      @x + @w, @y + @h - 5
 
   wall_test_coords: (dir=@facing) =>
     ep = 0.1

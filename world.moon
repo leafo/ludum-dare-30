@@ -51,6 +51,8 @@ class World
     }
 
     @map_box = @map\to_box!
+    @particles = DrawList!
+    @entities = DrawList!
 
   collides: (thing) =>
     return true unless @map_box\contains_box thing
@@ -62,5 +64,11 @@ class World
 
   draw: (viewport) =>
     @map\draw viewport
+    @entities\draw!
+    @particles\draw!
+
+  update: (dt) =>
+    @entities\update dt
+    @particles\update dt
 
 { :World }
