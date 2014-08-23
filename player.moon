@@ -124,12 +124,13 @@ class Player extends Entity
 
   draw: (...) =>
     if @wall_running
-      COLOR\push 100,255,100
+      COLOR\push 100,255,100, 50
+    else
+      COLOR\pusha 50
 
     super ...
 
-    if @wall_running
-      COLOR\pop!
+    COLOR\pop!
 
     -- -- draw a nose
     -- COLOR\push 255,128,128
