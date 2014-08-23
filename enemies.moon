@@ -16,9 +16,19 @@ class Enemy extends Entity
 
       switch pick_dist {move: 2, wait: 1}
         when "move"
-          speed = 20
+          floor = @get_floor!
+
+          speed = rand 20, 40
           dir = pick_dist [1]: 1, [-1]: 1
-          dur = rand 0.5, 0.8
+          dur = rand 0.8, 1.5
+
+          dist = speed * dir * dur
+
+          if dist < 0 and @x + dist < floor.x
+            dir = -dir
+
+          if dist > 0 and @x + @w + dist > floor.x + floor.w
+            dir = -dir
 
           @impulses.move = Vec2d speed * dir
           wait dur
@@ -26,6 +36,9 @@ class Enemy extends Entity
 
       wait rand 0.8, 1.2
       again!
+
+  get_floor: =>
+    @world.map\get_floor_range @x + @w / 2, @y + @h + 0.1
 
   update: (dt, @world) =>
     @ai\update dt
@@ -46,9 +59,8 @@ class Enemy extends Entity
     else
       @on_ground = false
 
-    if cx and impulses.move
-      print "switching"
-      impulses.move[1] = -impulses.move[1]
+    if cx and @impulses.move
+      @impulses.move[1] = -@impulses.move[1]
 
     true
 
