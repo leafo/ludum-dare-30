@@ -5,13 +5,13 @@ show_properties = (t) ->
   require("moon").p { k,v for k,v in pairs t when type(v) != "table" }
 
 -- on_ground: is on ground
--- from_jump: is in air from doing a jump
 -- wall_running: is wall running
 -- can_wall_jump: allowed to wall jump, set to true when jump key released
 class Player extends Entity
   speed: 100
   on_ground: false
   movement_locked: false
+  dampen_movement: 1
 
   new: (x,y) =>
     super x, y
@@ -59,8 +59,6 @@ class Player extends Entity
 
       @velocity += @world.gravity * dt
 
-    print "can wall jump", @can_wall_jump
-
     if not @can_wall_jump
       @can_wall_jump = not CONTROLLER\is_down "jump"
 
@@ -90,21 +88,24 @@ class Player extends Entity
 
     @velocity += @world.gravity * dt
     -- air resistance
-    @velocity[1] = dampen @velocity[1], dt * 200
+    if @velocity[1] != 0
+      air_rate = 1
+      if dx != 0 and not (dx < 0 and @velocity[1] < 0)
+        air_rate *= 3
+
+      @velocity[1] = dampen @velocity[1], dt * 200
 
     vx, vy = unpack @velocity
-    vx += dx * @speed
+    vx += dx * @speed * @dampen_movement
 
     cx, cy = @fit_move vx * dt, vy * dt, @world
 
-    if cx and @from_jump
+    if cx
       @wall_run!
 
     if cy
       if @velocity[2] > 0
         @on_ground = true
-        @from_jump = false
-
       @velocity[2] = 0
     else
       if math.floor(@velocity[2] * dt) != 0
@@ -137,7 +138,6 @@ class Player extends Entity
 
   end_wall_run: =>
     @wall_running = false
-    @from_jump = false
     @velocity[2] = math.max 0, @velocity[2]
 
   jump: (world) =>
@@ -148,6 +148,8 @@ class Player extends Entity
       vx, vy = if @wall_running
         print "side jumping"
         @end_wall_run!
+        @slow_movement_for 0.3
+
         if @wall_run_up_key == "left"
           100, -200
         else
@@ -155,7 +157,6 @@ class Player extends Entity
       else
         0, -200
 
-      @from_jump = true
       @can_wall_jump = false
 
       @velocity[1] = vx
@@ -163,6 +164,14 @@ class Player extends Entity
 
       wait 0.1
       @jumping = false
+
+  slow_movement_for: (duration) =>
+    if @_dampen_seq
+      @seqs\remove @_dampen_seq
+
+    @_dampen_seq = @seqs\add Sequence ->
+      @dampen_movement = 0
+      tween @, duration, dampen_movement: 1
 
   looking_at: (viewport) =>
     cx, cy = @center!

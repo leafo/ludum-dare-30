@@ -29,7 +29,8 @@ class Game
 
   draw: =>
     @viewport\apply!
-    g.print "PV: #{@player.velocity.x}, #{@player.velocity.y}", 20, 20
+    g.print "V: #{"%.3f %.3f"\format unpack @player.velocity}\nDamp: #{"%.3f"\format @player.dampen_movement}", 20, 20
+
     COLOR\pusha 10
     @world.map_box\draw!
     COLOR\pop!
