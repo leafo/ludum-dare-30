@@ -12,7 +12,8 @@ class Player extends Entity
   on_ground: false
   movement_locked: false
   dampen_movement: 1
-  h: 30
+  w: 10
+  h: 20
 
   lazy sprite: -> Spriter "images/protagonist.png"
 
@@ -23,41 +24,77 @@ class Player extends Entity
     @velocity = Vec2d 0,0
     @facing = "left"
 
+    rate = 0.15
+
     with @sprite
       @anim = StateAnim "stand_left", {
-        stand_left: \seq { "6,9,21,26" }, nil, true
-        stand_right: \seq { "6,9,21,26" }
+        stand_left: \seq {
+          "6,9,21,26"
+          ox: 6
+          oy: 3
+          flip_x: true
+        }
 
-        jump_left: \seq { "69,10,21,26" }, nil, true
-        jump_right: \seq { "69,10,21,26" }
+        stand_right: \seq {
+          ox: 5
+          oy: 3
+          "6,9,21,26"
+        }
+
+        jump_left: \seq {
+          "69,10,21,26"
+          ox: 6
+          oy: 3
+          flip_x: true
+        }
+
+        jump_right: \seq {
+          ox: 5
+          oy: 3
+          "69,10,21,26"
+        }
 
         run_left: \seq {
           "6,72,21,26"
           "38,72,21,26"
           "70,72,21,26"
           "102,72,21,26"
-        }, 0.15, true
+          ox: 5
+          oy: 4
+          flip_x: true
+          :rate
+        }
 
         run_right: \seq {
           "6,72,21,26"
           "38,72,21,26"
           "70,72,21,26"
           "102,72,21,26"
-        }, 0.15, false
+          ox: 4
+          oy: 4
+          :rate
+        }
 
         wall_run_left: \seq {
           "14,97,21,26"
           "45,97,21,26"
           "77,97,21,26"
           "109,97,21,26"
-        }, 0.15, true
+          ox: 3
+          oy: 4
+          flip_x: true
+          :rate
+        }
 
         wall_run_right: \seq {
           "14,97,21,26"
           "45,97,21,26"
           "77,97,21,26"
           "109,97,21,26"
-        }, 0.15, false
+          ox: 9
+          oy: 4
+          :rate
+        }
 
         attack_left: \seq {
           "7,170,21,26"
@@ -66,7 +103,9 @@ class Player extends Entity
           "104,170,21,26"
           "135,170,21,26"
           "168,170,21,26"
-        }, 0.15, true
+          flip_x: true
+          :rate
+        }
 
         attack_right: \seq {
           "7,170,21,26"
@@ -75,7 +114,8 @@ class Player extends Entity
           "104,170,21,26"
           "135,170,21,26"
           "168,170,21,26"
-        }, 0.15, false
+          :rate
+        }
       }
 
   draw: (...) =>
@@ -87,14 +127,14 @@ class Player extends Entity
     if @wall_running
       COLOR\pop!
 
-    -- draw a nose
-    COLOR\push 255,128,128
-    if @facing == "left"
-      g.rectangle "fill", @x, @y, 10, 10
-    else
-      g.rectangle "fill", @x + @w/2 , @y, 10, 10
+    -- -- draw a nose
+    -- COLOR\push 255,128,128
+    -- if @facing == "left"
+    --   g.rectangle "fill", @x, @y, 10, 10
+    -- else
+    --   g.rectangle "fill", @x + @w/2 , @y, 10, 10
 
-    COLOR\pop!
+    -- COLOR\pop!
 
     -- draw the sprite
     @anim\draw @x, @y
