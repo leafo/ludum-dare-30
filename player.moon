@@ -7,6 +7,7 @@ show_properties = (t) ->
 -- on_ground: is on ground
 -- from_jump: is in air from doing a jump
 -- wall_running: is wall running
+-- can_wall_jump: allowed to wall jump, set to true when jump key released
 class Player extends Entity
   speed: 100
   on_ground: false
@@ -58,7 +59,12 @@ class Player extends Entity
 
       @velocity += @world.gravity * dt
 
-    if CONTROLLER\is_down "jump"
+    print "can wall jump", @can_wall_jump
+
+    if not @can_wall_jump
+      @can_wall_jump = not CONTROLLER\is_down "jump"
+
+    if @can_wall_jump and CONTROLLER\is_down "jump"
       @jump @world
 
     cx, cy = @fit_move @velocity[1] * dt, @velocity[2] * dt, @world
@@ -149,9 +155,8 @@ class Player extends Entity
       else
         0, -200
 
-      print "Doing the jump", vx, vy
-
       @from_jump = true
+      @can_wall_jump = false
 
       @velocity[1] = vx
       @velocity[2] = vy
