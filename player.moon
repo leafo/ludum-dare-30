@@ -58,6 +58,24 @@ class Player extends Entity
           "77,97,21,26"
           "109,97,21,26"
         }, 0.15, false
+
+        attack_left: \seq {
+          "7,170,21,26"
+          "39,170,21,26"
+          "71,170,21,26"
+          "104,170,21,26"
+          "135,170,21,26"
+          "168,170,21,26"
+        }, 0.15, true
+
+        attack_right: \seq {
+          "7,170,21,26"
+          "39,170,21,26"
+          "71,170,21,26"
+          "104,170,21,26"
+          "135,170,21,26"
+          "168,170,21,26"
+        }, 0.15, false
       }
 
   draw: (...) =>
@@ -133,8 +151,12 @@ class Player extends Entity
 
     if CONTROLLER\is_down "jump"
       @jump @world
+    elseif CONTROLLER\is_down "attack"
+      @attack @world
 
-    motion = if not @on_ground
+    motion = if @attacking
+      "attack"
+    elseif not @on_ground
       "jump"
     elseif dx != 0
       "run"
@@ -208,6 +230,13 @@ class Player extends Entity
   end_wall_run: =>
     @wall_running = false
     @velocity[2] = math.max 0, @velocity[2]
+
+  attack: (world) =>
+    return if @attacking
+
+    @attacking = @seqs\add Sequence ->
+      wait 0.15 * 6
+      @attacking = false
 
   jump: (world) =>
     return if @jumping
