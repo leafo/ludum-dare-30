@@ -29,6 +29,14 @@ class Game
 
   draw: =>
     @viewport\apply!
+
+    COLOR\push 222,84,84
+    @world.map_box\draw!
+    COLOR\pop!
+
+    @world\draw @viewport
+    @entities\draw @viewport
+
     stat = table.concat {
       "V: #{"%.3f %.3f"\format unpack @player.velocity}"
       "Damp: #{"%.3f"\format @player.dampen_movement}"
@@ -36,13 +44,6 @@ class Game
     }, "\n"
 
     g.print stat, @viewport.x, @viewport.y
-
-    COLOR\pusha 10
-    @world.map_box\draw!
-    COLOR\pop!
-
-    @world\draw @viewport
-    @entities\draw @viewport
 
     if @root
       Box.draw @root, {255,255,255, 80}
