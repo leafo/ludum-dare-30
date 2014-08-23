@@ -60,9 +60,9 @@ class Game
 
   mousepressed: (x,y) =>
     x,y = @viewport\unproject x, y
-    idx = @world.map\pt_to_idx x, y
-    print "ledge tile", @world.map\is_ledge_tile idx
+    @root = @world.map\get_floor_range x,y
 
+    -- idx = @world.map\pt_to_idx x, y
     -- import DirtEmitter from require "particles"
     -- @world.particles\add DirtEmitter @world, x,y
     -- @root = @world.map\get_wall_root x, y

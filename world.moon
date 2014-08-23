@@ -110,6 +110,38 @@ class PlatformMap extends TileMap
 
     root
 
+  -- get a box that covers all tiles that make up a floor at the current tile
+  get_floor_range: (x,y) =>
+    idx = @pt_to_idx x, y
+    solid = @layers[@solid_layer]
+    return nil unless solid[idx]
+    above = @move_idx idx, 0, -1
+    return nil if not above or solid[above]
+
+    -- go left
+    left_idx = idx
+    while true
+      moved = @move_idx left_idx, -1, 0
+      break unless moved and solid[moved]
+      above = @move_idx moved, 0, -1
+      break if not above or solid[above]
+
+      left_idx = moved
+
+    -- go right
+    right_idx = idx
+    while true
+      moved = @move_idx right_idx, 1, 0
+      break unless moved and solid[moved]
+      above = @move_idx moved, 0, -1
+      break if not above or solid[above]
+
+      right_idx = moved
+
+    with Box 0,0,0,0
+      \add_box solid[left_idx]
+      \add_box solid[right_idx]
+
 class World
   gravity: Vec2d 0, 500
 
