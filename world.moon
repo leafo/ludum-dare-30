@@ -17,6 +17,10 @@ class World
     return true unless @map_box\contains_box thing
     @map\collides thing
 
+  collides_pt: (x,y) =>
+    return true unless @map_box\touches_pt x,y
+    @map\collides_pt x,y
+
   draw: (viewport) =>
     @map\draw viewport
 
