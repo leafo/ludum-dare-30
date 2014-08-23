@@ -1,0 +1,4 @@
+
+
+lint::
+	moonc -l *.moon
