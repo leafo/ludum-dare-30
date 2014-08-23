@@ -21,7 +21,7 @@ class Game
   new: =>
     @viewport = EffectViewport scale: GAME_CONFIG.scale
 
-    @world = World!
+    @world = World @
     @player = Player assert(@world.spawn_x), @world.spawn_y
 
     @entities = with DrawList!
@@ -29,7 +29,13 @@ class Game
 
   draw: =>
     @viewport\apply!
-    g.print "V: #{"%.3f %.3f"\format unpack @player.velocity}\nDamp: #{"%.3f"\format @player.dampen_movement}", 20, 20
+    stat = table.concat {
+      "V: #{"%.3f %.3f"\format unpack @player.velocity}"
+      "Damp: #{"%.3f"\format @player.dampen_movement}"
+      "Ground: #{@player.on_ground}, Jumping: #{@player.jumping}"
+    }, "\n"
+
+    g.print stat, @viewport.x, @viewport.y
 
     COLOR\pusha 10
     @world.map_box\draw!

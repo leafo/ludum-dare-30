@@ -41,7 +41,7 @@ class PlatformMap extends TileMap
 class World
   gravity: Vec2d 0, 500
 
-  new: (map) =>
+  new: (@game) =>
     @map = PlatformMap\from_tiled "maps.dev", {
       object: (o) ->
         switch o.name
