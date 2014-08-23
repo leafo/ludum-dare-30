@@ -51,12 +51,18 @@ class Game
     @viewport\pop!
 
   update: fixed_time_step 60, (dt) =>
+    return if paused
+
     @world\update dt
     @viewport\update dt
     -- @viewport\center_on @player, @world.map_box, dt
     @viewport\center_on @player, nil, dt
 
     @entities\update dt, @world
+
+  on_key: (key) =>
+    if key == "p"
+      paused = not paused
 
   mousepressed: (x,y) =>
     x,y = @viewport\unproject x, y
