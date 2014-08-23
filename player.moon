@@ -50,6 +50,7 @@ class Player extends Entity
 
   update_for_wall_run: (dt) =>
     dx, dy = unpack CONTROLLER\movement_vector! * dt * @speed
+    @on_ground = false
 
     if CONTROLLER\is_down @wall_run_up_key
       @velocity[2] = -math.abs(dx) * @speed
@@ -115,7 +116,6 @@ class Player extends Entity
         @on_ground = false
 
     if @on_ground == true
-      print "clearing last wall tile?"
       @last_wall_tile = nil
 
   wall_test_coords: (dir=@facing) =>
@@ -134,6 +134,7 @@ class Player extends Entity
     world\collides_pt @wall_test_coords @wall_run_up_key
 
   wall_run: (wall_tile) =>
+    return if @on_ground
     return if @wall_running
     return if wall_tile == @last_wall_tile
     @last_wall_tile = wall_tile
@@ -158,7 +159,6 @@ class Player extends Entity
 
     @jumping = @seqs\add Sequence ->
       vx, vy = if @wall_running
-        print "side jumping"
         @end_wall_run!
         @slow_movement_for 0.3
 
