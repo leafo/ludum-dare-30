@@ -37,6 +37,10 @@ class Game
 
     @world\draw @viewport
     @entities\draw @viewport
+
+    if @root
+      Box.draw @root, {255,255,255, 80}
+
     @viewport\pop!
 
   update: fixed_time_step 60, (dt) =>
@@ -48,7 +52,7 @@ class Game
 
   mousepressed: (x,y) =>
     x,y = @viewport\unproject x, y
-    print @world\collides_pt x,y
+    @root = @world.map\get_wall_root x, y
 
 load_font = (img, chars)->
   font_image = imgfy img

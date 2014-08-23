@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" width="20" height="20" tilewidth="16" tileheight="16">
+<map version="1.0" orientation="orthogonal" width="20" height="35" tilewidth="16" tileheight="16">
  <tileset firstgid="1" name="dev_tiles" tilewidth="16" tileheight="16">
   <image source="../images/dev_tiles.png" width="128" height="128"/>
  </tileset>
- <layer name="Tile Layer 1" width="20" height="20">
+ <layer name="Tile Layer 1" width="20" height="35">
   <properties>
    <property name="solid" value="true"/>
   </properties>
   <data encoding="base64" compression="zlib">
-   eJxjYBgegBENj5o3ah41zENXh0s9LnXE4sFuHjXdQi6gplno5jJSgT0SAQBKmwBz
+   eJxjYBg6gBGKqWkWtcyktnkjEeALN2qH63A0j5jwGw75Zzjkr8Fe/oyaNzTNQ1eHSz0udcTiwW4eNd1CLqBVOYXsTkrYIxEAAE++AJM=
   </data>
  </layer>
- <objectgroup name="objects" width="20" height="20">
-  <object name="spawn" x="74" y="56"/>
+ <objectgroup name="objects" width="20" height="35">
+  <object name="spawn" x="74" y="296"/>
  </objectgroup>
 </map>
