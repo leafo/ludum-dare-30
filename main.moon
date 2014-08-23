@@ -30,6 +30,9 @@ class Game
   draw: =>
     @viewport\apply!
     g.print "Hello world", 20, 20
+    COLOR\pusha 10
+    @world.map_box\draw!
+    COLOR\pop!
 
     @world\draw @viewport
     @entities\draw @viewport
@@ -41,6 +44,10 @@ class Game
     @viewport\center_on @player, nil, dt
 
     @entities\update dt, @world
+
+  mousepressed: (x,y) =>
+    x,y = @viewport\unproject x, y
+    print @world\collides_pt x,y
 
 load_font = (img, chars)->
   font_image = imgfy img

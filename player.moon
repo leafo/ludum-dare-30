@@ -1,6 +1,9 @@
 
 {graphics: g} = love
 
+show_properties = (t) ->
+  require("moon").p { k,v for k,v in pairs t when type(v) != "table" }
+
 -- on_ground: is on ground
 -- from_jump: is in air from doing a jump
 -- wall_running: is wall running
@@ -12,6 +15,7 @@ class Player extends Entity
   new: (x,y) =>
     super x, y
     @seqs = DrawList!
+
     @velocity = Vec2d 0,0
     @facing = "left"
 
@@ -55,6 +59,10 @@ class Player extends Entity
 
       @velocity += @world.gravity * dt
 
+    if CONTROLLER\tapped "jump"
+      -- @jump @world
+      nil
+
     cx, cy = @fit_move @velocity[1] * dt, @velocity[2] * dt, @world
 
     moving_away = if @wall_run_up_key == "left"
@@ -62,7 +70,8 @@ class Player extends Entity
     else
       dx < 0
 
-    if not cx or cy or moving_away
+    -- stop if moving away, not against wall anymore or moving opposite direction
+    if not @against_wall(@world) or cy or moving_away
       @seqs\remove @wall_running
       @end_wall_run!
 
@@ -75,11 +84,11 @@ class Player extends Entity
     if CONTROLLER\is_down "jump"
       @jump @world
 
-    @velocity[1] = dx * @speed
-
     @velocity += @world.gravity * dt
+    vx, vy = unpack @velocity
+    vx += dx * @speed
 
-    cx, cy = @fit_move @velocity[1] * dt, @velocity[2] * dt, @world
+    cx, cy = @fit_move vx * dt, vy * dt, @world
 
     if cx and @from_jump
       @wall_run!
@@ -93,6 +102,18 @@ class Player extends Entity
     else
       if math.floor(@velocity[2] * dt) != 0
         @on_ground = false
+
+  against_wall: (world) =>
+    ep = 0.1
+    cy = @y + @h * 4 / 5 -- around the feet?
+
+    cx = switch @wall_run_up_key
+      when "left"
+        @x - ep
+      when "right"
+        @x + @w + ep
+
+    world\collides_pt cx, cy
 
   wall_run: =>
     return if @wall_running
@@ -114,12 +135,25 @@ class Player extends Entity
 
   jump: (world) =>
     return if @jumping
-    return unless @on_ground
+    return unless @on_ground or @wall_running
 
     @jumping = @seqs\add Sequence ->
+      vx, vy = if @wall_running
+        @end_wall_run!
+        if @wall_run_up_key == "left"
+          200, 0
+        else
+          -200, 0
+      else
+        0, -200
+
+      print "Doing the jump", vx, vy
+
       @from_jump = true
 
-      @velocity[2] = -200
+      @velocity[1] = vx
+      @velocity[2] = vy
+
       wait 0.1
       @jumping = false
 
