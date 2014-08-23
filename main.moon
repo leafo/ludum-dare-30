@@ -44,24 +44,38 @@ class Player extends Entity
 class World
   gravity: Vec2d 0, 100
 
+  new: (map) =>
+    @map = TileMap.from_tiled "maps.dev", {
+      object: (o) ->
+        switch o.name
+          when "spawn"
+            @spawn_x = o.x
+            @spawn_y = o.y
+    }
+
+    @map_box = @map\to_box!
+
   collides: (thing) =>
-    false
+    return false unless @map_box\contains_box thing
+    @map\collides thing
 
   draw: (viewport) =>
-    g.print "hello world", 0,0
+    @map\draw viewport
 
 class Game
   new: =>
     @viewport = EffectViewport scale: GAME_CONFIG.scale
 
     @world = World!
-    @player = Player 10, 10
+    @player = Player assert(@world.spawn_x), @world.spawn_y
 
     @entities = with DrawList!
       \add @player
 
   draw: =>
     @viewport\apply!
+    g.print "Hello world", 20, 20
+
     @world\draw @viewport
     @entities\draw @viewport
     @viewport\pop!
