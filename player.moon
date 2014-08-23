@@ -12,6 +12,9 @@ class Player extends Entity
   on_ground: false
   movement_locked: false
   dampen_movement: 1
+  h: 30
+
+  lazy sprite: -> Spriter "images/protagonist.png"
 
   new: (x,y) =>
     super x, y
@@ -19,6 +22,43 @@ class Player extends Entity
 
     @velocity = Vec2d 0,0
     @facing = "left"
+
+    with @sprite
+      @anim = StateAnim "stand_left", {
+        stand_left: \seq { "6,9,21,26" }, nil, true
+        stand_right: \seq { "6,9,21,26" }
+
+        jump_left: \seq { "69,10,21,26" }, nil, true
+        jump_right: \seq { "69,10,21,26" }
+
+        run_left: \seq {
+          "6,72,21,26"
+          "38,72,21,26"
+          "70,72,21,26"
+          "102,72,21,26"
+        }, 0.15, true
+
+        run_right: \seq {
+          "6,72,21,26"
+          "38,72,21,26"
+          "70,72,21,26"
+          "102,72,21,26"
+        }, 0.15, false
+
+        wall_run_left: \seq {
+          "14,97,21,26"
+          "45,97,21,26"
+          "77,97,21,26"
+          "109,97,21,26"
+        }, 0.15, true
+
+        wall_run_right: \seq {
+          "14,97,21,26"
+          "45,97,21,26"
+          "77,97,21,26"
+          "109,97,21,26"
+        }, 0.15, false
+      }
 
   draw: (...) =>
     if @wall_running
@@ -38,7 +78,11 @@ class Player extends Entity
 
     COLOR\pop!
 
+    -- draw the sprite
+    @anim\draw @x, @y
+
   update: (dt, @world) =>
+    @anim\update dt
     @seqs\update dt, @world
 
     if @wall_running
@@ -51,6 +95,8 @@ class Player extends Entity
   update_for_wall_run: (dt) =>
     dx, dy = unpack CONTROLLER\movement_vector! * dt * @speed
     @on_ground = false
+
+    @anim\set_state "wall_run_#{@wall_run_up_key}"
 
     if CONTROLLER\is_down @wall_run_up_key
       @velocity[2] = -math.abs(dx) * @speed
@@ -67,6 +113,7 @@ class Player extends Entity
       @jump @world
 
     cx, cy = @fit_move @velocity[1] * dt, @velocity[2] * dt, @world
+
 
     moving_away = if @wall_run_up_key == "left"
       dx > 0
@@ -86,6 +133,15 @@ class Player extends Entity
 
     if CONTROLLER\is_down "jump"
       @jump @world
+
+    motion = if not @on_ground
+      "jump"
+    elseif dx != 0
+      "run"
+    else
+      "stand"
+
+    @anim\set_state "#{motion}_#{@facing}"
 
     @velocity += @world.gravity * dt
     -- air resistance
