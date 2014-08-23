@@ -21,6 +21,7 @@ class Player extends Entity
 
   new: (x,y) =>
     super x, y
+    @seqs = DrawList!
     @velocity = Vec2d 0,0
     @facing = "left"
 
@@ -36,10 +37,15 @@ class Player extends Entity
     COLOR\pop!
 
   update: (dt, @world) =>
+    @seqs\update dt, @world
+
     dx, dy = unpack CONTROLLER\movement_vector! * dt * @speed
 
     if dx != 0
       @facing = if dx < 0 then "left" else "right"
+
+    if CONTROLLER\is_down "jump"
+      @jump @world
 
     @velocity[1] = dx * @speed
 
@@ -57,6 +63,15 @@ class Player extends Entity
 
     true
 
+  jump: (world) =>
+    return if @jumping
+    return unless @on_ground
+
+    @jumping = @seqs\add Sequence ->
+      @velocity[2] = -200
+      wait 0.1
+      @jumping = false
+
   looking_at: (viewport) =>
     cx, cy = @center!
     if @facing == "left"
@@ -65,7 +80,7 @@ class Player extends Entity
       cx + 20, cy
 
 class World
-  gravity: Vec2d 0, 100
+  gravity: Vec2d 0, 500
 
   new: (map) =>
     @map = TileMap.from_tiled "maps.dev", {

@@ -4,7 +4,8 @@ export GAME_CONFIG = {
     confirm: { "x", " " }
     cancel: "c"
 
-    attack: { "x", " " }
+    attack: "x"
+    jump: { "c", " " }
 
     up: "up"
     down: "down"
