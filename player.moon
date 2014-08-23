@@ -45,6 +45,21 @@ class Player extends Entity
     true
 
   update_for_wall_run: (dt) =>
+    dx, dy = unpack CONTROLLER\movement_vector! * dt * @speed
+
+    if CONTROLLER\is_down @wall_run_up_key
+      @velocity[2] = -dx * @speed
+    else
+      if @velocity[2] < 0
+        @velocity[2] = 0
+
+      @velocity += @world.gravity * dt
+
+    cx, cy = @fit_move @velocity[1] * dt, @velocity[2] * dt, @world
+
+    if not cx or cy
+      @seqs\remove @wall_running
+      @end_wall_run!
 
   update_for_gravity: (dt) =>
     dx, dy = unpack CONTROLLER\movement_vector! * dt * @speed
@@ -85,10 +100,12 @@ class Player extends Entity
     @wall_running = @seqs\add Sequence ->
       @wall_run_up_key = @facing
       wait 0.5
+      @end_wall_run!
 
-      @from_jump = false
-      @wall_running = false
-      @velocity[2] = 0
+  end_wall_run: =>
+    @wall_running = false
+    @from_jump = false
+    @velocity[2] = math.max 0, @velocity[2]
 
   jump: (world) =>
     return if @jumping
