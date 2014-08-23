@@ -3,7 +3,13 @@ class LedgeZone extends Box
   w: 6
   h: 6
 
-  new: (x, y, @tid, @is_left) =>
+  new: (@tile, @tid, @is_left) =>
+    x = @tile.x
+    y = @tile.y
+
+    unless @is_left
+      x += @tile.w
+
     half = @w / 2
     super x - half, y - half
 
@@ -59,10 +65,10 @@ class PlatformMap extends TileMap
       left, right = @is_ledge_tile idx
 
       if left
-        grid\add LedgeZone t.x, t.y, idx, true
+        grid\add LedgeZone t, idx, true
 
       if right
-        grid\add LedgeZone t.x + t.w, t.y, idx, false
+        grid\add LedgeZone t, idx, false
 
     grid
 
@@ -134,7 +140,9 @@ class World
     @entities\draw!
     @particles\draw!
 
+    COLOR\pusha 60
     @ledge_zones\draw!
+    COLOR\pop!
 
   update: (dt) =>
     @entities\update dt

@@ -9,6 +9,7 @@ show_properties = (t) ->
 -- on_ground: is on ground
 -- wall_running: is wall running
 -- can_wall_jump: allowed to wall jump, set to true when jump key released
+-- ledge_grabbing: currently attached to ledge
 class Player extends Entity
   speed: 100
   on_ground: false
@@ -122,6 +123,20 @@ class Player extends Entity
           oy: 2
           :rate
         }
+
+        grab_left: \seq {
+          "135,9,21,26"
+          ox: 5
+          oy: 7
+        }
+
+        grab_right: \seq {
+          "135,9,21,26"
+          flip_x: true
+          ox: 6
+          oy: 7
+        }
+
       }
 
   draw: (...) =>
@@ -150,7 +165,9 @@ class Player extends Entity
     @anim\update dt
     @seqs\update dt, @world
 
-    if @wall_running
+    if @ledge_grabbing
+      @update_for_ledge_grab dt
+    elseif @wall_running
       @update_for_wall_run dt
     else
       @update_for_gravity dt
@@ -160,6 +177,17 @@ class Player extends Entity
   update_for_ledge_grab: (dt) =>
     dx, dy = unpack CONTROLLER\movement_vector! * dt * @speed
     @on_ground = false
+
+    dir = @ledge_grabbing.is_left and "left" or "right"
+    @anim\set_state "grab_#{dir}"
+
+    @world.map
+    @ledge_grabbing.tid
+
+    @y = @ledge_grabbing.tile.y
+
+    if CONTROLLER\is_down "jump"
+      @ledge_grabbing = false
 
   update_for_wall_run: (dt) =>
     dx, dy = unpack CONTROLLER\movement_vector! * dt * @speed
@@ -197,7 +225,7 @@ class Player extends Entity
 
     -- see if hit ledge zone
     for zone in *@world.ledge_zones\get_touching @
-      print "enter the ledge zone", zone.tid, zone.is_left
+      @ledge_grab zone
       break
 
     moving_away = if @wall_run_up_key == "left"
@@ -285,6 +313,10 @@ class Player extends Entity
 
   against_wall: (world) =>
     world\collides_pt @wall_test_coords @wall_run_up_key
+
+  ledge_grab: (zone) =>
+    @end_wall_run!
+    @ledge_grabbing = zone
 
   wall_run: (wall_tile) =>
     return if @on_ground
