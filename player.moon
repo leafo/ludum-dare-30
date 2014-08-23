@@ -106,8 +106,6 @@ class Player extends Entity
           "39,170,21,26"
           "71,170,21,26"
           "104,170,21,26"
-          "135,170,21,26"
-          "168,170,21,26"
           ox: 6
           oy: 2
           flip_x: true
@@ -119,8 +117,6 @@ class Player extends Entity
           "39,170,21,26"
           "71,170,21,26"
           "104,170,21,26"
-          "135,170,21,26"
-          "168,170,21,26"
           ox: 4
           oy: 2
           :rate
@@ -349,7 +345,7 @@ class Player extends Entity
     return if @attacking
 
     @attacking = @seqs\add Sequence ->
-      wait 0.08 * 6
+      wait 0.08 * 4
       @attacking = false
 
   jump: (world) =>
