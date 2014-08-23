@@ -1,5 +1,71 @@
 
+class LedgeZone extends Box
+  w: 6
+  h: 6
+
+  new: (x, y, @tid, @is_left) =>
+    half = @w / 2
+    super x - half, y - half
+
 class PlatformMap extends TileMap
+  -- move idx in x,y axis while staying inside boundgs
+  move_idx: (idx, dx, dy) =>
+    row = floor (idx - 1) / @width
+    col = floor (idx - 1) % @width
+
+    col += dx
+    if col >= @width or col < 0
+      return nil
+
+    row += dy
+    if row >= @height or row < 0
+      return nil
+
+    row * @width + col + 1
+
+  -- there are two kinds of ledges, left and right
+  -- checks for either
+  is_ledge_tile: (idx) =>
+    solid = @layers[@solid_layer]
+    return unless solid[idx]
+
+    local ledge_left, ledge_right
+
+    above = @move_idx(idx, 0, -1)
+    if not above or solid[above]
+      return -- nope
+
+    -- check left
+    a,b = @move_idx(idx, -1, 0), @move_idx(idx, -1, -1)
+    if a and b
+      if not solid[a] and not solid[b]
+        ledge_left = true
+
+    -- check right
+    a,b = @move_idx(idx, 1, 0), @move_idx(idx, 1, -1)
+    if a and b
+      if not solid[a] and not solid[b]
+        ledge_right = true
+
+    ledge_left, ledge_right
+
+  find_ledge_zones: (zone_size=6) =>
+    solid = @layers[@solid_layer]
+    grid = UniformGrid!
+
+    half = zone_size / 2
+
+    for idx, t in pairs solid
+      left, right = @is_ledge_tile idx
+
+      if left
+        grid\add LedgeZone t.x, t.y, idx, true
+
+      if right
+        grid\add LedgeZone t.x + t.w, t.y, idx, false
+
+    grid
+
   -- takes the 1 indexed idx
   is_wall_tile: (idx) =>
     solid = @layers[@solid_layer]
@@ -53,6 +119,7 @@ class World
     @map_box = @map\to_box!
     @particles = DrawList!
     @entities = DrawList!
+    @ledge_zones = @map\find_ledge_zones!
 
   collides: (thing) =>
     return true unless @map_box\contains_box thing
@@ -66,6 +133,8 @@ class World
     @map\draw viewport
     @entities\draw!
     @particles\draw!
+
+    @ledge_zones\draw!
 
   update: (dt) =>
     @entities\update dt
