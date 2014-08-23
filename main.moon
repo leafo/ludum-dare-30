@@ -47,6 +47,9 @@ class World
   collides: (thing) =>
     false
 
+  draw: (viewport) =>
+    g.print "hello world", 0,0
+
 class Game
   new: =>
     @viewport = EffectViewport scale: GAME_CONFIG.scale
@@ -59,13 +62,25 @@ class Game
 
   draw: =>
     @viewport\apply!
-    @entities\draw!
+    @world\draw @viewport
+    @entities\draw @viewport
     @viewport\pop!
 
   update: fixed_time_step 60, (dt) =>
     @entities\update dt, @world
 
+load_font = (img, chars)->
+  font_image = imgfy img
+  g.newImageFont font_image.tex, chars
+
 love.load = ->
+  fonts = {
+    default: load_font "images/font1.png", [[ ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~!"#$%&'()*+,-./0123456789:;<=>?]]
+  }
+
+  g.setFont fonts.default
+  g.setBackgroundColor 13,15,12
+
   export CONTROLLER = Controller GAME_CONFIG.keys
   export DISPATCHER = Dispatcher Game!
 
