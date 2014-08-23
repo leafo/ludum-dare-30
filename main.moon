@@ -29,7 +29,7 @@ class Game
 
   draw: =>
     @viewport\apply!
-    g.print "Hello world", 20, 20
+    g.print "PV: #{@player.velocity.x}, #{@player.velocity.y}", 20, 20
     COLOR\pusha 10
     @world.map_box\draw!
     COLOR\pop!

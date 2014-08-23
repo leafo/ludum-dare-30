@@ -40,7 +40,6 @@ class Player extends Entity
   update: (dt, @world) =>
     @seqs\update dt, @world
 
-
     if @wall_running
       @update_for_wall_run dt
     else
@@ -59,9 +58,8 @@ class Player extends Entity
 
       @velocity += @world.gravity * dt
 
-    if CONTROLLER\tapped "jump"
-      -- @jump @world
-      nil
+    if CONTROLLER\is_down "jump"
+      @jump @world
 
     cx, cy = @fit_move @velocity[1] * dt, @velocity[2] * dt, @world
 
@@ -85,6 +83,9 @@ class Player extends Entity
       @jump @world
 
     @velocity += @world.gravity * dt
+    -- air resistance
+    @velocity[1] = dampen @velocity[1], dt * 200
+
     vx, vy = unpack @velocity
     vx += dx * @speed
 
@@ -139,11 +140,12 @@ class Player extends Entity
 
     @jumping = @seqs\add Sequence ->
       vx, vy = if @wall_running
+        print "side jumping"
         @end_wall_run!
         if @wall_run_up_key == "left"
-          200, 0
+          100, -200
         else
-          -200, 0
+          -100, -200
       else
         0, -200
 
