@@ -146,6 +146,8 @@ class World
   gravity: Vec2d 0, 500
 
   new: (@game, map_name="maps.dev") =>
+    @viewport = EffectViewport scale: GAME_CONFIG.scale
+
     @entities = DrawList!
     @collider = UniformGrid!
 
@@ -193,8 +195,14 @@ class World
     return true unless @map_box\touches_pt x,y
     @map\collides_pt x,y
 
-  draw: (viewport) =>
-    @map\draw viewport
+  draw: =>
+    @viewport\apply!
+
+    COLOR\push 222,84,84, 155
+    @map_box\draw!
+    COLOR\pop!
+
+    @map\draw @viewport
     @entities\draw!
     @particles\draw!
 
@@ -202,6 +210,8 @@ class World
       COLOR\pusha 60
       @ledge_zones\draw!
       COLOR\pop!
+
+    @viewport\pop!
 
   update: (dt) =>
     @entities\update dt, @
@@ -213,7 +223,12 @@ class World
       continue unless e.w -- is a box
       @collider\add e
 
+    @viewport\update dt
+
     return unless @player
+
+    -- @viewport\center_on @player, @world.map_box, dt
+    @viewport\center_on @player, nil, dt
 
     if @player.attack_box
       for thing in *@collider\get_touching @player.attack_box

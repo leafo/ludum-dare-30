@@ -23,21 +23,16 @@ fixed_time_step = (rate, fn) ->
 
 class Game
   new: =>
-    @viewport = EffectViewport scale: GAME_CONFIG.scale
+    @hud_viewport = EffectViewport scale: GAME_CONFIG.scale
 
     @world = World @
     @player = Player 0, 0
     @world\add_player @player
 
   draw: =>
-    @viewport\apply!
+    @world\draw!
 
-    COLOR\push 222,84,84, 155
-    @world.map_box\draw!
-    COLOR\pop!
-
-    @world\draw @viewport
-
+    @hud_viewport\apply!
     stat = table.concat {
       "V: #{"%.3f %.3f"\format unpack @player.velocity}"
       "Damp: #{"%.3f"\format @player.dampen_movement}"
@@ -45,27 +40,23 @@ class Game
       "Seqs: #{table.concat [s.name or "***" for s in *@player.seqs when s.alive], ", "}"
     }, "\n"
 
-    g.print stat, @viewport.x, @viewport.y
+    g.print stat, 0,0
 
     if DEBUG and @root
       Box.draw @root, {255,255,255, 80}
 
-    @viewport\pop!
+    @hud_viewport\pop!
 
   update: fixed_time_step 60, (dt) =>
     return if paused
-
     @world\update dt
-    @viewport\update dt
-    -- @viewport\center_on @player, @world.map_box, dt
-    @viewport\center_on @player, nil, dt
 
   on_key: (key) =>
     if key == "p"
       paused = not paused
 
   mousepressed: (x,y) =>
-    x,y = @viewport\unproject x, y
+    x,y = @world.viewport\unproject x, y
     @root = @world.map\get_floor_range x,y
 
     -- idx = @world.map\pt_to_idx x, y

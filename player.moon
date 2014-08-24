@@ -1,7 +1,7 @@
 
 {graphics: g} = love
 
-import DirtEmitter from require "particles"
+import BloodEmitter, DirtEmitter from require "particles"
 
 export show_properties = (t) ->
   require("moon").p { k,v for k,v in pairs t when type(v) != "table" }
@@ -539,7 +539,8 @@ class Player extends Entity
 
     @taking_hit = @seqs\add Sequence ->
       @effects\add ShakeEffect 0.2
-      @world.game.viewport\shake!
+      @world.viewport\shake!
+      @world.particles\add BloodEmitter @world, @center!
 
       -- get center to center vec
       vx, vy = unpack (Vec2d(@center!) - Vec2d(thing\center!))\normalized! * hit_power
