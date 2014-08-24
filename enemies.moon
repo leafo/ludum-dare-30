@@ -5,7 +5,6 @@ class Enemy extends Entity
   h: 15
   hp: 2
 
-  lazy sprite: -> Spriter "images/lilguy.png"
 
   new: (x,y) =>
     super x,y
@@ -15,7 +14,9 @@ class Enemy extends Entity
     @impulses = ImpulseSet!
 
     @seqs = DrawList!
-    @seqs\add @make_ai!
+    if ai = @make_ai!
+      @seqs\add ai
+
     @make_sprite!
 
   make_sprite: => error "override me"
@@ -108,6 +109,8 @@ class Enemy extends Entity
 
 
 class Lilguy extends Enemy
+  lazy sprite: -> Spriter "images/lilguy.png"
+
   make_sprite: =>
     with @sprite
       @anim = StateAnim "stand_#{@facing}", {
@@ -242,7 +245,74 @@ class Lilguy extends Enemy
       again!
 
 
+class Bullet extends Box
+  lazy sprite: -> Spriter "images/gunguybullet.png"
+
+class Gunguy extends Enemy
+  lazy sprite: -> Spriter "images/gunguy.png"
+
+  make_sprite: =>
+    with @sprite
+      @anim = StateAnim "stand_left", {
+        stand_left: \seq {
+          "4,14,23,20"
+
+          -- "4,77,23,20" -- :O shoot?
+          -- "38,77,23,20"
+          ox: 6
+          oy: 3
+        }, 0.2
+
+        walk_left: \seq {
+          "4,14,23,20"
+          "38,13,23,20"
+        }, 0.2
+
+        walk_left_back: \seq {
+          "4,46,23,20"
+          "35,46,23,20"
+        }, 0.2
+
+        stand_right: \seq {
+          "4,14,23,20"
+
+          ox: 6
+          oy: 3
+
+          flip_x: true
+        }
+
+        walk_right: \seq {
+          "4,14,23,20"
+          "38,13,23,20"
+          flip_x: true
+        }, 0.2
+
+        walk_right_back: \seq {
+          "4,46,23,20"
+          "35,46,23,20"
+          flip_x: true
+        }, 0.2
+
+        stun_left: \seq {
+          "7,109,23,20"
+          ox: 4
+          oy: 3
+        }
+
+        stun_right: \seq {
+          "7,109,23,20"
+          ox: 9
+          oy: 3
+          flip_x: true
+        }
+
+      }
+
+  make_ai: =>
+
 {
   :Enemy
+  :Gunguy
   :Lilguy
 }

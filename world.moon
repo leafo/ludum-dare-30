@@ -149,6 +149,10 @@ class World
     @entities = DrawList!
     @collider = UniformGrid!
 
+    import Lilguy, Gunguy from require "enemies"
+    enemies = {Lilguy, Gunguy}
+    count = 0
+
     @map = PlatformMap\from_tiled "maps.dev", {
       object: (o) ->
         switch o.name
@@ -156,8 +160,10 @@ class World
             @spawn_x = o.x
             @spawn_y = o.y
           when "enemy"
-            import Lilguy from require "enemies"
-            @entities\add Lilguy o.x, o.y
+            cls = enemies[count % #enemies + 1]
+            count += 1
+
+            @entities\add cls o.x, o.y
     }
 
     @map_box = @map\to_box!
