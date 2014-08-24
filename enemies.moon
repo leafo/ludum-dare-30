@@ -1,12 +1,13 @@
 
 {graphics: g} = love
 
+import BloodEmitter from require "particles"
+
 class Enemy extends Entity
   is_enemy: true
   w: 10
   h: 15
-  hp: 2
-
+  hp: 1
 
   new: (x,y) =>
     super x,y
@@ -104,6 +105,9 @@ class Enemy extends Entity
 
     @taking_hit = @seqs\add Sequence ->
       @impulses.move = false
+      world.particles\add with BloodEmitter world
+        \attach (emitter) ->
+          emitter.x, emitter.y = @center!
 
       vx, vy = unpack (Vec2d(@center!) - Vec2d(thing\center!))\normalized! * hit_power
 
@@ -115,6 +119,8 @@ class Enemy extends Entity
 
 
 class Lilguy extends Enemy
+  hp: 10
+
   lazy sprite: -> Spriter "images/lilguy.png"
 
   make_sprite: =>
