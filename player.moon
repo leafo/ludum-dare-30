@@ -161,9 +161,14 @@ class Player extends Entity
     -- draw the sprite
     @anim\draw @x, @y
 
+    if @attack_box
+      Box.outline @attack_box
+
   update: (dt, @world) =>
     @anim\update dt
     @seqs\update dt, @world
+
+    @position_attack_box!
 
     if @ledge_grabbing
       @update_for_ledge_grab dt
@@ -343,11 +348,29 @@ class Player extends Entity
     @wall_running = false
     @velocity[2] = math.max 0, @velocity[2]
 
+  position_attack_box: =>
+    return unless @attack_box
+    dist = 5
+    @attack_box.y = @y + (@h - @attack_box.h) / 2
+
+    if @facing == "left"
+      @attack_box.x = @x - @attack_box.w - 5
+    else
+      @attack_box.x = @x + @w + 5
+
   attack: (world) =>
     return if @attacking
 
     @attacking = @seqs\add Sequence ->
-      wait 0.08 * 4
+
+      wait 0.08 * 1
+
+      @attack_box = Box 0, 0, 10, 10
+      @position_attack_box!
+
+      wait 0.08 * 3
+
+      @attack_box = nil
       @attacking = false
 
   jump: (world) =>
