@@ -385,7 +385,12 @@ class Gunguy extends Enemy
 
   shoot: (dir) =>
     x,y = @nozzle_pt!
-    @world.entities\add Bullet x,y, Vec2d(-100,0)
+    vx = if @facing == "left"
+      -100
+    else
+      100
+
+    @world.entities\add Bullet x,y, Vec2d vx, 0
 
   make_ai: =>
     Sequence ->
