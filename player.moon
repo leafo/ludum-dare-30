@@ -163,6 +163,7 @@ class Player extends Entity
       Box.outline @attack_box
 
   update: (dt, @world) =>
+
     @effects\update dt
 
     if @on_ground and not @attacking
@@ -455,6 +456,7 @@ class Player extends Entity
     @attacking.name = "attacking"
 
   ledge_jump: (dx, dy) =>
+    return if @jumping
     return unless @ledge_grabbing
     is_left = @ledge_grabbing.is_left
 
@@ -531,6 +533,9 @@ class Player extends Entity
     @end_wall_run!
     @end_attack!
     hit_power = 150
+
+    if thing.is_bullet
+      thing\take_hit world, @
 
     @taking_hit = @seqs\add Sequence ->
       @effects\add ShakeEffect 0.2

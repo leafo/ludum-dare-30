@@ -300,6 +300,9 @@ class Bullet extends Box
 
     true
 
+  take_hit: (world, thing) =>
+    @explode!
+
   explode: =>
     @dying = true
     @death_time = @anim\state_duration "exploding"
@@ -312,9 +315,6 @@ class Bullet extends Box
     --   COLOR\pop!
 
     @anim\draw @x, @y
-
-  take_hit: =>
-    print "take hit bullet"
 
 class Gunguy extends Enemy
   lazy sprite: -> Spriter "images/gunguy.png"
