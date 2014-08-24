@@ -42,15 +42,15 @@ class PlatformMap extends TileMap
       return -- nope
 
     -- check left
-    a,b = @move_idx(idx, -1, 0), @move_idx(idx, -1, -1)
-    if a and b
-      if not solid[a] and not solid[b]
+    a,b,c = @move_idx(idx, -1, 0), @move_idx(idx, -1, -1), @move_idx(-1, 1)
+    if a and b and c
+      if not solid[a] and not solid[b] and not solid[c]
         ledge_left = true
 
     -- check right
-    a,b = @move_idx(idx, 1, 0), @move_idx(idx, 1, -1)
-    if a and b
-      if not solid[a] and not solid[b]
+    a,b,c = @move_idx(idx, 1, 0), @move_idx(idx, 1, -1), @move_idx(idx, 1, 1)
+    if a and b and c
+      if not solid[a] and not solid[b] and not solid[c]
         ledge_right = true
 
     ledge_left, ledge_right
