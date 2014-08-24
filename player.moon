@@ -3,7 +3,7 @@
 
 import DirtEmitter from require "particles"
 
-show_properties = (t) ->
+export show_properties = (t) ->
   require("moon").p { k,v for k,v in pairs t when type(v) != "table" }
 
 -- on_ground: is on ground
@@ -274,7 +274,7 @@ class Player extends Entity
       @left_down_time
 
     if elapsed
-      @run_scale = math.min(accel_time, elapsed) / accel_time * 0.6 + 0.4
+      @run_scale = math.min(accel_time, elapsed) / accel_time * 0.4 + 0.6
       dx = @run_scale * dx
 
     dx, dy
@@ -440,11 +440,22 @@ class Player extends Entity
 
   ledge_jump: (dx, dy) =>
     return unless @ledge_grabbing
+    is_left = @ledge_grabbing.is_left
+    print is_left
+
     @ledge_grabbing = false
     @jumping = @seqs\add Sequence ->
       -- pressing down or nothing, just drop to the ground
-      vx, vy = if dx == 0 and dy == 0 or dx == 0 and dy > 0
+      vx, vy = if dx == 0 and dy > 0
         0,0
+      elseif dx < 0 and is_left
+        print "powering left"
+        vx = -@jump_power / 2
+        vy = -@jump_power
+      elseif dx > 1 and not is_left
+        print "powering right"
+        vx = @jump_power / 2
+        vy = -@jump_power
       else
         vx = 0
         vy = -@jump_power
