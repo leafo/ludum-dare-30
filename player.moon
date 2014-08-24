@@ -233,7 +233,7 @@ class Player extends Entity
       dx < 0
 
     -- stop if moving away, not against wall anymore or moving opposite direction
-    if not @against_wall(@world) or cy or moving_away
+    if not @against_wall(@wall_run_up_key) or cy or moving_away
       @seqs\remove @wall_running
       @end_wall_run!
 
@@ -299,21 +299,40 @@ class Player extends Entity
     else
       @x + @w, @y + @h - 5
 
-  wall_test_coords: (dir=@facing) =>
+  wall_test_coords: (dir) =>
     ep = 0.1
-    cy = @y + @h * 4 / 5 -- around the feet?
+    wy = @y + @h * 4 / 5 -- around the feet?
 
-    cx = switch dir
+    wx = switch dir
       when "left"
         @x - ep
       when "right"
         @x + @w + ep
+      else
+        error "unknown dir #{dir}"
 
-    cx, cy
+    wx, wy
 
-  against_wall: (world, dir) =>
-    cx, cy = @wall_test_coords dir
-    @world.map\collides_pt(cx,cy), cx,cy
+  against_wall: (dir) =>
+    wx, wy = @wall_test_coords dir
+
+    return false unless @world.map\collides_pt wx, wy
+    {:map} = @world
+    solid = map.layers[map.solid_layer]
+
+    idx = map\pt_to_idx wx, wy
+
+    switch dir
+      when "left" -- moving left
+        moved = map\move_idx idx, 1, 1
+        return false if solid[moved]
+      when "right" -- moving right
+        moved = map\move_idx idx, -1, 1
+        return false if solid[moved]
+      else
+        error "unknown direction #{dir}"
+
+    true, wx, wy
 
   ledge_grab: (zone) =>
     @end_wall_run!
