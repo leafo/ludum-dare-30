@@ -1,4 +1,6 @@
 
+{graphics: g} = love
+
 class Enemy extends Entity
   is_enemy: true
   w: 10
@@ -85,7 +87,11 @@ class Enemy extends Entity
       @seqs\remove @ai
       @seqs\remove @taking_hit
 
-      wait @anim\state_duration "die_left"
+      if @anim.states.die_left
+        wait @anim\state_duration "die_left"
+      else
+        wait 0.5
+
       @alive = false
 
   take_hit: (world, thing) =>
@@ -246,7 +252,53 @@ class Lilguy extends Enemy
 
 
 class Bullet extends Box
+  is_enemy: true
   lazy sprite: -> Spriter "images/gunguybullet.png"
+
+  w: 5
+  h: 5
+
+  new: (x,y, @velocity) =>
+    half = math.floor @w/2
+    super x - half, y - half
+
+    with @sprite
+      @anim = StateAnim "shooting", {
+        shooting: \seq {
+          "0,0,13,13"
+          ox: 4
+          oy: 4
+        }
+
+        exploding: \seq {
+          "16,0,13,13"
+          "32,0,13,13"
+          "48,0,13,13"
+          "64,0,13,13"
+          "80,0,13,13"
+
+          ox: 4
+          oy: 4
+
+        }, 0.05
+      }
+
+  update: (dt) =>
+    @anim\update dt
+    dx, dy = unpack dt * @velocity
+    @move dx, dy
+    true
+
+  draw: =>
+    -- if DEBUG
+    --   COLOR\pusha 100
+    --   super!
+    --   COLOR\pop!
+
+    @anim\draw @x, @y
+
+  take_hit: =>
+    print "take hit bullet"
 
 class Gunguy extends Enemy
   lazy sprite: -> Spriter "images/gunguy.png"
@@ -294,6 +346,7 @@ class Gunguy extends Enemy
           flip_x: true
         }, 0.2
 
+        -- these are the same
         stun_left: \seq {
           "7,109,23,20"
           ox: 4
@@ -306,10 +359,30 @@ class Gunguy extends Enemy
           oy: 3
           flip_x: true
         }
-
       }
 
+
+  draw: =>
+    super!
+    x,y = @nozzle_pt!
+    g.rectangle "fill", x-2,y-2,4,4
+
+  nozzle_pt: =>
+    if @facing == "left"
+      @x - 3, @y + 3
+    else
+      @x + @w + 4, @y + 3
+
+  shoot: (dir) =>
+    x,y = @nozzle_pt!
+    @world.entities\add Bullet x,y, Vec2d(-100,0)
+
   make_ai: =>
+    Sequence ->
+      @shoot!
+
+      wait 1
+      again!
 
 {
   :Enemy
