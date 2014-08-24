@@ -162,7 +162,14 @@ class World
             @spawn_x = o.x
             @spawn_y = o.y
           when "enemy"
-            cls = enemies[count % #enemies + 1]
+            cls = switch o.type
+              when "gunguy"
+                Gunguy
+              when "lilguy"
+                Lilguy
+              else
+                enemies[count % #enemies + 1]
+
             count += 1
 
             @entities\add cls o.x, o.y
