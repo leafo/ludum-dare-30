@@ -105,7 +105,7 @@ class Enemy extends Entity
 
     @taking_hit = @seqs\add Sequence ->
       @impulses.move = false
-      world.particles\add with BloodEmitter world
+      world.particles\add with BloodEmitter world, 0,0, thing\left_of @
         \attach (emitter) ->
           emitter.x, emitter.y = @center!
 

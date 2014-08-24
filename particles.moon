@@ -44,7 +44,7 @@ class Blood extends PixelParticle
 
   new: (@x, @y, @vel) =>
     unless @vel
-      @vel = Vec2d(0, -1)\random_heading(120) * rand(100, 100)
+      @vel = Vec2d(0, -1)\random_heading(120) * rand(100, 200)
 
     @accel = Vec2d 0, 500
     @size = pick_dist { [2]: 1, [3]: 2, [4]: 2, [5]: 1 }
@@ -60,7 +60,16 @@ class Blood extends PixelParticle
 class BloodEmitter extends Emitter
   count: 20
 
-  make_particle: (x,y) => Blood x,y
+  new: (world, x,y, @shoot_right) =>
+    super world, x,y
+
+  make_particle: (x,y) =>
+    vel = if @shoot_right
+      Vec2d.from_angle -45
+    else
+      Vec2d.from_angle 225
+
+    Blood x,y, vel\random_heading(20) * rand(100, 150)
 
 {
   :DirtEmitter
