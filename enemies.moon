@@ -16,7 +16,99 @@ class Enemy extends Entity
 
     @seqs = DrawList!
     @seqs\add @make_ai!
+    @make_sprite!
 
+  make_sprite: => error "override me"
+  make_ai: => error "override me"
+
+  get_floor: =>
+    @world.map\get_floor_range @x + @w / 2, @y + @h + 0.1
+
+  update: (dt, @world) =>
+    @anim\update dt
+    @seqs\update dt
+    @velocity += @world.gravity * dt
+
+    -- air resistance
+    if @velocity[1] != 0
+      @velocity[1] = dampen @velocity[1], dt * 200
+
+    vx, vy = unpack @velocity
+    ix, iy = @impulses\sum!
+
+    vx += ix
+    vy += iy
+
+    if vx > 0
+      @facing = "right"
+
+    if vx < 0
+      @facing = "left"
+
+    motion = if @taking_hit
+      "stun"
+    elseif vx != 0
+      "walk"
+    else
+      "stand"
+
+    unless @dying
+      @anim\set_state "#{motion}_#{@facing}"
+
+    cx, cy = @fit_move vx * dt, vy * dt, @world
+
+    if cy
+      if @velocity[2] > 0
+        @on_ground = true
+      @velocity[2] = 0
+    else
+      @on_ground = false
+
+    if cx and @impulses.move
+      @impulses.move[1] = -@impulses.move[1]
+
+    true
+
+  draw: =>
+    if DEBUG
+      COLOR\pusha 80
+      super!
+      COLOR\pop!
+
+    @anim\draw @x, @y
+
+  die: =>
+    @anim\set_state "die_#{@facing}"
+    @dying = @seqs\add Sequence ->
+      @impulses.move = nil
+      @seqs\remove @ai
+      @seqs\remove @taking_hit
+
+      wait @anim\state_duration "die_left"
+      @alive = false
+
+  take_hit: (world, thing) =>
+    return if @taking_hit or @dying
+    @hp -= 1
+    if @hp <= 0
+      return @die!
+
+    hit_power = 150
+
+    @taking_hit = @seqs\add Sequence ->
+      @impulses.move = false
+
+      vx, vy = unpack (Vec2d(@center!) - Vec2d(thing\center!))\normalized! * hit_power
+
+      @velocity[1] = vx
+      @velocity[2] = vy - 150
+
+      wait 0.5
+      @taking_hit = nil
+
+
+class Lilguy extends Enemy
+  make_sprite: =>
     with @sprite
       @anim = StateAnim "stand_#{@facing}", {
         stand_left: \seq {
@@ -149,93 +241,8 @@ class Enemy extends Entity
       wait rand 0.8, 1.2
       again!
 
-  get_floor: =>
-    @world.map\get_floor_range @x + @w / 2, @y + @h + 0.1
-
-  update: (dt, @world) =>
-    @anim\update dt
-    @seqs\update dt
-    @velocity += @world.gravity * dt
-
-    -- air resistance
-    if @velocity[1] != 0
-      @velocity[1] = dampen @velocity[1], dt * 200
-
-    vx, vy = unpack @velocity
-    ix, iy = @impulses\sum!
-
-    vx += ix
-    vy += iy
-
-    if vx > 0
-      @facing = "right"
-
-    if vx < 0
-      @facing = "left"
-
-    motion = if @taking_hit
-      "stun"
-    elseif vx != 0
-      "walk"
-    else
-      "stand"
-
-    unless @dying
-      @anim\set_state "#{motion}_#{@facing}"
-
-
-
-    cx, cy = @fit_move vx * dt, vy * dt, @world
-
-    if cy
-      if @velocity[2] > 0
-        @on_ground = true
-      @velocity[2] = 0
-    else
-      @on_ground = false
-
-    if cx and @impulses.move
-      @impulses.move[1] = -@impulses.move[1]
-
-    true
-
-  draw: =>
-    if DEBUG
-      COLOR\pusha 80
-      super!
-      COLOR\pop!
-
-    @anim\draw @x, @y
-
-  die: =>
-    @anim\set_state "die_#{@facing}"
-    @dying = @seqs\add Sequence ->
-      @impulses.move = nil
-      @seqs\remove @ai
-      @seqs\remove @taking_hit
-
-      wait @anim\state_duration "die_left"
-      @alive = false
-
-  take_hit: (world, thing) =>
-    return if @taking_hit or @dying
-    @hp -= 1
-    if @hp <= 0
-      return @die!
-
-    hit_power = 150
-
-    @taking_hit = @seqs\add Sequence ->
-      @impulses.move = false
-
-      vx, vy = unpack (Vec2d(@center!) - Vec2d(thing\center!))\normalized! * hit_power
-
-      @velocity[1] = vx
-      @velocity[2] = vy - 150
-
-      wait 1.0
-      @taking_hit = nil
 
 {
   :Enemy
+  :Lilguy
 }

@@ -156,8 +156,8 @@ class World
             @spawn_x = o.x
             @spawn_y = o.y
           when "enemy"
-            import Enemy from require "enemies"
-            @entities\add Enemy o.x, o.y
+            import Lilguy from require "enemies"
+            @entities\add Lilguy o.x, o.y
     }
 
     @map_box = @map\to_box!
