@@ -444,9 +444,12 @@ class Player extends Entity
       @attack_box = Box 0, 0, 10, 10
       @position_attack_box!
 
-      wait 0.08 * 3
+      wait 0.08 * 1
 
       @attack_box = nil
+
+      wait 0.08 * 2
+
       @attacking = false
 
     @attacking.name = "attacking"

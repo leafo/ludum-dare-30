@@ -3,6 +3,7 @@ class Enemy extends Entity
   is_enemy: true
   w: 10
   h: 15
+  hp: 2
 
   lazy sprite: -> Spriter "images/lilguy.png"
 
@@ -168,7 +169,9 @@ class Enemy extends Entity
     if vx < 0
       @facing = "left"
 
-    motion = if vx != 0
+    motion = if @taking_hit
+      "stun"
+    elseif vx != 0
       "walk"
     else
       "stand"
@@ -210,8 +213,20 @@ class Enemy extends Entity
 
   take_hit: (world, thing) =>
     return if @taking_hit or @dying
+    @hp -= 1
+    if @hp <= 0
+      return @die!
+
+    hit_power = 150
+
     @taking_hit = @seqs\add Sequence ->
-      @die!
+      @impulses.move = false
+
+      vx, vy = unpack (Vec2d(@center!) - Vec2d(thing\center!))\normalized! * hit_power
+
+      @velocity[1] = vx
+      @velocity[2] = vy - 150
+
       wait 1.0
       @taking_hit = nil
 
