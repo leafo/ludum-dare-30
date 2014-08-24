@@ -14,6 +14,8 @@ class Player extends Entity
   is_player: true
 
   speed: 100
+  jump_power: 200
+
   on_ground: false
   movement_locked: false
   dampen_movement: 1
@@ -399,8 +401,13 @@ class Player extends Entity
     return unless @ledge_grabbing
     @ledge_grabbing = false
     @jumping = @seqs\add Sequence ->
-      vx = 0
-      vy = -200
+      -- pressing down or nothing, just drop to the ground
+      vx, vy = if dx == 0 and dy == 0 or dx == 0 and dy > 0
+        0,0
+      else
+        vx = 0
+        vy = -@jump_power
+
 
       @can_wall_jump = false
 
@@ -422,11 +429,11 @@ class Player extends Entity
         @slow_movement_for 0.3
 
         if @wall_run_up_key == "left"
-          100, -200
+          100, -@jump_power
         else
-          -100, -200
+          -100, -@jump_power
       else
-        0, -200
+        0, -@jump_power
 
       @can_wall_jump = false
 
