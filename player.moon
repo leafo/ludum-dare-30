@@ -19,6 +19,8 @@ class Player extends Entity
   on_ground: false
   movement_locked: false
   dampen_movement: 1
+  run_scale: 1
+
   w: 10
   h: 20
 
@@ -158,7 +160,11 @@ class Player extends Entity
       Box.outline @attack_box
 
   update: (dt, @world) =>
-    @anim\update dt
+    if @on_ground and not @attacking
+      @anim\update dt * @run_scale
+    else
+      @anim\update dt
+
     @seqs\update dt, @world
 
     @position_attack_box!
@@ -239,8 +245,43 @@ class Player extends Entity
       @seqs\remove @wall_running
       @end_wall_run!
 
-  update_for_gravity: (dt) =>
+  -- slow the dx based on how long they've been holding direciton
+  movement_vector: (dt) =>
     dx, dy = unpack CONTROLLER\movement_vector! * dt * @speed
+
+    if CONTROLLER\is_down "left"
+      if not @left_down_time
+        @left_down_time = 0
+    else
+      @left_down_time = nil
+
+    if CONTROLLER\is_down "right"
+      unless @right_down_time
+        @right_down_time= 0
+    else
+      @right_down_time = nil
+
+    if @left_down_time and @on_ground
+      @left_down_time += dt
+
+    if @right_down_time and @on_ground
+      @right_down_time += dt
+
+    accel_time = 0.2
+    elapsed = if dx > 0
+      @right_down_time
+    elseif dx < 0
+      @left_down_time
+
+    if elapsed
+      @run_scale = math.min(accel_time, elapsed) / accel_time * 0.6 + 0.4
+      dx = @run_scale * dx
+
+    dx, dy
+
+
+  update_for_gravity: (dt) =>
+    dx, dy = @movement_vector dt
 
     if dx != 0
       @facing = if dx < 0 then "left" else "right"
