@@ -253,6 +253,8 @@ class Lilguy extends Enemy
 
 class Bullet extends Box
   is_enemy: true
+  is_bullet: true
+
   lazy sprite: -> Spriter "images/gunguybullet.png"
 
   w: 5
@@ -283,11 +285,25 @@ class Bullet extends Box
         }, 0.05
       }
 
-  update: (dt) =>
+  update: (dt, @world) =>
     @anim\update dt
-    dx, dy = unpack dt * @velocity
-    @move dx, dy
+    unless @dying
+      dx, dy = unpack dt * @velocity
+      @move dx, dy
+
+      if @world\collides @
+        @explode!
+
+    if @death_time
+      return false if @death_time <= 0
+      @death_time -= dt
+
     true
+
+  explode: =>
+    @dying = true
+    @death_time = @anim\state_duration "exploding"
+    @anim\set_state "exploding"
 
   draw: =>
     -- if DEBUG
@@ -360,12 +376,6 @@ class Gunguy extends Enemy
           flip_x: true
         }
       }
-
-
-  draw: =>
-    super!
-    x,y = @nozzle_pt!
-    g.rectangle "fill", x-2,y-2,4,4
 
   nozzle_pt: =>
     if @facing == "left"
