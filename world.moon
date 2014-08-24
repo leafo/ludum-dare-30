@@ -172,6 +172,8 @@ class World
     @particles = DrawList!
     @ledge_zones = @map\find_ledge_zones!
 
+    import RedGlow from require "shaders"
+    @shader = RedGlow @viewport
 
   add_player: (player) =>
     error "there is already a player" if @player
@@ -196,22 +198,25 @@ class World
     @map\collides_pt x,y
 
   draw: =>
-    @viewport\apply!
+    @shader\render ->
+      @viewport\apply!
 
-    COLOR\push 222,84,84, 155
-    @map_box\draw!
-    COLOR\pop!
-
-    @map\draw @viewport
-    @entities\draw!
-    @particles\draw!
-
-    if DEBUG
-      COLOR\pusha 60
-      @ledge_zones\draw!
+      COLOR\push 222,84,84, 155
+      @map_box\draw!
       COLOR\pop!
 
-    @viewport\pop!
+
+      @map\draw @viewport
+      @entities\draw!
+      @particles\draw!
+
+
+      if DEBUG
+        COLOR\pusha 60
+        @ledge_zones\draw!
+        COLOR\pop!
+
+      @viewport\pop!
 
   update: (dt) =>
     @entities\update dt, @
