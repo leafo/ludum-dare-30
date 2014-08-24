@@ -157,6 +157,10 @@ class Enemy extends Entity
     @seqs\update dt
     @velocity += @world.gravity * dt
 
+    -- air resistance
+    if @velocity[1] != 0
+      @velocity[1] = dampen @velocity[1], dt * 200
+
     vx, vy = unpack @velocity
     ix, iy = @impulses\sum!
 
@@ -178,6 +182,8 @@ class Enemy extends Entity
 
     unless @dying
       @anim\set_state "#{motion}_#{@facing}"
+
+
 
     cx, cy = @fit_move vx * dt, vy * dt, @world
 
