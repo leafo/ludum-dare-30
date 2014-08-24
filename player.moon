@@ -272,12 +272,13 @@ class Player extends Entity
     vx += dx * @speed * @dampen_movement
 
     cx, cy = @fit_move vx * dt, vy * dt, @world
-    wx, wy = @wall_test_coords!
 
-    if cx and @world\collides_pt wx, wy
-      root_tile = @world.map\get_wall_root wx, wy
-      -- try to initiate wall run
-      @wall_run root_tile
+    if cx
+      against, wx, wy = @against_wall @facing
+      if against
+        root_tile = @world.map\get_wall_root wx, wy
+        -- try to initiate wall run
+        @wall_run root_tile
 
     if cy
       if @velocity[2] > 0
@@ -310,8 +311,9 @@ class Player extends Entity
 
     cx, cy
 
-  against_wall: (world) =>
-    world\collides_pt @wall_test_coords @wall_run_up_key
+  against_wall: (world, dir) =>
+    cx, cy = @wall_test_coords dir
+    @world.map\collides_pt(cx,cy), cx,cy
 
   ledge_grab: (zone) =>
     @end_wall_run!
