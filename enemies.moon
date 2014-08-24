@@ -111,7 +111,6 @@ class Enemy extends Entity
 
       switch pick_dist {move: 2, wait: 1}
         when "move"
-          floor = @get_floor!
 
           speed = rand 20, 40
           dir = pick_dist [1]: 1, [-1]: 1
@@ -119,11 +118,12 @@ class Enemy extends Entity
 
           dist = speed * dir * dur
 
-          if dist < 0 and @x + dist < floor.x
-            dir = -dir
+          if floor = @get_floor!
+            if dist < 0 and @x + dist < floor.x
+              dir = -dir
 
-          if dist > 0 and @x + @w + dist > floor.x + floor.w
-            dir = -dir
+            if dist > 0 and @x + @w + dist > floor.x + floor.w
+              dir = -dir
 
           @impulses.move = Vec2d speed * dir
           wait dur

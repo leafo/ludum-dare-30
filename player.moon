@@ -186,7 +186,7 @@ class Player extends Entity
       @can_ledge_jump = not CONTROLLER\is_down "jump"
 
     if @can_ledge_jump and CONTROLLER\is_down "jump"
-      @air_jump!
+      @ledge_jump dx, dy
 
   update_for_wall_run: (dt) =>
     dx, dy = unpack CONTROLLER\movement_vector! * dt * @speed
@@ -244,9 +244,9 @@ class Player extends Entity
       @facing = if dx < 0 then "left" else "right"
 
     if CONTROLLER\is_down "jump"
-      @jump @world
+      @jump!
     elseif CONTROLLER\is_down "attack"
-      @attack @world
+      @attack!
 
     motion = if @attacking
       "attack"
@@ -379,7 +379,7 @@ class Player extends Entity
     else
       @attack_box.x = @x + @w + 5
 
-  attack: (world) =>
+  attack: =>
     return if @attacking
 
     @attacking = @seqs\add Sequence ->
@@ -395,7 +395,7 @@ class Player extends Entity
 
     @attacking.name = "attacking"
 
-  air_jump: (world) =>
+  ledge_jump: (dx, dy) =>
     return unless @ledge_grabbing
     @ledge_grabbing = false
     @jumping = @seqs\add Sequence ->
@@ -412,7 +412,7 @@ class Player extends Entity
 
     @jumping.name = "air jump"
 
-  jump: (world) =>
+  jump: =>
     return if @jumping
     return unless @on_ground or @wall_running
 
