@@ -307,6 +307,7 @@ class Bullet extends Box
     true
 
   take_hit: (world, thing) =>
+    return if @dying
     @explode!
 
   explode: =>
@@ -382,6 +383,10 @@ class Gunguy extends Enemy
           flip_x: true
         }
       }
+
+  die: =>
+    @world.particles\add BloodEmitter @world, @center!
+    @alive = false
 
   nozzle_pt: =>
     if @facing == "left"

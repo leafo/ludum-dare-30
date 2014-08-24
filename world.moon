@@ -150,7 +150,7 @@ class World
     @collider = UniformGrid!
 
     import Lilguy, Gunguy from require "enemies"
-    enemies = {Lilguy}
+    enemies = {Lilguy, Gunguy}
     count = 0
 
     @map = PlatformMap\from_tiled "maps.dev", {

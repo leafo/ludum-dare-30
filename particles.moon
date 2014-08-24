@@ -64,12 +64,15 @@ class BloodEmitter extends Emitter
     super world, x,y
 
   make_particle: (x,y) =>
-    vel = if @shoot_right
-      Vec2d.from_angle -45
-    else
-      Vec2d.from_angle 225
+    vel = if @shoot_right != nil
+      vel = if @shoot_right
+        Vec2d.from_angle -65
+      else
+        Vec2d.from_angle 245
 
-    Blood x,y, vel\random_heading(20) * rand(100, 150)
+      vel\random_heading(60) * rand(100, 150)
+
+    Blood x,y, vel
 
 {
   :DirtEmitter

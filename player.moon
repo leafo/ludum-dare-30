@@ -442,7 +442,7 @@ class Player extends Entity
     @attacking = @seqs\add Sequence ->
       wait 0.08 * 1
 
-      @attack_box = Box 0, 0, 10, 10
+      @attack_box = Box 0, 0, 15, 10
       @position_attack_box!
 
       wait 0.08 * 1
