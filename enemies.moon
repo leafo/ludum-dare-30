@@ -31,11 +31,25 @@ class Enemy extends Entity
           oy: 1
         }
 
+        stun_left: \seq {
+          "3,96,15,17"
+          ox: 2
+          oy: 1
+        }
+
+        stun_right: \seq {
+          "3,96,15,17"
+          flip_x: true
+          ox: 3
+          oy: 1
+        }
+
         walk_left: \seq {
           "2,32,15,17"
           "18,32,15,17"
           "34,32,15,17"
           "50,32,15,17"
+          "66,32,15,17"
           ox: 2
           oy: 1
         }, 0.08
@@ -45,6 +59,8 @@ class Enemy extends Entity
           "18,32,15,17"
           "34,32,15,17"
           "50,32,15,17"
+          "66,32,15,17"
+
           flip_x: true
           ox: 2
           oy: 1
