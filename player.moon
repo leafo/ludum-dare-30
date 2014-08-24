@@ -530,6 +530,7 @@ class Player extends Entity
 
     @taking_hit = @seqs\add Sequence ->
       @effects\add ShakeEffect 0.2
+      print @world.game.viewport\shake!
 
       -- get center to center vec
       vx, vy = unpack (Vec2d(@center!) - Vec2d(thing\center!))\normalized! * hit_power
