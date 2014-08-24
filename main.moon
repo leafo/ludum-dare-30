@@ -7,7 +7,7 @@ import World from require "world"
 
 paused = false
 
-export DEBUG = false
+export DEBUG = true
 
 fixed_time_step = (rate, fn) ->
   target_dt = 1 / rate
@@ -40,7 +40,8 @@ class Game
     stat = table.concat {
       "V: #{"%.3f %.3f"\format unpack @player.velocity}"
       "Damp: #{"%.3f"\format @player.dampen_movement}"
-      "Ground: #{@player.on_ground}, Jumping: #{@player.jumping}"
+      "Ground: #{@player.on_ground}"
+      "Seqs: #{table.concat [s.name for s in *@player.seqs when s.alive], ", "}"
     }, "\n"
 
     g.print stat, @viewport.x, @viewport.y

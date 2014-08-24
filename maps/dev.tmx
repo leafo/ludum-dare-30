@@ -12,8 +12,8 @@
   </data>
  </layer>
  <objectgroup name="objects" width="31" height="35">
-  <object name="spawn" x="250" y="296"/>
-  <object name="enemy" x="373" y="269"/>
-  <object name="enemy" x="305" y="268"/>
+  <object name="spawn" x="231" y="354"/>
+  <object name="enemy" x="368" y="282"/>
+  <object name="enemy" x="306" y="400"/>
  </objectgroup>
 </map>

@@ -186,7 +186,7 @@ class Player extends Entity
       @can_ledge_jump = not CONTROLLER\is_down "jump"
 
     if @can_ledge_jump and CONTROLLER\is_down "jump"
-      @ledge_grabbing = false
+      @air_jump!
 
   update_for_wall_run: (dt) =>
     dx, dy = unpack CONTROLLER\movement_vector! * dt * @speed
@@ -360,8 +360,13 @@ class Player extends Entity
       wait 0.5
       @end_wall_run!
 
+    @wall_running.name = "wall running"
+
   end_wall_run: =>
-    @wall_running = false
+    if @wall_running
+      @seqs\remove @wall_running
+      @wall_running = false
+
     @velocity[2] = math.max 0, @velocity[2]
 
   position_attack_box: =>
@@ -388,6 +393,25 @@ class Player extends Entity
       @attack_box = nil
       @attacking = false
 
+    @attacking.name = "attacking"
+
+  air_jump: (world) =>
+    return unless @ledge_grabbing
+    @ledge_grabbing = false
+    @jumping = @seqs\add Sequence ->
+      vx = 0
+      vy = -200
+
+      @can_wall_jump = false
+
+      @velocity[1] = vx
+      @velocity[2] = vy
+
+      wait 0.1
+      @jumping = false
+
+    @jumping.name = "air jump"
+
   jump: (world) =>
     return if @jumping
     return unless @on_ground or @wall_running
@@ -412,6 +436,8 @@ class Player extends Entity
       wait 0.1
       @jumping = false
 
+    @jumping.name = "ground jump"
+
   slow_movement_for: (duration) =>
     if @_dampen_seq
       @seqs\remove @_dampen_seq
@@ -419,6 +445,8 @@ class Player extends Entity
     @_dampen_seq = @seqs\add Sequence ->
       @dampen_movement = 0
       tween @, duration, dampen_movement: 1
+
+    @_dampen_seq.name = "dampen"
 
   looking_at: (viewport) =>
     cx, cy = @center!
