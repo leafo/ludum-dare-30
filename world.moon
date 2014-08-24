@@ -145,7 +145,7 @@ class PlatformMap extends TileMap
 class World
   gravity: Vec2d 0, 500
 
-  new: (@game) =>
+  new: (@game, map_name="maps.dev") =>
     @entities = DrawList!
     @collider = UniformGrid!
 
@@ -153,7 +153,7 @@ class World
     enemies = {Lilguy, Gunguy}
     count = 0
 
-    @map = PlatformMap\from_tiled "maps.dev", {
+    @map = PlatformMap\from_tiled map_name, {
       object: (o) ->
         switch o.name
           when "spawn"
@@ -169,6 +169,21 @@ class World
     @map_box = @map\to_box!
     @particles = DrawList!
     @ledge_zones = @map\find_ledge_zones!
+
+
+  add_player: (player) =>
+    error "there is already a player" if @player
+    @player = player
+
+    assert @spawn_x, "map does not have spawn"
+
+    @player.x, @player.y = @spawn_x, @spawn_y
+    @entities\add @player
+
+  remove_player: =>
+    with @player
+      @entities\remove @player
+      @player = nil
 
   collides: (thing) =>
     return true unless @map_box\contains_box thing
@@ -197,6 +212,8 @@ class World
       continue unless e.alive
       continue unless e.w -- is a box
       @collider\add e
+
+    return unless @player
 
     if @player.attack_box
       for thing in *@collider\get_touching @player.attack_box

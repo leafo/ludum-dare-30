@@ -26,9 +26,8 @@ class Game
     @viewport = EffectViewport scale: GAME_CONFIG.scale
 
     @world = World @
-    @player = Player assert(@world.spawn_x), @world.spawn_y
-    @world.entities\add @player
-    @world.player = @player
+    @player = Player 0, 0
+    @world\add_player @player
 
   draw: =>
     @viewport\apply!
