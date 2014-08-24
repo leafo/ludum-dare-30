@@ -182,7 +182,10 @@ class Player extends Entity
 
     @y = @ledge_grabbing.tile.y
 
-    if CONTROLLER\is_down "jump"
+    if not @can_ledge_jump
+      @can_ledge_jump = not CONTROLLER\is_down "jump"
+
+    if @can_ledge_jump and CONTROLLER\is_down "jump"
       @ledge_grabbing = false
 
   update_for_wall_run: (dt) =>
@@ -313,6 +316,7 @@ class Player extends Entity
   ledge_grab: (zone) =>
     @end_wall_run!
     @ledge_grabbing = zone
+    @can_ledge_jump = false
 
   wall_run: (wall_tile) =>
     return if @on_ground
