@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" width="20" height="35" tilewidth="16" tileheight="16">
+<map version="1.0" orientation="orthogonal" width="31" height="35" tilewidth="16" tileheight="16">
  <tileset firstgid="1" name="dev_tiles" tilewidth="16" tileheight="16">
   <image source="../images/dev_tiles.png" width="128" height="128"/>
  </tileset>
- <layer name="Tile Layer 1" width="20" height="35">
+ <layer name="Tile Layer 1" width="31" height="35">
   <properties>
    <property name="solid" value="true"/>
   </properties>
   <data encoding="base64" compression="zlib">
-   eJxjYBg6gBGKqWkWtcyktnnoZo8EgM+f1A7X4WgeMeFHSA0pdhEyk1bmUbMMoCYY7OaRavdgLh9HzSNOHS71uNQRiwe7edR0C7mAVvkX2Z2UsEciAABTYgCS
+   eJztlEsKQCEIRXv733STNwiJ8ne7CB4QGlSn1BqjsfD9wfIy/Ey3PEfzhlOumX1Q0S3XePdAujX1vs3xuk9o/p5q7qz+Rd273TZe9RqKyu7IeSPuaL68brkO2Ws7lzUy9rTcJdOtAeG2kFEjxrtfYbo9rPmKjBsOE7dsAL0=
   </data>
  </layer>
- <objectgroup name="objects" width="20" height="35">
-  <object name="spawn" x="74" y="296"/>
-  <object name="enemy" x="197" y="269"/>
-  <object name="enemy" x="129" y="268"/>
+ <objectgroup name="objects" width="31" height="35">
+  <object name="spawn" x="250" y="296"/>
+  <object name="enemy" x="373" y="269"/>
+  <object name="enemy" x="305" y="268"/>
  </objectgroup>
 </map>
