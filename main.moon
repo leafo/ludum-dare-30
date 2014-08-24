@@ -31,7 +31,7 @@ class Game
   draw: =>
     @viewport\apply!
 
-    COLOR\push 222,84,84
+    COLOR\push 222,84,84, 155
     @world.map_box\draw!
     COLOR\pop!
 
