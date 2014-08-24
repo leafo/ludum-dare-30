@@ -1,5 +1,7 @@
 require "lovekit.all"
 
+require "lovekit.reloader"
+
 {graphics: g} = love
 
 import Player from require "player"

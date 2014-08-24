@@ -419,7 +419,8 @@ class Player extends Entity
     @velocity[2] = math.max 0, @velocity[2]
 
   end_attack: =>
-    return unless attacking
+    return unless @attacking
+
     @seqs\remove @attacking
     @attack_box = nil
     @attacking = false
