@@ -3,10 +3,15 @@
 
 class RedGlow extends FullScreenShader
   send: =>
-    @shader\send "time", timer.getTime!
+    -- @shader\send "time", timer.getTime!
+    @shader\send "px", 1/@viewport.w
+    @shader\send "py", 1/@viewport.h
+    -- @shader\send "height", @viewport.h
 
   shader: -> [[
-    extern number time;
+    extern number px;
+    extern number py;
+    // extern number time;
 
     // http://lolengine.net/blog/2013/07/27/rgb-to-hsv-in-glsl
     vec3 rgb2hsv(vec3 c) {
@@ -26,10 +31,24 @@ class RedGlow extends FullScreenShader
     }
 
     vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords) {
+      vec3 blur_color = vec3(240.0/255,0,0);
       vec4 c = Texel(texture, texture_coords);
-      if (c.rgb == vec3(240.0/255,0,0)) {
-        return vec4(hsv2rgb(vec3(sin(time/10) / 2 + 0.5, 1, 1)), 1);
+
+      int range = 3;
+      int step = 2;
+
+      for (int fy=-range; fy <= range; fy+=step) {
+        for (int fx=-range; fx <= range; fx+=step) {
+          if (fx == 0 && fy == 0) continue;
+
+          vec4 target_c = Texel(texture, texture_coords + vec2(fx * px, fy * py));
+
+          if (target_c.rgb == blur_color) {
+            c = vec4(mix(c.rgb, vec3(1,0.4,0.4), 0.1), 1);
+          }
+        }
       }
+
       return c;
     }
   ]]
