@@ -7,6 +7,8 @@ import World from require "world"
 
 paused = false
 
+export DEBUG = false
+
 fixed_time_step = (rate, fn) ->
   target_dt = 1 / rate
   accum = 0
@@ -43,7 +45,7 @@ class Game
 
     g.print stat, @viewport.x, @viewport.y
 
-    if @root
+    if DEBUG and @root
       Box.draw @root, {255,255,255, 80}
 
     @viewport\pop!

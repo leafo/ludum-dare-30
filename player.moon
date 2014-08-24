@@ -140,28 +140,19 @@ class Player extends Entity
       }
 
   draw: (...) =>
-    if @wall_running
-      COLOR\push 100,255,100, 50
-    else
-      COLOR\pusha 50
+    if DEBUG
+      if @wall_running
+        COLOR\push 100,255,100, 50
+      else
+        COLOR\pusha 50
 
-    super ...
+      super ...
 
-    COLOR\pop!
+      COLOR\pop!
 
-    -- -- draw a nose
-    -- COLOR\push 255,128,128
-    -- if @facing == "left"
-    --   g.rectangle "fill", @x, @y, 10, 10
-    -- else
-    --   g.rectangle "fill", @x + @w/2 , @y, 10, 10
-
-    -- COLOR\pop!
-
-    -- draw the sprite
     @anim\draw @x, @y
 
-    if @attack_box
+    if DEBUG and @attack_box
       Box.outline @attack_box
 
   update: (dt, @world) =>

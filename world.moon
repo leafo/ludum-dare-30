@@ -177,9 +177,10 @@ class World
     @entities\draw!
     @particles\draw!
 
-    COLOR\pusha 60
-    @ledge_zones\draw!
-    COLOR\pop!
+    if DEBUG
+      COLOR\pusha 60
+      @ledge_zones\draw!
+      COLOR\pop!
 
   update: (dt) =>
     @entities\update dt, @

@@ -175,9 +175,10 @@ class Enemy extends Entity
     true
 
   draw: =>
-    COLOR\pusha 80
-    super!
-    COLOR\pop!
+    if DEBUG
+      COLOR\pusha 80
+      super!
+      COLOR\pop!
 
     @anim\draw @x, @y
 
