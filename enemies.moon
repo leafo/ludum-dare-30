@@ -13,6 +13,9 @@ class Enemy extends Entity
     @facing = "left"
     @impulses = ImpulseSet!
 
+    @seqs = DrawList!
+    @seqs\add @make_ai!
+
     with @sprite
       @anim = StateAnim "stand_#{@facing}", {
         stand_left: \seq {
@@ -101,7 +104,8 @@ class Enemy extends Entity
         }, 0.08
       }
 
-    @ai = Sequence ->
+  make_ai: =>
+    Sequence ->
       while not @on_ground
         wait 0.2
 
@@ -133,7 +137,7 @@ class Enemy extends Entity
 
   update: (dt, @world) =>
     @anim\update dt
-    @ai\update dt
+    @seqs\update dt
     @velocity += @world.gravity * dt
 
     vx, vy = unpack @velocity
@@ -153,7 +157,8 @@ class Enemy extends Entity
     else
       "stand"
 
-    @anim\set_state "#{motion}_#{@facing}"
+    unless @dying
+      @anim\set_state "#{motion}_#{@facing}"
 
     cx, cy = @fit_move vx * dt, vy * dt, @world
 
@@ -175,6 +180,23 @@ class Enemy extends Entity
     COLOR\pop!
 
     @anim\draw @x, @y
+
+  die: =>
+    @anim\set_state "die_#{@facing}"
+    @dying = @seqs\add Sequence ->
+      @impulses.move = nil
+      @seqs\remove @ai
+      @seqs\remove @taking_hit
+
+      wait @anim\state_duration "die_left"
+      @alive = false
+
+  take_hit: (world, thing) =>
+    return if @taking_hit or @dying
+    @taking_hit = @seqs\add Sequence ->
+      @die!
+      wait 1.0
+      @taking_hit = nil
 
 {
   :Enemy

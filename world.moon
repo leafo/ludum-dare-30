@@ -147,6 +147,7 @@ class World
 
   new: (@game) =>
     @entities = DrawList!
+    @collider = UniformGrid!
 
     @map = PlatformMap\from_tiled "maps.dev", {
       object: (o) ->
@@ -183,5 +184,16 @@ class World
   update: (dt) =>
     @entities\update dt, @
     @particles\update dt, @
+
+    @collider\clear!
+    for e in *@entities
+      continue unless e.alive
+      continue unless e.w -- is a box
+      @collider\add e
+
+    if @player.attack_box
+      for thing in *@collider\get_touching @player.attack_box
+        if thing.take_hit
+          thing\take_hit @, @player
 
 { :World }
