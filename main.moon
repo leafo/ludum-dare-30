@@ -23,9 +23,8 @@ class Game
 
     @world = World @
     @player = Player assert(@world.spawn_x), @world.spawn_y
-
-    @entities = with DrawList!
-      \add @player
+    @world.entities\add @player
+    @world.player = @player
 
   draw: =>
     @viewport\apply!
@@ -35,7 +34,6 @@ class Game
     COLOR\pop!
 
     @world\draw @viewport
-    @entities\draw @viewport
 
     stat = table.concat {
       "V: #{"%.3f %.3f"\format unpack @player.velocity}"
@@ -57,8 +55,6 @@ class Game
     @viewport\update dt
     -- @viewport\center_on @player, @world.map_box, dt
     @viewport\center_on @player, nil, dt
-
-    @entities\update dt, @world
 
   on_key: (key) =>
     if key == "p"
