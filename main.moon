@@ -41,7 +41,7 @@ class Game
       "V: #{"%.3f %.3f"\format unpack @player.velocity}"
       "Damp: #{"%.3f"\format @player.dampen_movement}"
       "Ground: #{@player.on_ground}"
-      "Seqs: #{table.concat [s.name for s in *@player.seqs when s.alive], ", "}"
+      "Seqs: #{table.concat [s.name or "***" for s in *@player.seqs when s.alive], ", "}"
     }, "\n"
 
     g.print stat, @viewport.x, @viewport.y

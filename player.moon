@@ -29,6 +29,7 @@ class Player extends Entity
   new: (x,y) =>
     super x, y
     @seqs = DrawList!
+    @effects = EffectList!
 
     @velocity = Vec2d 0,0
     @facing = "left"
@@ -154,12 +155,16 @@ class Player extends Entity
 
       COLOR\pop!
 
+    @effects\before!
     @anim\draw @x, @y
+    @effects\after!
 
     if DEBUG and @attack_box
       Box.outline @attack_box
 
   update: (dt, @world) =>
+    @effects\update dt
+
     if @on_ground and not @attacking
       @anim\update dt * @run_scale
     else
@@ -279,17 +284,20 @@ class Player extends Entity
 
     dx, dy
 
-
   update_for_gravity: (dt) =>
-    dx, dy = @movement_vector dt
+    dx, dy = if @taking_hit
+      0,0
+    else
+      @movement_vector dt
 
     if dx != 0
       @facing = if dx < 0 then "left" else "right"
 
-    if CONTROLLER\is_down "jump"
-      @jump!
-    elseif CONTROLLER\is_down "attack"
-      @attack!
+    unless @taking_hit
+      if CONTROLLER\is_down "jump"
+        @jump!
+      elseif CONTROLLER\is_down "attack"
+        @attack!
 
     motion = if @attacking
       "attack"
@@ -394,9 +402,7 @@ class Player extends Entity
       @jumping = false
 
     -- cancel attack
-    if @attacking
-      @seqs\remove @attacking
-      @attacking = false
+    @end_attack!
 
     @wall_running = @seqs\add Sequence ->
       @wall_run_up_key = @facing
@@ -411,6 +417,12 @@ class Player extends Entity
       @wall_running = false
 
     @velocity[2] = math.max 0, @velocity[2]
+
+  end_attack: =>
+    return unless attacking
+    @seqs\remove @attacking
+    @attack_box = nil
+    @attacking = false
 
   position_attack_box: =>
     return unless @attack_box
@@ -441,7 +453,6 @@ class Player extends Entity
   ledge_jump: (dx, dy) =>
     return unless @ledge_grabbing
     is_left = @ledge_grabbing.is_left
-    print is_left
 
     @ledge_grabbing = false
     @jumping = @seqs\add Sequence ->
@@ -449,17 +460,14 @@ class Player extends Entity
       vx, vy = if dx == 0 and dy > 0
         0,0
       elseif dx < 0 and is_left
-        print "powering left"
         vx = -@jump_power / 2
         vy = -@jump_power
       elseif dx > 1 and not is_left
-        print "powering right"
         vx = @jump_power / 2
         vy = -@jump_power
       else
         vx = 0
         vy = -@jump_power
-
 
       @can_wall_jump = false
 
@@ -513,5 +521,25 @@ class Player extends Entity
       cx - 20, cy
     else
       cx + 20, cy
+
+  take_hit: (world, thing) =>
+    return if @taking_hit
+    @end_wall_run!
+    @end_attack!
+    hit_power = 150
+
+    @taking_hit = @seqs\add Sequence ->
+      @effects\add ShakeEffect 0.2
+
+      -- get center to center vec
+      vx, vy = unpack (Vec2d(@center!) - Vec2d(thing\center!))\normalized! * hit_power
+      @velocity[1] = vx
+      @velocity[2] = vy / 2
+
+      wait 0.2
+      @taking_hit = false
+
+    @taking_hit.name = "taking hit"
+
 
 { :Player }
