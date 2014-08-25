@@ -3,6 +3,8 @@
 
 import BloodEmitter, GibEmitter from require "particles"
 
+frame_rate = 0.08
+
 class Enemy extends Entity
   is_enemy: true
   w: 10
@@ -16,6 +18,7 @@ class Enemy extends Entity
     @vel = Vec2d 0,0
     @facing = "left"
     @impulses = ImpulseSet!
+    @effects = EffectList!
 
     @seqs = DrawList!
     if ai = @make_ai!
@@ -30,6 +33,7 @@ class Enemy extends Entity
     @world.map\get_floor_range @x + @w / 2, @y + @h + 0.1
 
   update: (dt, @world) =>
+    @effects\update dt
     @anim\update dt
     @seqs\update dt
     @vel += @world.gravity * dt
@@ -50,15 +54,7 @@ class Enemy extends Entity
     if vx < 0
       @facing = "left"
 
-    motion = if @taking_hit
-      "stun"
-    elseif vx != 0
-      "walk"
-    else
-      "stand"
-
-    unless @dying
-      @anim\set_state "#{motion}_#{@facing}"
+    @set_state vx, vy
 
     cx, cy = @fit_move vx * dt, vy * dt, @world
 
@@ -74,13 +70,19 @@ class Enemy extends Entity
 
     true
 
+  set_state: =>
+
   draw: =>
     if DEBUG
       COLOR\pusha 80
       super!
       COLOR\pop!
 
+    COLOR\pusha @alpha
+    @effects\before!
     @anim\draw @x, @y
+    @effects\after!
+    COLOR\pop!
 
   die: =>
     @anim\set_state "die_#{@facing}"
@@ -259,6 +261,7 @@ class Lilguy extends Enemy
           if floor = @get_floor!
             @impulses.move = Vec2d speed * dir
             during dur, (dt) ->
+              return "cancel" if @attacking
               if not floor\on_floor(@) and @impulses.move
                 @impulses.move[1] = -@impulses.move[1]
 
@@ -267,6 +270,51 @@ class Lilguy extends Enemy
       wait rand 0.2, 0.8
       again!
 
+  set_state: (vx, vy) =>
+    return if @dying or @attacking
+
+    motion = if @taking_hit
+      "stun"
+    elseif vx != 0
+      "walk"
+    else
+      "stand"
+
+    @anim\set_state "#{motion}_#{@facing}"
+
+  attack: (callback) =>
+    return if @attacking
+
+    range = with Box 0,0,180,80
+      .update = => true
+
+    @attacking = @seqs\add Sequence ->
+      range\move_center @center!
+      directional = if range\touches_box @world.player
+        @facing = @world.player\left_of(@) and "left" or "right"
+        true
+
+      @anim\set_state "stand_#{@facing}"
+      @effects\add ShakeEffect 0.2
+      wait 0.3
+
+      @impulses.move = nil
+      state_name = "attack_#{@facing}"
+      @anim\set_state state_name
+
+      wait frame_rate * 2
+
+      if directional
+        power = rand 150, 200
+        @vel[2] = -100
+        @vel[1] = @facing == "left" and -power or power
+      else
+        @vel[2] = -200
+
+      wait frame_rate * 3
+      @attacking = false
+
+      callback and callback!
 
 class Bullet extends Box
   is_enemy: true
@@ -445,11 +493,6 @@ class Towerguy extends Enemy
       }
 
   make_ai: =>
-
-  draw: =>
-    COLOR\pusha @alpha
-    super!
-    COLOR\pop!
 
   die: =>
     cx, cy = @center!

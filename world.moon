@@ -180,7 +180,11 @@ class World
             @spawn_y = o.y
           when "enemy"
             cls = find_enemy o.properties.type or "lilguy"
-            @entities\add cls o.x, o.y
+            e = cls o.x, o.y
+            if cls == enemies.Lilguy
+              @lilguy = e
+
+            @entities\add e
     }
 
     @map_box = @map\to_box!
