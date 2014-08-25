@@ -13,7 +13,7 @@ class Enemy extends Entity
   new: (x,y) =>
     super x,y
 
-    @velocity = Vec2d 0,0
+    @vel = Vec2d 0,0
     @facing = "left"
     @impulses = ImpulseSet!
 
@@ -32,13 +32,13 @@ class Enemy extends Entity
   update: (dt, @world) =>
     @anim\update dt
     @seqs\update dt
-    @velocity += @world.gravity * dt
+    @vel += @world.gravity * dt
 
     -- air resistance
-    if @velocity[1] != 0
-      @velocity[1] = dampen @velocity[1], dt * 200
+    if @vel[1] != 0
+      @vel[1] = dampen @vel[1], dt * 200
 
-    vx, vy = unpack @velocity
+    vx, vy = unpack @vel
     ix, iy = @impulses\sum!
 
     vx += ix
@@ -63,9 +63,9 @@ class Enemy extends Entity
     cx, cy = @fit_move vx * dt, vy * dt, @world
 
     if cy
-      if @velocity[2] > 0
+      if @vel[2] > 0
         @on_ground = true
-      @velocity[2] = 0
+      @vel[2] = 0
     else
       @on_ground = false
 
@@ -113,6 +113,9 @@ class Enemy extends Entity
       \attach (emitter) ->
         emitter.x, emitter.y = @center!
 
+    @impulses.move = false
+    @vel[1] = 0
+
     @hp -= 1
     if @hp <= 0
       return @die!
@@ -120,17 +123,17 @@ class Enemy extends Entity
     hit_power = 150
 
     @taking_hit = @seqs\add Sequence ->
-      @impulses.move = false
+
       vx, vy = unpack (Vec2d(@center!) - Vec2d(thing\center!))\normalized! * hit_power
 
-      @velocity[1] = vx
-      @velocity[2] = vy - 150
+      @vel[1] = vx
+      @vel[2] = vy - 150
 
       wait 0.5
       @taking_hit = nil
 
 class Lilguy extends Enemy
-  hp: 3
+  hp: 2
 
   lazy sprite: -> Spriter "images/lilguy.png"
 
@@ -244,7 +247,7 @@ class Lilguy extends Enemy
       while not @on_ground
         wait 0.2
 
-      switch pick_dist {move: 2, wait: 1}
+      switch pick_dist {move: 3, wait: 0}
         when "move"
 
           speed = rand 20, 40
@@ -254,17 +257,14 @@ class Lilguy extends Enemy
           dist = speed * dir * dur
 
           if floor = @get_floor!
-            if dist < 0 and @x + dist < floor.x
-              dir = -dir
+            @impulses.move = Vec2d speed * dir
+            during dur, (dt) ->
+              if not floor\on_floor(@) and @impulses.move
+                @impulses.move[1] = -@impulses.move[1]
 
-            if dist > 0 and @x + @w + dist > floor.x + floor.w
-              dir = -dir
+            @impulses.move = nil
 
-          @impulses.move = Vec2d speed * dir
-          wait dur
-          @impulses.move = nil
-
-      wait rand 0.8, 1.2
+      wait rand 0.2, 0.8
       again!
 
 
@@ -277,7 +277,7 @@ class Bullet extends Box
   w: 5
   h: 5
 
-  new: (x,y, @velocity) =>
+  new: (x,y, @vel) =>
     half = math.floor @w/2
     super x - half, y - half
 
@@ -305,7 +305,7 @@ class Bullet extends Box
   update: (dt, @world) =>
     @anim\update dt
     unless @dying
-      dx, dy = unpack dt * @velocity
+      dx, dy = unpack dt * @vel
       @move dx, dy
 
       if @world\collides @
@@ -458,7 +458,7 @@ class Towerguy extends Enemy
     for i=1,10
       @world.particles\add GibEmitter @world, cx , y
       y -= 10
-    
+
     @world.viewport\shake 0.2
 
     @dying = @seqs\add Sequence ->

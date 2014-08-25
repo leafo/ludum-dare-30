@@ -1,6 +1,15 @@
 
 import Background from require "background"
 
+class FloorRange extends Box
+  on_floor: (other) =>
+    cx = other\center!
+
+    return false if cx < @x
+    return false if cx > @x + @w
+
+    true
+
 class LedgeZone extends Box
   w: 6
   h: 6
@@ -140,7 +149,7 @@ class PlatformMap extends TileMap
 
       right_idx = moved
 
-    with Box 0,0,0,0
+    with FloorRange 0,0,0,0
       \add_box solid[left_idx]
       \add_box solid[right_idx]
 

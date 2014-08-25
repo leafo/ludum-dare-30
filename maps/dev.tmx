@@ -5,7 +5,7 @@
  </tileset>
  <layer name="ground" width="31" height="35">
   <data encoding="base64" compression="zlib">
-   eJztVosKwCAIjO3//3kMEkTMZyVjHQhby85zWbZ24MHVrYr37rabG3grtOM4DvZAynVVDbyo3INQBxE/6d26RtTPwi3pAt3antDGorkD7hH/Km585nnypnHP2r8c9youCm7dP3BzmFnfFWdr5f2e1Z3phXBP5eXGvlFu7WzReDN3giXndB7tQemYJTZuDl2XfrNqoTFwc7m4qXnyymmQdI/ijdbA6B9FrApf6+txvjLPBzV4AKauAaU=
+   eJztVgEKgCAMlPz/nyNQkHVuc6hH5MGgcu68ta1SOhjBVYzFm4vt5q68DO3tOQ72QMs1qwceMGuw9kFkn3bvjRHd5+HWdFXdVk1Yz6K5q9w9/lXc7cwbyZvFPat+EfcqLgkU9w/cCDP7mzFbmd93tm7PbFvFbc2WldyenLfrrT+aizm989mby9JHxpVrXi3yDMhXxs7ARt4J0qDp7p032gNof9RY+Np/PeqLyPUBBzcfegGM
   </data>
  </layer>
  <layer name="collision layer" width="31" height="35">
@@ -14,22 +14,17 @@
    <property name="solid" value="true"/>
   </properties>
   <data encoding="base64" compression="zlib">
-   eJztlEsKQCEIRXv733STNwiJ8ne7CB4QGlSn1BqjsfD9wfIy/Ey3PEfzhlOumX1Q0S3XePdAujX1vs3xuk9o/p5q7qz+Rd273TZe9RqKyu7IeSPuaL68brkO2Ws7lzUy9rTcJdOtAeG2kFEjxrtfYbo9rPmKjBsOE7dsAL0=
+   eJztlFEKACEIRNv7X3p/9ktiVgdtCOZBEKS9MmktU+H5hsqr8Cvd8RzmDKjWyj640R1z2D0m3Zn3/oth3YjM33Obu6t/p+5td41TvTaF3XajuF1OzEdryJ0Zlbt0ujNMuCsw9ezwdqJ0M+z6npkbDS98ZACy
   </data>
  </layer>
  <objectgroup name="objects" width="31" height="35">
   <object name="spawn" x="163" y="346"/>
-  <object name="enemy" x="368" y="282">
-   <properties>
-    <property name="type" value="lilguy"/>
-   </properties>
-  </object>
   <object name="enemy" x="304" y="337">
    <properties>
     <property name="type" value="towerguy"/>
    </properties>
   </object>
-  <object name="enemy" x="35" y="363">
+  <object name="enemy" x="87" y="357">
    <properties>
     <property name="type" value="lilguy"/>
    </properties>
