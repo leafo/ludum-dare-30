@@ -52,8 +52,8 @@ class GameOverScreen extends Screen
     return unless @ready
 
     if CONTROLLER\is_down "confirm", "cancel"
-      error "do something"
-      -- DISPATCHER\replace @new_game, Transition
+      import Game from require "game"
+      DISPATCHER\replace Game!, Transition
 
 
 class TitleScreen extends Screen
