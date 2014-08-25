@@ -142,6 +142,30 @@ class Player extends Entity
           oy: 7
         }
 
+        down_stab_right: \seq {
+          "105,233,18,26"
+          "73,233,18,26"
+          "39,233,18,26"
+          "9,233,18,26"
+          once: true
+          :rate
+          ox: 3
+          oy: 3
+        }
+
+        down_stab_left: \seq {
+          "105,233,18,26"
+          "73,233,18,26"
+          "39,233,18,26"
+          "9,233,18,26"
+          once: true
+          :rate
+          flip_x: true
+          ox: 5
+          oy: 3
+        }
+
+
       }
 
   draw: (...) =>
