@@ -12,6 +12,7 @@ class Enemy extends Entity
   hp: 1
   alpha: 255
   strafing: false
+  toss_on_death: false
 
   new: (x,y) =>
     super x,y
@@ -120,19 +121,18 @@ class Enemy extends Entity
 
     @hp -= 1
     if @hp <= 0
+      @toss_from thing if @toss_on_death
       return @die!
 
-    hit_power = 150
-
     @taking_hit = @seqs\add Sequence ->
-
-      vx, vy = unpack (Vec2d(@center!) - Vec2d(thing\center!))\normalized! * hit_power
-
-      @vel[1] = vx
-      @vel[2] = vy - 150
-
+      @toss_from thing
       wait 0.5
       @taking_hit = nil
+
+  toss_from: (thing, hit_power=150) =>
+    vx, vy = unpack (Vec2d(@center!) - Vec2d(thing\center!))\normalized! * hit_power
+    @vel[1] = vx
+    @vel[2] = vy - hit_power
 
   mover_fn: (floor) =>
     (dt) ->
@@ -431,6 +431,7 @@ class ShoveEffect extends Effect
 class Gunguy extends Enemy
   lazy sprite: -> Spriter "images/gunguy.png"
   strafing: true
+  toss_on_death: true
 
   make_sprite: =>
     @facing = "right"
@@ -651,6 +652,7 @@ class Towerguy extends Enemy
 class Fanguy extends Enemy
   w: 14
   h: 10
+  toss_on_death: true
 
   lazy sprite: -> Spriter "images/fanguy.png", 16, 16
 
@@ -691,8 +693,10 @@ class Fanguy extends Enemy
 
   shoot_circle: (callback) =>
     angles = [deg for deg=0, 359, 30]
-    import DustEmitter from require "particles"
+    if fn = pick_dist { [shuffle]: 1, [reverse]: 2, [false]: 2 }
+      fn angles
 
+    import DustEmitter from require "particles"
 
     @seqs\add Sequence ->
       @effects\add ShakeEffect 0.4
@@ -702,7 +706,6 @@ class Fanguy extends Enemy
       @vel[2] = -200
 
       wait 0.2
-
 
       for deg in *angles
         @shoot_dir Vec2d.from_angle deg
