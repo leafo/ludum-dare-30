@@ -210,6 +210,9 @@ class Player extends Entity
     else
       @update_for_gravity dt
 
+    if not @can_attack
+      @can_attack = not CONTROLLER\is_down "attack"
+
     true
 
   update_for_ledge_grab: (dt) =>
@@ -465,6 +468,7 @@ class Player extends Entity
 
   attack: (downward) =>
     return if @attacking
+    return unless @can_attack
 
     if downward
       @down_attack!
@@ -478,6 +482,7 @@ class Player extends Entity
 
       @attack_box = Box 0, 0, @w, 15
       @position_attack_box!
+      @can_attack = false
 
       wait_until -> @on_ground or @wall_running
       @end_attack!
