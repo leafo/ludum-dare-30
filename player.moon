@@ -3,6 +3,10 @@
 
 import BloodEmitter, DirtEmitter from require "particles"
 
+S = (name, fn) ->
+  with Sequence fn
+    .name = name
+
 export show_properties = (t) ->
   require("moon").p { k,v for k,v in pairs t when type(v) != "table" }
 
@@ -29,6 +33,7 @@ class Player extends Entity
   new: (x,y) =>
     super x, y
     @seqs = DrawList!
+    @seqs.annotate = true
     @effects = EffectList!
 
     @velocity = Vec2d 0,0
@@ -187,7 +192,6 @@ class Player extends Entity
       Box.outline @attack_box
 
   update: (dt, @world) =>
-
     @effects\update dt
 
     if @on_ground and not @attacking
@@ -322,7 +326,7 @@ class Player extends Entity
       if CONTROLLER\is_down "jump"
         @jump!
       elseif CONTROLLER\is_down "attack"
-        @attack!
+        @attack not @on_ground -- and dy > 1
 
     motion = if @attacking
       "attack"
@@ -333,7 +337,10 @@ class Player extends Entity
     else
       "stand"
 
-    @anim\set_state "#{motion}_#{@facing}"
+    if @stab_attacking
+      @anim\set_state "down_stab_#{@stab_attacking}"
+    else
+      @anim\set_state "#{motion}_#{@facing}"
 
     @velocity += @world.gravity * dt
     -- air resistance
@@ -429,12 +436,11 @@ class Player extends Entity
     -- cancel attack
     @end_attack!
 
-    @wall_running = @seqs\add Sequence ->
+    @wall_running = @seqs\add S "wall run", ->
       @wall_run_up_key = @facing
       wait 0.5
       @end_wall_run!
 
-    @wall_running.name = "wall running"
 
   end_wall_run: =>
     if @wall_running
@@ -443,27 +449,41 @@ class Player extends Entity
 
     @velocity[2] = math.max 0, @velocity[2]
 
-  end_attack: =>
-    return unless @attacking
-
-    @seqs\remove @attacking
-    @attack_box = nil
-    @attacking = false
-
   position_attack_box: =>
     return unless @attack_box
-    dist = 5
-    @attack_box.y = @y + (@h - @attack_box.h) / 2
-
-    if @facing == "left"
-      @attack_box.x = @x - @attack_box.w - 5
+    if @stab_attacking
+      @attack_box.x = @x
+      @attack_box.y = @y + 10
     else
-      @attack_box.x = @x + @w + 5
+      dist = 5
+      @attack_box.y = @y + (@h - @attack_box.h) / 2
 
-  attack: =>
+      if @facing == "left"
+        @attack_box.x = @x - @attack_box.w - 5
+      else
+        @attack_box.x = @x + @w + 5
+
+  attack: (downward) =>
     return if @attacking
 
-    @attacking = @seqs\add Sequence ->
+    if downward
+      @down_attack!
+    else
+      @horizontal_attack!
+
+  down_attack: =>
+    @stab_attacking = @facing
+    @attacking = @seqs\add S "stab attack", ->
+      wait 0.08 * 3
+
+      @attack_box = Box 0, 0, @w, 15
+      @position_attack_box!
+
+      wait_until -> @on_ground or @wall_running
+      @end_attack!
+
+  horizontal_attack: =>
+    @attacking = @seqs\add S "attack", ->
       wait 0.08 * 1
 
       @attack_box = Box 0, 0, 15, 10
@@ -474,10 +494,16 @@ class Player extends Entity
       @attack_box = nil
 
       wait 0.08 * 2
+      @end_attack!
 
-      @attacking = false
+  end_attack: =>
+    return unless @attacking
+    print "ending attack"
 
-    @attacking.name = "attacking"
+    @seqs\remove @attacking
+    @attack_box = nil
+    @attacking = false
+    @stab_attacking = false
 
   ledge_jump: (dx, dy) =>
     return if @jumping
@@ -485,7 +511,7 @@ class Player extends Entity
     is_left = @ledge_grabbing.is_left
 
     @ledge_grabbing = false
-    @jumping = @seqs\add Sequence ->
+    @jumping = @seqs\add S "ledge jump", ->
       -- pressing down or nothing, just drop to the ground
       vx, vy = if dx == 0 and dy > 0
         0,0
@@ -507,13 +533,11 @@ class Player extends Entity
       wait 0.1
       @jumping = false
 
-    @jumping.name = "air jump"
-
   jump: =>
     return if @jumping
     return unless @on_ground or @wall_running
 
-    @jumping = @seqs\add Sequence ->
+    @jumping = @seqs\add S "ground jump", ->
       vx, vy = if @wall_running
         @end_wall_run!
         @slow_movement_for 0.3
@@ -533,17 +557,13 @@ class Player extends Entity
       wait 0.1
       @jumping = false
 
-    @jumping.name = "ground jump"
-
   slow_movement_for: (duration) =>
     if @_dampen_seq
       @seqs\remove @_dampen_seq
 
-    @_dampen_seq = @seqs\add Sequence ->
+    @_dampen_seq = @seqs\add S "dampen", ->
       @dampen_movement = 0
       tween @, duration, dampen_movement: 1
-
-    @_dampen_seq.name = "dampen"
 
   looking_at: (viewport) =>
     cx, cy = @center!
@@ -561,7 +581,7 @@ class Player extends Entity
     if thing.is_bullet
       thing\take_hit world, @
 
-    @taking_hit = @seqs\add Sequence ->
+    @taking_hit = @seqs\add S "take hit", ->
       @effects\add ShakeEffect 0.2
       @world.viewport\shake!
       @world.particles\add BloodEmitter @world, @center!
@@ -573,8 +593,5 @@ class Player extends Entity
 
       wait 0.2
       @taking_hit = false
-
-    @taking_hit.name = "taking hit"
-
 
 { :Player }
