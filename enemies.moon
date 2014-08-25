@@ -648,9 +648,45 @@ class Towerguy extends Enemy
       tween @, 0.5, alpha: 1
       @alive = false
 
+class Fanguy extends Enemy
+  w: 14
+  h: 10
+
+  lazy sprite: -> Spriter "images/fanguy.png", 16, 16
+
+  make_ai: =>
+
+  make_sprite: =>
+    with @sprite
+      @anim = StateAnim "shoot", {
+        stand: \seq { 0, ox: 1, oy: 6 }
+        shoot: \seq { 1,2,3,4, rate: 0.2, ox: 1, oy: 6 }
+      }
+
+  nozzle_pt: =>
+    @x + @w / 2, @y
+
+  shoot: =>
+    @shoot_fan!
+
+  shoot_fan: (callback) =>
+    @seqs\add Sequence ->
+      angles = [deg for deg=-150, -30, 15]
+      if fn = pick_dist { [shuffle]: 1, [reverse]: 2, [false]: 2 }
+        fn angles
+
+      for deg in *angles
+        dir = Vec2d.from_angle(deg) * 200
+        x, y = @nozzle_pt!
+        @world.entities\add Bullet x,y, dir
+        wait 0.1
+
+  shoot_circle: (callback) =>
+
 {
   :Enemy
   :Gunguy
   :Lilguy
   :Towerguy
+  :Fanguy
 }

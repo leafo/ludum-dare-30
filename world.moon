@@ -179,9 +179,9 @@ class World
             @spawn_x = o.x
             @spawn_y = o.y
           when "enemy"
-            cls = find_enemy o.properties.type or "lilguy"
+            cls = find_enemy o.type
             e = cls o.x, o.y
-            if cls == enemies.Gunguy
+            if cls == enemies.Fanguy
               @the_enemy = e
 
             @entities\add e

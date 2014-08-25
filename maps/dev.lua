@@ -144,42 +144,36 @@ return {
         },
         {
           name = "enemy",
-          type = "",
+          type = "towerguy",
           shape = "rectangle",
           x = 304,
           y = 337,
           width = 0,
           height = 0,
           visible = true,
-          properties = {
-            ["type"] = "towerguy"
-          }
+          properties = {}
         },
         {
           name = "enemy",
-          type = "",
+          type = "fanguy",
           shape = "rectangle",
           x = 87,
           y = 357,
           width = 0,
           height = 0,
           visible = true,
-          properties = {
-            ["type"] = "gunguy"
-          }
+          properties = {}
         },
         {
           name = "enemy",
-          type = "",
+          type = "lilguy",
           shape = "rectangle",
           x = 362,
           y = 269,
           width = 0,
           height = 0,
           visible = true,
-          properties = {
-            ["type"] = "lilguy"
-          }
+          properties = {}
         }
       }
     }

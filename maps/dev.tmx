@@ -19,20 +19,8 @@
  </layer>
  <objectgroup name="objects" width="31" height="35">
   <object name="spawn" x="163" y="346"/>
-  <object name="enemy" x="304" y="337">
-   <properties>
-    <property name="type" value="towerguy"/>
-   </properties>
-  </object>
-  <object name="enemy" x="87" y="357">
-   <properties>
-    <property name="type" value="gunguy"/>
-   </properties>
-  </object>
-  <object name="enemy" x="362" y="269">
-   <properties>
-    <property name="type" value="lilguy"/>
-   </properties>
-  </object>
+  <object name="enemy" type="towerguy" x="304" y="337"/>
+  <object name="enemy" type="fanguy" x="87" y="357"/>
+  <object name="enemy" type="lilguy" x="362" y="269"/>
  </objectgroup>
 </map>
