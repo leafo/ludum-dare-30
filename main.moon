@@ -80,7 +80,13 @@ love.load = ->
   g.setBackgroundColor 13,15,12
 
   export CONTROLLER = Controller GAME_CONFIG.keys
-  export DISPATCHER = Dispatcher TitleScreen Game!
+
+  init = if DEBUG
+    Game!
+  else
+    TitleScreen Game!
+
+  export DISPATCHER = Dispatcher init
 
   DISPATCHER.default_transition = FadeTransition
   DISPATCHER\bind love

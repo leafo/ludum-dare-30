@@ -25,6 +25,8 @@ class Player extends Entity
   dampen_movement: 1
   run_scale: 1
 
+  alpha: 255
+
   w: 10
   h: 20
 
@@ -184,9 +186,13 @@ class Player extends Entity
 
       COLOR\pop!
 
+    COLOR\pusha @alpha if alpha != 255
+
     @effects\before!
     @anim\draw @x, @y
     @effects\after!
+
+    COLOR\pop! if alpha != 255
 
     if DEBUG and @attack_box
       Box.outline @attack_box
@@ -317,7 +323,7 @@ class Player extends Entity
     dx, dy
 
   update_for_gravity: (dt) =>
-    dx, dy = if @taking_hit
+    dx, dy = if @taking_hit or @dying
       0,0
     else
       @movement_vector dt
@@ -325,7 +331,7 @@ class Player extends Entity
     if dx != 0
       @facing = if dx < 0 then "left" else "right"
 
-    unless @taking_hit
+    unless @taking_hit or @dying
       if CONTROLLER\is_down "jump"
         @jump!
       elseif CONTROLLER\is_down "attack"
@@ -578,9 +584,10 @@ class Player extends Entity
       cx + 20, cy
 
   take_hit: (world, thing) =>
-    return if @taking_hit
+    return if @taking_hit or @dying
     @end_wall_run!
     @end_attack!
+
     hit_power = 150
 
     if thing.is_bullet
@@ -596,12 +603,25 @@ class Player extends Entity
       @velocity[1] = vx
       @velocity[2] = vy / 2
 
+      @die! -- if should_die
+
       wait 0.2
       @taking_hit = false
+
 
   after_hit: (world, thing) =>
     if @stab_attacking
       @end_attack!
       @velocity[2] = -100
+
+  die: =>
+    return if @dying
+
+    @dying = @seqs\add S "dying", ->
+      tween @, 0.5, alpha: 0
+      wait 2.0
+      import GameOverScreen, Transition from require "screens"
+      DISPATCHER\replace GameOverScreen!, Transition
+
 
 { :Player }

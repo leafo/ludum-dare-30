@@ -26,6 +26,7 @@ class GameOverScreen extends Screen
     @visible = true
     @seq = Sequence ->
       wait 0.5
+      @ready = true
       tween @, 0.5, alpha: 255
 
       while true
@@ -46,6 +47,15 @@ class GameOverScreen extends Screen
   update: (dt) =>
     @seq\update dt
 
+
+  on_key: =>
+    return unless @ready
+
+    if CONTROLLER\is_down "confirm", "cancel"
+      error "do something"
+      -- DISPATCHER\replace @new_game, Transition
+
+
 class TitleScreen extends Screen
   new: (@new_game) =>
     super!
@@ -56,6 +66,7 @@ class TitleScreen extends Screen
     @alpha = 0
     @seq = Sequence ->
       tween @, 0.5, alpha: 255
+      @ready = true
 
       wait 0.5
       @visible = true
@@ -77,10 +88,13 @@ class TitleScreen extends Screen
         @viewport.h - @press_space\height! - 30
 
   on_key: =>
-    if CONTROLLER\is_down "confirm"
+    return unless @ready
+
+    if CONTROLLER\is_down "confirm", "cancel"
       DISPATCHER\replace @new_game, Transition
 
 {
   :TitleScreen
   :GameOverScreen
+  :Transition
 }
