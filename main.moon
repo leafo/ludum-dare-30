@@ -8,9 +8,11 @@ if pcall(-> require"inotify")
 import Player from require "player"
 import World from require "world"
 
+import TitleScreen, GameOverScreen from require "screens"
+
 paused = false
 
-export DEBUG = true
+export DEBUG = false
 
 fixed_time_step = (rate, fn) ->
   target_dt = 1 / rate
