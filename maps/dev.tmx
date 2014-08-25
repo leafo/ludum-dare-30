@@ -30,6 +30,6 @@
    </properties>
   </object>
   <object name="enemy" type="lilguy" x="362" y="269"/>
-  <object name="door" x="32" y="320" width="16" height="16"/>
+  <object name="door" type="maps.dev2" x="32" y="320" width="16" height="16"/>
  </objectgroup>
 </map>

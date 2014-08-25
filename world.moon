@@ -193,6 +193,7 @@ class World
           when "door"
             import Door from require "door"
             @door = Door o.x, o.y
+            @door.target_map = o.type
             @entities\add @door
 
     }
@@ -282,7 +283,7 @@ class World
 
       if thing.is_door and thing\is_ready!
         thing.is_ready = -> false
-        print "entering the door"
+        @game\go_to_world thing.target_map
 
   __tostring: =>
     "<World>"

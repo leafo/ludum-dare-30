@@ -128,6 +128,9 @@ class Door extends Entity
       if e.has_energy
         @needed_energy += 1
 
+    if @needed_energy == 0
+      @after_filled!
+
     @setup_energy = ->
 
   update: (dt, @world) =>

@@ -181,7 +181,7 @@ return {
         },
         {
           name = "door",
-          type = "",
+          type = "maps.dev2",
           shape = "rectangle",
           x = 32,
           y = 320,
