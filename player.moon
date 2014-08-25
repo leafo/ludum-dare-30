@@ -628,6 +628,7 @@ class Player extends Entity
 
   after_hit: (world, thing) =>
     if @stab_attacking
+      @world.viewport\shake!
       @end_attack!
       @velocity[2] = -100
 
