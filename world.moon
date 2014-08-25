@@ -262,8 +262,8 @@ class World
 
     return unless @player
 
-    -- @viewport\center_on @player, @world.map_box, dt
-    @viewport\center_on @player, nil, dt
+    @viewport\center_on @player, @map_box, dt
+    -- @viewport\center_on @player, nil, dt
 
     if attack_box = @player.attack_box
       for thing in *@collider\get_touching attack_box
