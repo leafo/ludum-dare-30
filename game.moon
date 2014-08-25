@@ -45,14 +45,13 @@ class Game
       @paused = not @paused
 
     if key == "t"
-      import Dagger from require "dagger"
-      @world.the_enemy\shoot!
+      print @world.door\after_filled!
+
+      -- import Dagger from require "dagger"
+      -- @world.the_enemy\shoot!
 
   mousepressed: (x,y) =>
     x,y = @world.viewport\unproject x, y
-    import Dagger from require "dagger"
-    @world.the_enemy\shoot!
-
     -- @player\die!
     -- idx = @world.map\pt_to_idx x, y
     -- import DirtEmitter from require "particles"

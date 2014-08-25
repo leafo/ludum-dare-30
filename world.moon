@@ -185,6 +185,11 @@ class World
               @the_enemy = e
 
             @entities\add e
+          when "door"
+            import Door from require "door"
+            @door = Door o.x, o.y
+            @entities\add @door
+
     }
 
     @map_box = @map\to_box!
@@ -265,6 +270,10 @@ class World
       continue if thing.dying
       continue if thing.taking_hit
 
-      @player\take_hit @, thing
+      if thing.is_enemy or thing.is_bullet
+        @player\take_hit @, thing
+
+      if thing.is_door
+        print "entering the door"
 
 { :World }

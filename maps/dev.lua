@@ -174,6 +174,17 @@ return {
           height = 0,
           visible = true,
           properties = {}
+        },
+        {
+          name = "door",
+          type = "",
+          shape = "rectangle",
+          x = 32,
+          y = 320,
+          width = 16,
+          height = 16,
+          visible = true,
+          properties = {}
         }
       }
     }
