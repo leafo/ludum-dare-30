@@ -52,6 +52,7 @@ class Game
 
   mousepressed: (x,y) =>
     x,y = @world.viewport\unproject x, y
+    @world.door\send_energy x,y
     -- @player\die!
     -- idx = @world.map\pt_to_idx x, y
     -- import DirtEmitter from require "particles"

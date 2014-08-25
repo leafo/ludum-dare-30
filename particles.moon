@@ -10,7 +10,6 @@ class Dirt extends PixelParticle
   b: 20
 
   new: (@x, @y, @vel) =>
-    @rot = 0
     @accel = Vec2d 0, 200
     @size = pick_dist { [3]: 2, [2]: 1 }
 

@@ -276,4 +276,7 @@ class World
       if thing.is_door
         print "entering the door"
 
+  __tostring: =>
+    "<World>"
+
 { :World }
