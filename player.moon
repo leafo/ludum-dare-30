@@ -379,7 +379,12 @@ class Player extends Entity
         if not @on_ground
           if @stab_attacking or @velocity[2] > 300
             @world.particles\add DustEmitter @world, @x + @w/2 , @y + @h
-            @world.viewport\shake 0.2
+
+            -- change shake intensity based on hit velocity
+            p = math.min 1, math.max 0, (math.abs(@velocity[2]) - 300) / 200
+            p /= 2 unless @stab_attacking
+
+            @world.viewport\shake 0.2 + (.3 * p), 5, 1.5 + (3.5 * p)
 
         @on_ground = true
       @velocity[2] = 0
