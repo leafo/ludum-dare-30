@@ -1,4 +1,6 @@
 
+import Background from require "background"
+
 class LedgeZone extends Box
   w: 6
   h: 6
@@ -146,6 +148,7 @@ class World
   gravity: Vec2d 0, 500
 
   new: (@game, map_name="maps.dev") =>
+    @background = Background!
     @viewport = EffectViewport scale: GAME_CONFIG.scale
 
     @entities = DrawList!
@@ -206,17 +209,13 @@ class World
 
   draw: =>
     @shader\render ->
+      @background\draw @viewport
+
       @viewport\apply!
-
-      COLOR\push 222,84,84, 155
-      @map_box\draw!
-      COLOR\pop!
-
 
       @map\draw @viewport
       @entities\draw!
       @particles\draw!
-
 
       if DEBUG
         COLOR\pusha 60
