@@ -329,7 +329,7 @@ class Player extends Entity
       if CONTROLLER\is_down "jump"
         @jump!
       elseif CONTROLLER\is_down "attack"
-        @attack not @on_ground -- and dy > 1
+        @attack not @on_ground and dy > 0
 
     motion = if @attacking
       "attack"
@@ -455,7 +455,7 @@ class Player extends Entity
   position_attack_box: =>
     return unless @attack_box
     if @stab_attacking
-      @attack_box.x = @x
+      @attack_box.x = @x - 1
       @attack_box.y = @y + 10
     else
       dist = 5
@@ -478,9 +478,9 @@ class Player extends Entity
   down_attack: =>
     @stab_attacking = @facing
     @attacking = @seqs\add S "stab attack", ->
-      wait 0.08 * 3
+      wait 0.08 * 2
 
-      @attack_box = Box 0, 0, @w, 15
+      @attack_box = Box 0, 0, @w + 2, 15
       @position_attack_box!
       @can_attack = false
 
@@ -503,7 +503,6 @@ class Player extends Entity
 
   end_attack: =>
     return unless @attacking
-    print "ending attack"
 
     @seqs\remove @attacking
     @attack_box = nil
@@ -598,5 +597,10 @@ class Player extends Entity
 
       wait 0.2
       @taking_hit = false
+
+  after_hit: (world, thing) =>
+    if @stab_attacking
+      @end_attack!
+      @velocity[2] = -100
 
 { :Player }

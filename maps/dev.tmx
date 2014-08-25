@@ -29,5 +29,10 @@
     <property name="type" value="towerguy"/>
    </properties>
   </object>
+  <object name="enemy" x="35" y="363">
+   <properties>
+    <property name="type" value="lilguy"/>
+   </properties>
+  </object>
  </objectgroup>
 </map>

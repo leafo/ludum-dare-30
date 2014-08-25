@@ -243,6 +243,8 @@ class World
         if thing.take_hit
           thing\take_hit @, @player, attack_box
 
+        @player\after_hit @, thing
+
     -- see if player is hit by any enemies
     for thing in *@collider\get_touching @player
       continue if thing.dying

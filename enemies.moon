@@ -129,7 +129,7 @@ class Enemy extends Entity
       @taking_hit = nil
 
 class Lilguy extends Enemy
-  hp: 10
+  hp: 3
 
   lazy sprite: -> Spriter "images/lilguy.png"
 

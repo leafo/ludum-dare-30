@@ -167,6 +167,19 @@ return {
           properties = {
             ["type"] = "towerguy"
           }
+        },
+        {
+          name = "enemy",
+          type = "",
+          shape = "rectangle",
+          x = 35,
+          y = 363,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {
+            ["type"] = "lilguy"
+          }
         }
       }
     }
