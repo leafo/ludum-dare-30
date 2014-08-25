@@ -21,8 +21,8 @@ class Enemy extends Entity
     @effects = EffectList!
 
     @seqs = DrawList!
-    if ai = @make_ai!
-      @seqs\add ai
+    if @ai = @make_ai!
+      @seqs\add @ai
 
     @make_sprite!
 
@@ -90,17 +90,11 @@ class Enemy extends Entity
     COLOR\pop!
 
   die: =>
-    @anim\set_state "die_#{@facing}"
     @dying = @seqs\add Sequence ->
       @impulses.move = nil
       @seqs\remove @ai
       @seqs\remove @taking_hit
-
-      if @anim.states.die_left
-        wait @anim\state_duration "die_left"
-      else
-        wait 0.5
-
+      tween @, 0.5, alpha: 1
       @alive = false
 
   center: =>
@@ -266,7 +260,6 @@ class Lilguy extends Enemy
         when "attack"
           await @attack, @
         when "move"
-
           speed = rand 20, 40
           dir = pick_dist [1]: 1, [-1]: 1
           dur = rand 0.8, 1.5
@@ -326,6 +319,21 @@ class Lilguy extends Enemy
       @attacking = false
 
       callback and callback!
+
+  die: =>
+    @anim\set_state "die_#{@facing}"
+    @dying = @seqs\add Sequence ->
+      @impulses.move = nil
+      @seqs\remove @ai
+      @seqs\remove @taking_hit
+
+      if @anim.states.die_left
+        wait @anim\state_duration "die_left"
+      else
+        wait 0.5
+
+      @alive = false
+
 
 class Bullet extends Box
   is_enemy: true

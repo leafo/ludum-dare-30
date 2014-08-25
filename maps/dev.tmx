@@ -5,7 +5,7 @@
  </tileset>
  <layer name="ground" width="31" height="35">
   <data encoding="base64" compression="zlib">
-   eJztVgEKgCAMlPz/nyNQkHVuc6hH5MGgcu68ta1SOhjBVYzFm4vt5q68DO3tOQ72QMs1qwceMGuw9kFkn3bvjRHd5+HWdFXdVk1Yz6K5q9w9/lXc7cwbyZvFPat+EfcqLgkU9w/cCDP7mzFbmd93tm7PbFvFbc2WldyenLfrrT+aizm989mby9JHxpVrXi3yDMhXxs7ARt4J0qDp7p032gNof9RY+Np/PeqLyPUBBzcfegGM
+   eJztlosKwCAIRaP9/z+PQYKIr1wmYx0Q9srblWy1dpihj6jSvUbs1gbdCu94Hoc9aLWu6oGHyjUIfRAZp917c0THebQ1X+DbWhPWs2jtQFvSz9LGe95M3SztVeuX087SonB5/6DNofWYd8/oJFbhybXj/671boZvjFR/fKaq8G3tLVl4a07rQ8+g2r2UW8qJ89B3Xi90Dty3khdO2wPnQfMtzTfaA9z4aFTxtXM9rteb60MNN5pqAaA=
   </data>
  </layer>
  <layer name="collision layer" width="31" height="35">
@@ -14,7 +14,7 @@
    <property name="solid" value="true"/>
   </properties>
   <data encoding="base64" compression="zlib">
-   eJztlFEKACEIRNv7X3p/9ktiVgdtCOZBEKS9MmktU+H5hsqr8Cvd8RzmDKjWyj640R1z2D0m3Zn3/oth3YjM33Obu6t/p+5td41TvTaF3XajuF1OzEdryJ0Zlbt0ujNMuCsw9ezwdqJ0M+z6npkbDS98ZACy
+   eJztljkOwCAMBOH/n06TArlw1sbOgrQjIVEYhsMcY4gI8y0sL8PPdNtxiH/w1pqZBze6bZtsH51uZL+/YrJuD+Tuuc1dlb9d85Y7hudGz23XG8t0I+OQ+9z/nI3LlIo+I3OpdCN0uCNU7BEjB1eY7gzreu3UBYcHrkwAug==
   </data>
  </layer>
  <objectgroup name="objects" width="31" height="35">
