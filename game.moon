@@ -14,8 +14,11 @@ fixed_time_step = (rate, fn) ->
       accum -= target_dt
 
 class Game
+  shroud_a: 0
+
   new: =>
     @hud_viewport = EffectViewport scale: GAME_CONFIG.scale
+    @seqs = DrawList!
 
     @world = World @
     @player = Player 0, 0
@@ -23,9 +26,14 @@ class Game
 
   draw: =>
     @world\draw!
+    @hud_viewport\apply!
+
+    if @shroud_a > 0
+      COLOR\push 0,0,0, @shroud_a
+      @hud_viewport\draw!
+      COLOR\pop!
 
     if DEBUG
-      @hud_viewport\apply!
       stat = table.concat {
         "V: #{"%.3f %.3f"\format unpack @player.velocity}"
         "Damp: #{"%.3f"\format @player.dampen_movement}"
@@ -34,18 +42,32 @@ class Game
       }, "\n"
 
       g.print stat, 0,0
-      @hud_viewport\pop!
+
+    @hud_viewport\pop!
 
   update: fixed_time_step 60, (dt) =>
     return if @paused
+    @seqs\update dt
     @world\update dt
+
+  go_to_world: (map_name) =>
+    world = World @, map_name
+    player = Player 0, 0
+    world\add_player player
+
+    @seqs\add Sequence ->
+      @world.locked = true
+      tween @, 0.5, shroud_a: 255
+      @world = world
+      @player = player
+      tween @, 0.5, shroud_a: 0
 
   on_key: (key) =>
     if key == "p"
       @paused = not @paused
 
     if key == "t"
-      print @world.door\after_filled!
+      @go_to_world "maps.dev2"
 
       -- import Dagger from require "dagger"
       -- @world.the_enemy\shoot!

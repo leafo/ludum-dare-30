@@ -244,8 +244,10 @@ class World
       @viewport\pop!
 
   update: (dt) =>
-    @entities\update dt, @
     @particles\update dt, @
+    return if @locked
+
+    @entities\update dt, @
     @seqs\update dt, @
 
     @collider\clear!
@@ -278,7 +280,8 @@ class World
       if thing.is_enemy or thing.is_bullet
         @player\take_hit @, thing
 
-      if thing.is_door
+      if thing.is_door and thing\is_ready!
+        thing.is_ready = -> false
         print "entering the door"
 
   __tostring: =>

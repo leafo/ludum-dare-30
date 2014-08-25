@@ -177,6 +177,9 @@ class Door extends Entity
 
     g.pop!
 
+  is_ready: =>
+    @filled == 1
+
   send_energy: (x, y) =>
     tx, ty = @center!
     @world.particles\add EnergyEmitter @world, x, y, tx, ty, ->
