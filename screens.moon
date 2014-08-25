@@ -1,9 +1,13 @@
 
+{graphics: g} = love
+
 class Transition extends FadeTransition
   time: 1.5
   color: {10, 10, 10}
 
 class Screen
+  lazy press_space: -> imgfy "images/press_space.png"
+
   new: =>
     @viewport = Viewport scale: GAME_CONFIG.scale
 
@@ -20,7 +24,6 @@ class GameOverScreen extends Screen
   new: =>
     super!
     @image = imgfy "images/game_over.png"
-    @press_space = imgfy "images/press_space.png"
 
     @alpha = 0
     @visible = true
@@ -61,7 +64,6 @@ class TitleScreen extends Screen
     super!
 
     @image = imgfy "images/title.png"
-    @press_space = imgfy "images/press_space.png"
 
     @alpha = 0
     @seq = Sequence ->
@@ -93,8 +95,47 @@ class TitleScreen extends Screen
     if CONTROLLER\is_down "confirm", "cancel"
       DISPATCHER\replace @new_game, Transition
 
+class StageComplete extends Screen
+  show_enemies: 0
+
+  new: (seconds, @enemies, @enemies_total) =>
+    @seconds = math.floor seconds % 60
+    @minutes = math.floor seconds / 60
+
+    super!
+
+  update: (dt) =>
+    @show_enemies = smooth_approach @show_enemies, @enemies, dt * 3
+
+  num: (num) =>
+    "%04d"\format math.floor num
+
+  draw_inner: =>
+
+    g.setFont FONTS.number_font
+    g.print "#{"%02d"\format @minutes}:#{"%02d"\format @seconds}", 10, 10, 0, 2,2
+
+    g.setFont FONTS.default
+    g.print "Elapsed", 10, 45
+
+    max_rect = 100
+    g.push!
+    g.translate 10, 100
+
+    COLOR\push 240, 0, 0
+    g.rectangle "fill", 0, 0, @show_enemies/@enemies_total * max_rect, 20
+    COLOR\pop!
+
+    g.print "#{@num @show_enemies} / #{@num @enemies_total}", max_rect + 5, 0
+    g.pop!
+
+    @press_space\draw (@viewport.w - @press_space\width!) / 2,
+      @viewport.h - @press_space\height! - 30
+
+
 {
   :TitleScreen
   :GameOverScreen
   :Transition
+  :StageComplete
 }
