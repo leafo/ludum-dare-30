@@ -479,6 +479,7 @@ class Player extends Entity
     @stab_attacking = @facing
     @attacking = @seqs\add S "stab attack", ->
       wait 0.08 * 2
+      @velocity[2] += 100
 
       @attack_box = Box 0, 0, @w + 2, 15
       @position_attack_box!
