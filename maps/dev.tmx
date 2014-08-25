@@ -3,8 +3,14 @@
  <tileset firstgid="1" name="dev_tiles" tilewidth="16" tileheight="16">
   <image source="../images/dev_tiles.png" width="128" height="128"/>
  </tileset>
- <layer name="Tile Layer 1" width="31" height="35">
+ <layer name="ground" width="31" height="35">
+  <data encoding="base64" compression="zlib">
+   eJztVosKwCAIjO3//3kMEkTMZyVjHQhby85zWbZ24MHVrYr37rabG3grtOM4DvZAynVVDbyo3INQBxE/6d26RtTPwi3pAt3antDGorkD7hH/Km585nnypnHP2r8c9youCm7dP3BzmFnfFWdr5f2e1Z3phXBP5eXGvlFu7WzReDN3giXndB7tQemYJTZuDl2XfrNqoTFwc7m4qXnyymmQdI/ijdbA6B9FrApf6+txvjLPBzV4AKauAaU=
+  </data>
+ </layer>
+ <layer name="collision layer" width="31" height="35">
   <properties>
+   <property name="hidden" value="true"/>
    <property name="solid" value="true"/>
   </properties>
   <data encoding="base64" compression="zlib">
