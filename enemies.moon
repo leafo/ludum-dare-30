@@ -32,6 +32,11 @@ class Enemy extends Entity
   get_floor: =>
     @world.map\get_floor_range @x + @w / 2, @y + @h + 0.1
 
+  close_to_player: (rx=250,ry=rx)=>
+    range = Box 0,0,rx,ry
+    range\move_center @center!
+    range\touches_box @world.player
+
   update: (dt, @world) =>
     @effects\update dt
     @anim\update dt
@@ -249,7 +254,17 @@ class Lilguy extends Enemy
       while not @on_ground
         wait 0.2
 
-      switch pick_dist {move: 3, wait: 0}
+      probs = {
+        move: 2
+        attack: 1
+        wait: 1
+      }
+
+      probs.attack *= 3 if @close_to_player!
+
+      switch pick_dist probs
+        when "attack"
+          await @attack, @
         when "move"
 
           speed = rand 20, 40
@@ -285,12 +300,8 @@ class Lilguy extends Enemy
   attack: (callback) =>
     return if @attacking
 
-    range = with Box 0,0,180,80
-      .update = => true
-
     @attacking = @seqs\add Sequence ->
-      range\move_center @center!
-      directional = if range\touches_box @world.player
+      directional = if @close_to_player 180, 80
         @facing = @world.player\left_of(@) and "left" or "right"
         true
 
