@@ -657,10 +657,29 @@ class Fanguy extends Enemy
   lazy sprite: -> Spriter "images/fanguy.png", 16, 16
 
   make_ai: =>
+    Sequence ->
+      unless @close_to_player @world.viewport.w / 2, @world.viewport.h / 2
+        wait 0.1
+        return again!
+
+      really_close =@close_to_player 200
+
+      switch pick_dist {
+        shoot_fan: 10
+        shoot_circle: 8
+        chill: really_close and 10 or 20
+      }
+        when "shoot_fan"
+          await @shoot_fan, @
+        when "shoot_circle"
+          await @shoot_circle, @
+
+      wait rand 0.2, 1.5
+      again!
 
   make_sprite: =>
     with @sprite
-      @anim = StateAnim "shoot", {
+      @anim = StateAnim "stand", {
         stand: \seq { 0, ox: 1, oy: 6 }
         shoot: \seq { 1,2,3,4, rate: 0.2, ox: 1, oy: 6 }
       }
@@ -668,16 +687,22 @@ class Fanguy extends Enemy
   nozzle_pt: =>
     @x + @w / 2, @y
 
+  set_state: =>
+    @anim\set_state @attacking and "shoot" or "stand"
+
   shoot: =>
+    return if @attacking
     @shoot_circle!
 
   shoot_dir: (dir) =>
+    return if @dying
+
     dir *= (random_normal! + 0.5) * 200
     x, y = @nozzle_pt!
     @world.entities\add Bullet x,y, dir
 
   shoot_fan: (callback) =>
-    @seqs\add Sequence ->
+    @attacking = @seqs\add Sequence ->
       angles = [deg for deg=-150, -30, 15]
       if fn = pick_dist { [shuffle]: 1, [reverse]: 2, [false]: 2 }
         fn angles
@@ -689,6 +714,7 @@ class Fanguy extends Enemy
         @shoot_dir Vec2d.from_angle deg
         wait 0.1
 
+      @attacking = false
       callback and callback!
 
   shoot_circle: (callback) =>
@@ -698,7 +724,7 @@ class Fanguy extends Enemy
 
     import DustEmitter from require "particles"
 
-    @seqs\add Sequence ->
+    @attacking = @seqs\add Sequence ->
       @effects\add ShakeEffect 0.4
       wait 0.5
 
@@ -711,6 +737,9 @@ class Fanguy extends Enemy
         @shoot_dir Vec2d.from_angle deg
         @vel[2] = -@vel[2] if @vel[2] > 0
         wait 0.1
+
+      @attacking = false
+      callback and callback!
 
 
 {
