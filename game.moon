@@ -15,6 +15,7 @@ fixed_time_step = (rate, fn) ->
 
 class Game
   shroud_a: 0
+  deaths: 0
 
   new: =>
     @hud_viewport = EffectViewport scale: GAME_CONFIG.scale
@@ -51,16 +52,19 @@ class Game
     @world\update dt
 
   go_to_world: (map_name) =>
-    world = World @, map_name
-    player = Player 0, 0
-    world\add_player player
+    import StageComplete from require "screens"
+    elapsed = love.timer.getTime! - @world.start_time
+    enemies_killed = 0
+    for e in *@world.enemies
+      if not e.alive or e.dying
+        enemies_killed += 1
 
-    @seqs\add Sequence ->
-      @world.locked = true
-      tween @, 0.5, shroud_a: 255
+    DISPATCHER\push StageComplete elapsed, enemies_killed, #@world.enemies, ->
+      world = World @, map_name
+      player = Player 0, 0
+      world\add_player player
       @world = world
-      @player = player
-      tween @, 0.5, shroud_a: 0
+      DISPATCHER\pop!
 
   on_key: (key) =>
     if key == "p"
