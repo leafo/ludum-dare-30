@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="31" height="35" tilewidth="16" tileheight="16">
+ <tileset firstgid="1" name="dev_tiles" tilewidth="16" tileheight="16">
+  <image source="../images/dev_tiles.png" width="128" height="128"/>
+ </tileset>
+ <layer name="ground" width="31" height="35">
+  <data encoding="base64" compression="zlib">
+   eJztlksKACAIRCPvf+dWQYghU5ZB88BFHxuVyEohhPxCdWzmE6mNrEVpjxpI7jc5XX9qU5vaf2q/QlauWe98Vp+J6HN9vyh/UXPW2Ou1M9NnefFqXzQGMQypk3Uekuvu/Vit84v/H0Ju0AB7zQFE
+  </data>
+ </layer>
+ <layer name="collision layer" width="31" height="35">
+  <properties>
+   <property name="hidden" value="true"/>
+   <property name="solid" value="true"/>
+  </properties>
+  <data encoding="base64" compression="zlib">
+   eJztlUEKACAIBO3/n+7aJURYNXIGPIVMenDNAGAKy6lbj9IdeVO5T0dk9kqy948bN+6Z7lfomrXrznfljCLnvLysquo/AsC/bBXtAHA=
+  </data>
+ </layer>
+ <objectgroup color="#29a456" name="objects" width="31" height="35">
+  <object name="spawn" x="432" y="336"/>
+  <object name="door" x="32" y="320" width="16" height="16"/>
+ </objectgroup>
+</map>
