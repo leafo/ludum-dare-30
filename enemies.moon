@@ -95,8 +95,23 @@ class Enemy extends Entity
 
       @alive = false
 
-  take_hit: (world, thing) =>
+  center: =>
+    if @damage_box
+      @damage_box!\center!
+    else
+      super!
+
+  take_hit: (world, thing, attack_box) =>
     return if @taking_hit or @dying
+
+    if @damage_box
+      -- play clink
+      return unless @damage_box!\touches_box attack_box
+
+    world.particles\add with BloodEmitter world, 0,0, thing\left_of @
+      \attach (emitter) ->
+        emitter.x, emitter.y = @center!
+
     @hp -= 1
     if @hp <= 0
       return @die!
@@ -105,10 +120,6 @@ class Enemy extends Entity
 
     @taking_hit = @seqs\add Sequence ->
       @impulses.move = false
-      world.particles\add with BloodEmitter world, 0,0, thing\left_of @
-        \attach (emitter) ->
-          emitter.x, emitter.y = @center!
-
       vx, vy = unpack (Vec2d(@center!) - Vec2d(thing\center!))\normalized! * hit_power
 
       @velocity[1] = vx
@@ -116,7 +127,6 @@ class Enemy extends Entity
 
       wait 0.5
       @taking_hit = nil
-
 
 class Lilguy extends Enemy
   hp: 10
@@ -410,8 +420,34 @@ class Gunguy extends Enemy
       wait 1
       again!
 
+class Towerguy extends Enemy
+  lazy sprite: -> Spriter "images/tower.png"
+  w: 16
+  h: 89
+
+  damage_box: =>
+    Box @x + 3, @y, 10, 10
+
+  make_sprite: =>
+    with @sprite
+      @anim = StateAnim "idle", {
+        idle: \seq {
+          "8,7,30,89"
+          ox: 8
+        }
+
+        stun: \seq {
+          "56,7,30,89"
+          ox: 8
+        }
+
+      }
+
+  make_ai: =>
+
 {
   :Enemy
   :Gunguy
   :Lilguy
+  :Towerguy
 }

@@ -151,18 +151,22 @@ return {
           width = 0,
           height = 0,
           visible = true,
-          properties = {}
+          properties = {
+            ["type"] = "lilguy"
+          }
         },
         {
           name = "enemy",
           type = "",
           shape = "rectangle",
-          x = 243,
-          y = 369,
+          x = 250,
+          y = 286,
           width = 0,
           height = 0,
           visible = true,
-          properties = {}
+          properties = {
+            ["type"] = "towerguy"
+          }
         }
       }
     }

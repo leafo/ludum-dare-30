@@ -154,9 +154,13 @@ class World
     @entities = DrawList!
     @collider = UniformGrid!
 
-    import Lilguy, Gunguy from require "enemies"
-    enemies = {Lilguy, Gunguy}
-    count = 0
+    enemies = require "enemies"
+    find_enemy = (name) ->
+      for k, v in pairs enemies
+        if k\lower! == name
+          return v
+
+      error "failed to find enemy: #{name}"
 
     @map = PlatformMap\from_tiled map_name, {
       object: (o) ->
@@ -165,16 +169,7 @@ class World
             @spawn_x = o.x
             @spawn_y = o.y
           when "enemy"
-            cls = switch o.type
-              when "gunguy"
-                Gunguy
-              when "lilguy"
-                Lilguy
-              else
-                enemies[count % #enemies + 1]
-
-            count += 1
-
+            cls = find_enemy o.properties.type or "lilguy"
             @entities\add cls o.x, o.y
     }
 
@@ -241,10 +236,10 @@ class World
     -- @viewport\center_on @player, @world.map_box, dt
     @viewport\center_on @player, nil, dt
 
-    if @player.attack_box
-      for thing in *@collider\get_touching @player.attack_box
+    if attack_box = @player.attack_box
+      for thing in *@collider\get_touching attack_box
         if thing.take_hit
-          thing\take_hit @, @player
+          thing\take_hit @, @player, attack_box
 
     -- see if player is hit by any enemies
     for thing in *@collider\get_touching @player

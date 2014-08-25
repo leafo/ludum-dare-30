@@ -19,7 +19,15 @@
  </layer>
  <objectgroup name="objects" width="31" height="35">
   <object name="spawn" x="163" y="346"/>
-  <object name="enemy" x="368" y="282"/>
-  <object name="enemy" x="243" y="369"/>
+  <object name="enemy" x="368" y="282">
+   <properties>
+    <property name="type" value="lilguy"/>
+   </properties>
+  </object>
+  <object name="enemy" x="250" y="286">
+   <properties>
+    <property name="type" value="towerguy"/>
+   </properties>
+  </object>
  </objectgroup>
 </map>

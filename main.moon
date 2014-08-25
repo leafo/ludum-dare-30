@@ -10,7 +10,7 @@ import World from require "world"
 
 paused = false
 
-export DEBUG = false
+export DEBUG = true
 
 fixed_time_step = (rate, fn) ->
   target_dt = 1 / rate
