@@ -50,7 +50,7 @@ class Game
   mousepressed: (x,y) =>
     x,y = @world.viewport\unproject x, y
     import Dagger from require "dagger"
-    print @world.lilguy\attack!
+    @world.the_enemy\shoot!
     -- find enemy
 
     -- @player\die!

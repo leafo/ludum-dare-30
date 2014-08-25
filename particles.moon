@@ -166,9 +166,17 @@ class DustEmitter extends Emitter
     Dust x + (random_normal! - 0.5) * 10,
       y, dir\random_heading(20), Vec2d(0, -100)
 
+class GunSmokeEmitter extends Emitter
+  count: 8
+  make_particle: (x,y) =>
+    spreadx = (random_normal! - 0.5) * 10
+    spready = (random_normal! - 0.5) * 10
+    Dust x + spreadx, y + spready, Vec2d(0,-5)\random_heading(60), Vec2d(0, -150)
+
 {
   :DirtEmitter
   :BloodEmitter
   :GibEmitter
   :DustEmitter
+  :GunSmokeEmitter
 }

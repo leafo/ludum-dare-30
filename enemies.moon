@@ -460,11 +460,38 @@ class Gunguy extends Enemy
           oy: 3
           flip_x: true
         }
+
+        shoot_left: \seq {
+          "4,78,23,20"
+          "38,78,23,20"
+          rate: 0.1
+          once: true
+          ox: 6
+          oy: 3
+        }
+
+        shoot_right: \seq {
+          "4,78,23,20"
+          "38,78,23,20"
+          rate: 0.1
+          flip_x: true
+          once: true
+        }
+
       }
 
+
   die: =>
-    @world.particles\add BloodEmitter @world, @center!
-    @alive = false
+    @world.seqs\add Sequence ->
+      cx, cy = @center!
+      y = @y + @h
+
+      for i=1,4
+        @world.particles\add GibEmitter @world, cx , y
+        y -= 9
+        wait 0.02
+
+    super!
 
   nozzle_pt: =>
     if @facing == "left"
@@ -472,19 +499,37 @@ class Gunguy extends Enemy
     else
       @x + @w + 4, @y + 3
 
-  shoot: (dir) =>
+  -- shoot the facing direction
+  shoot: (callback) =>
+    return if @shooting
+
+    import GunSmokeEmitter from require "particles"
+
     x,y = @nozzle_pt!
+    @world.particles\add GunSmokeEmitter @world, x, y
+
     vx = if @facing == "left"
       -100
     else
       100
 
-    @world.entities\add Bullet x,y, Vec2d vx, 0
+    @shooting = @seqs\add Sequence ->
+      wait 0.1
+      @world.entities\add Bullet x,y, Vec2d vx, 0
+      wait 0.3
+      @shooting = false
+      callback and callback!
+
+  set_state: =>
+    motion = if @shooting
+      "shoot"
+    else
+      "stand"
+
+    @anim\set_state "#{motion}_#{@facing}"
 
   make_ai: =>
     Sequence ->
-      @shoot!
-
       wait 1
       again!
 

@@ -26,7 +26,7 @@
   </object>
   <object name="enemy" x="87" y="357">
    <properties>
-    <property name="type" value="lilguy"/>
+    <property name="type" value="gunguy"/>
    </properties>
   </object>
  </objectgroup>

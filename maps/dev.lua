@@ -165,7 +165,7 @@ return {
           height = 0,
           visible = true,
           properties = {
-            ["type"] = "lilguy"
+            ["type"] = "gunguy"
           }
         }
       }

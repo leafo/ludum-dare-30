@@ -181,8 +181,8 @@ class World
           when "enemy"
             cls = find_enemy o.properties.type or "lilguy"
             e = cls o.x, o.y
-            if cls == enemies.Lilguy
-              @lilguy = e
+            if cls == enemies.Gunguy
+              @the_enemy = e
 
             @entities\add e
     }
