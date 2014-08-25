@@ -1,7 +1,12 @@
 
 {graphics: g} = love
 
-import BloodEmitter, DirtEmitter from require "particles"
+import
+  BloodEmitter
+  DirtEmitter
+  DustEmitter
+  GibEmitter
+  from require "particles"
 
 S = (name, fn) ->
   with Sequence fn
@@ -371,7 +376,6 @@ class Player extends Entity
     if cy
       if @velocity[2] > 0
         if not @on_ground
-          import DustEmitter from require "particles"
           if @stab_attacking or @velocity[2] > 300
             @world.particles\add DustEmitter @world, @x + @w/2 , @y + @h
             @world.viewport\shake 0.2
@@ -587,6 +591,9 @@ class Player extends Entity
       tween @, duration, dampen_movement: 1
 
   looking_at: (viewport) =>
+    if @lost_dagger
+      return @lost_dagger\center!
+
     cx, cy = @center!
     if @facing == "left"
       cx - 20, cy
@@ -627,9 +634,38 @@ class Player extends Entity
   die: =>
     return if @dying
 
+    import Dagger from require "dagger"
+
+    @seqs\add S "gibs", ->
+      cx, cy = @center!
+      y = @y + @h
+      for i=1,6
+        @world.particles\add GibEmitter @world, cx , y
+        y -= 10
+        wait 0.1
+
+    @seqs\add S "bloodshow", ->
+      cx, cy = @center!
+      @world.particles\add DustEmitter @world, cx , @y + @h
+
+      for i=1,4 do
+        @world.particles\add BloodEmitter @world,
+          cx + rand(-5, 5),
+          cy + rand(-5, 5)
+
+        wait rand 0.1, 0.2
+
     @dying = @seqs\add S "dying", ->
-      tween @, 0.5, alpha: 0
-      wait 2.0
+      await (done) ->
+        speed = 200 + 300 * random_normal!
+        dir = Vec2d(0, -1)\random_heading(140) * speed
+        @lost_dagger = Dagger @x, @y, dir, done
+        @world.particles\add @lost_dagger
+
+        tween @, 0.5, alpha: 0
+
+      wait 1.0
+
       import GameOverScreen, Transition from require "screens"
       DISPATCHER\replace GameOverScreen!, Transition
 

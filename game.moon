@@ -49,9 +49,8 @@ class Game
 
   mousepressed: (x,y) =>
     x,y = @world.viewport\unproject x, y
-    import GibEmitter from require "particles"
-    @world.particles\add GibEmitter @world, x,y
-
+    import Dagger from require "dagger"
+    @player\die!
     -- idx = @world.map\pt_to_idx x, y
     -- import DirtEmitter from require "particles"
     -- @root = @world.map\get_wall_root x, y
