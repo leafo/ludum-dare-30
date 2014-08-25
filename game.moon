@@ -24,20 +24,17 @@ class Game
   draw: =>
     @world\draw!
 
-    @hud_viewport\apply!
-    stat = table.concat {
-      "V: #{"%.3f %.3f"\format unpack @player.velocity}"
-      "Damp: #{"%.3f"\format @player.dampen_movement}"
-      "Ground: #{@player.on_ground}"
-      "Seqs: #{table.concat [s.name or "***" for s in *@player.seqs when s.alive], ", "}"
-    }, "\n"
+    if DEBUG
+      @hud_viewport\apply!
+      stat = table.concat {
+        "V: #{"%.3f %.3f"\format unpack @player.velocity}"
+        "Damp: #{"%.3f"\format @player.dampen_movement}"
+        "Ground: #{@player.on_ground}"
+        "Seqs: #{table.concat [s.name or "***" for s in *@player.seqs when s.alive], ", "}"
+      }, "\n"
 
-    g.print stat, 0,0
-
-    if DEBUG and @root
-      Box.draw @root, {255,255,255, 80}
-
-    @hud_viewport\pop!
+      g.print stat, 0,0
+      @hud_viewport\pop!
 
   update: fixed_time_step 60, (dt) =>
     return if @paused
@@ -47,15 +44,17 @@ class Game
     if key == "p"
       @paused = not @paused
 
+    if key == "t"
+      import Dagger from require "dagger"
+      @world.the_enemy\shoot!
+
   mousepressed: (x,y) =>
     x,y = @world.viewport\unproject x, y
     import Dagger from require "dagger"
     @world.the_enemy\shoot!
-    -- find enemy
 
     -- @player\die!
     -- idx = @world.map\pt_to_idx x, y
     -- import DirtEmitter from require "particles"
-    -- @root = @world.map\get_wall_root x, y
 
 { :Game }

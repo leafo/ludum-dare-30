@@ -418,8 +418,11 @@ class ShoveEffect extends Effect
   before: =>
     g.push!
     p = @p!
-    offset = ad_curve p, 0, 0.1, 0.1, 1
-    g.translate 5*offset, 0
+    power = 5
+    power = -power if @dir == "right"
+
+    p = ad_curve p, 0, 0.1, 0.1, 1
+    g.translate power*p, 0
 
   after: =>
     g.pop!
@@ -428,8 +431,9 @@ class Gunguy extends Enemy
   lazy sprite: -> Spriter "images/gunguy.png"
 
   make_sprite: =>
+    @facing = "right"
     with @sprite
-      @anim = StateAnim "stand_left", {
+      @anim = StateAnim "stand_#{@facing}", {
         stand_left: \seq {
           "4,14,23,20"
 
@@ -496,13 +500,15 @@ class Gunguy extends Enemy
         shoot_right: \seq {
           "4,78,23,20"
           "38,78,23,20"
+
+          ox: 6
+          oy: 3
+
           rate: 0.1
           flip_x: true
           once: true
         }
-
       }
-
 
   die: =>
     @world.seqs\add Sequence ->
@@ -552,9 +558,33 @@ class Gunguy extends Enemy
 
     @anim\set_state "#{motion}_#{@facing}"
 
+  player_in_sight: =>
+    w = @world.viewport.w
+
+    box = if @facing == "left"
+      Box @x - w, @y, w, @h
+    else
+      Box @x, @y, w, @h
+
+    box\touches_box @world.player
+
   make_ai: =>
     Sequence ->
-      wait 1
+      if @close_to_player @world.viewport.w, @world.viewport.h
+        target = @world.player\left_of(@) and "left" or "right"
+        if target != "facing" and chance 0.8
+          @facing = target
+
+      in_sight = false
+      during 3.0, ->
+        if @player_in_sight!
+          in_sight = true
+          "cancel"
+
+      if in_sight
+        await @shoot, @
+        wait 1.0
+
       again!
 
 class Towerguy extends Enemy
