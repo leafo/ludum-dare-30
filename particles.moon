@@ -74,7 +74,48 @@ class BloodEmitter extends Emitter
 
     Blood x,y, vel
 
+class Gib extends Particle
+  lazy sprite: => Spriter "images/gibs.png", 16, 16
+
+  new: (...) =>
+    super ...
+    @life = random_normal!
+    @max_life = @life
+
+    @rot = rand 0, 2 * math.pi
+    @rot_speed = rand -0.5, 0.5
+    @anim = with @sprite\seq {1,2,3,4,5,6,7}, 0.05
+      .once = true
+
+  update: (dt) =>
+    @anim\update dt
+    @rot += dt * @rot_speed
+    super dt
+
+  draw: =>
+    COLOR\pusha 255 * @fade_out @max_life
+
+    g.push!
+    g.translate @x, @y
+    g.rotate @rot
+    @anim\draw -8, -8
+    g.pop!
+
+    COLOR\pop!
+
+class GibEmitter extends Emitter
+  count: 20
+
+  make_particle: (x,y) =>
+    speed = 100 * (random_normal! + 0.5)
+    spread = 50
+
+    Gib x + (random_normal! - 0.5) * spread,
+      y + (random_normal! - 0.5) * spread,
+      Vec2d(0, -speed)\random_heading(80), Vec2d(0, 500)
+
 {
   :DirtEmitter
   :BloodEmitter
+  :GibEmitter
 }
