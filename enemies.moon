@@ -93,11 +93,16 @@ class Enemy extends Entity
 
   die: =>
     @dying = @seqs\add Sequence ->
+      @on_die!
       @impulses.move = nil
       @seqs\remove @ai
       @seqs\remove @taking_hit
       tween @, 0.5, alpha: 1
       @alive = false
+
+  on_die: =>
+    if true and @world.door
+      @world.door\send_energy @center!
 
   center: =>
     if @damage_box
@@ -325,6 +330,7 @@ class Lilguy extends Enemy
   die: =>
     @anim\set_state "die_#{@facing}"
     @dying = @seqs\add Sequence ->
+      @on_die!
       @impulses.move = nil
       @seqs\remove @ai
       @seqs\remove @taking_hit
@@ -646,6 +652,7 @@ class Towerguy extends Enemy
     @world.viewport\shake 0.2
 
     @dying = @seqs\add Sequence ->
+      @on_die!
       tween @, 0.5, alpha: 1
       @alive = false
 

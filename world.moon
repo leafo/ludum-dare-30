@@ -163,6 +163,7 @@ class World
     @entities = DrawList!
     @collider = UniformGrid!
     @seqs = DrawList!
+    @enemies = {}
 
     enemies = require "enemies"
     find_enemy = (name) ->
@@ -184,7 +185,11 @@ class World
             if cls == enemies.Fanguy
               @the_enemy = e
 
+            if o.properties.has_energy
+              e.has_energy = true
+
             @entities\add e
+            table.insert @enemies, e
           when "door"
             import Door from require "door"
             @door = Door o.x, o.y

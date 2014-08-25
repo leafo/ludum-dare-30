@@ -28,7 +28,7 @@ class EnergyEmitter extends ForeverEmitter
   time: 0
   alpha: 255
 
-  new: (world, x, y, @target_x, @target_y) =>
+  new: (world, x, y, @target_x, @target_y, @complete_fn) =>
     super world, x, y
 
     @seqs = DrawList!
@@ -69,6 +69,7 @@ class EnergyEmitter extends ForeverEmitter
 
     if @world.door\touches_pt(@x, @y) and not @dying
       @dying = @seqs\add Sequence ->
+        @complete_fn and @complete_fn!
         tween @, 0.5, alpha: 0, rate: 1
         @alive = false
 
@@ -119,7 +120,20 @@ class Door extends Entity
         }
       }
 
+  setup_energy: =>
+    @needed_energy = 0
+
+    for e in *@world.enemies
+      if e.has_energy
+        @needed_energy += 1
+
+    print "need energy:", @needed_energy
+
+    @setup_energy = ->
+
   update: (dt, @world) =>
+    @setup_energy!
+
     @anim\update dt
 
     @vel += @world.gravity * dt
@@ -162,7 +176,9 @@ class Door extends Entity
     g.pop!
 
   send_energy: (x, y) =>
-    @world.particles\add EnergyEmitter @world, x, y, @center!
+    tx, ty = @center!
+    @world.particles\add EnergyEmitter @world, x, y, tx, ty, ->
+      print "got it"
 
 {
   :Door

@@ -151,7 +151,9 @@ return {
           width = 0,
           height = 0,
           visible = true,
-          properties = {}
+          properties = {
+            ["has_energy"] = "1"
+          }
         },
         {
           name = "enemy",
@@ -162,7 +164,9 @@ return {
           width = 0,
           height = 0,
           visible = true,
-          properties = {}
+          properties = {
+            ["has_energy"] = "1"
+          }
         },
         {
           name = "enemy",

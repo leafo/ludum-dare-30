@@ -19,8 +19,16 @@
  </layer>
  <objectgroup color="#29a456" name="objects" width="31" height="35">
   <object name="spawn" x="163" y="346"/>
-  <object name="enemy" type="towerguy" x="304" y="337"/>
-  <object name="enemy" type="fanguy" x="87" y="357"/>
+  <object name="enemy" type="towerguy" x="304" y="337">
+   <properties>
+    <property name="has_energy" value="1"/>
+   </properties>
+  </object>
+  <object name="enemy" type="fanguy" x="87" y="357">
+   <properties>
+    <property name="has_energy" value="1"/>
+   </properties>
+  </object>
   <object name="enemy" type="lilguy" x="362" y="269"/>
   <object name="door" x="32" y="320" width="16" height="16"/>
  </objectgroup>
