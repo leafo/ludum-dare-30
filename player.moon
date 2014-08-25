@@ -323,7 +323,7 @@ class Player extends Entity
     dx, dy
 
   update_for_gravity: (dt) =>
-    dx, dy = if @taking_hit or @dying
+    dx, dy = if @taking_hit or @dying or @stunned
       0,0
     else
       @movement_vector dt
@@ -331,7 +331,7 @@ class Player extends Entity
     if dx != 0
       @facing = if dx < 0 then "left" else "right"
 
-    unless @taking_hit or @dying
+    unless @taking_hit or @dying or @stunned
       if CONTROLLER\is_down "jump"
         @jump!
       elseif CONTROLLER\is_down "attack"
@@ -370,6 +370,12 @@ class Player extends Entity
 
     if cy
       if @velocity[2] > 0
+        if not @on_ground
+          import DustEmitter from require "particles"
+          if @stab_attacking or @velocity[2] > 300
+            @world.particles\add DustEmitter @world, @x + @w/2 , @y + @h
+            @world.viewport\shake 0.2
+
         @on_ground = true
       @velocity[2] = 0
     else
@@ -488,6 +494,14 @@ class Player extends Entity
       @can_attack = false
 
       wait_until -> @on_ground or @wall_running
+
+      @stunned = true
+      @attack_box = nil
+      if @on_ground
+        wait 0.3
+
+      @stunned = false
+
       @end_attack!
 
   horizontal_attack: =>
