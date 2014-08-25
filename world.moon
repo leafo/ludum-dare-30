@@ -238,6 +238,8 @@ class World
 
     if attack_box = @player.attack_box
       for thing in *@collider\get_touching attack_box
+        continue if thing.is_player
+
         if thing.take_hit
           thing\take_hit @, @player, attack_box
 
