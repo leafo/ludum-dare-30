@@ -504,7 +504,7 @@ class Player extends Entity
       @stunned = true
       @attack_box = nil
       if @on_ground
-        wait 0.3
+        wait 0.2
 
       @stunned = false
 
