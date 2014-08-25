@@ -343,6 +343,7 @@ class Bullet extends Box
 
   w: 5
   h: 5
+  time: 0
 
   new: (x,y, @vel) =>
     half = math.floor @w/2
@@ -370,8 +371,10 @@ class Bullet extends Box
       }
 
   update: (dt, @world) =>
+
     @anim\update dt
     unless @dying
+      @time += dt
       dx, dy = unpack dt * @vel
       @move dx, dy
 
@@ -394,12 +397,32 @@ class Bullet extends Box
     @anim\set_state "exploding"
 
   draw: =>
-    -- if DEBUG
-    --   COLOR\pusha 100
-    --   super!
-    --   COLOR\pop!
+    if DEBUG
+      COLOR\pusha 100
+      super!
+      COLOR\pop!
 
+    g.push!
+    scale = 3 / math.min 3, 1 + @time * 4
+    g.translate 0, scale * math.sin @time * 20
     @anim\draw @x, @y
+    g.pop!
+
+
+class ShoveEffect extends Effect
+  duration: 0.2
+
+  new: (@dir, ...) =>
+    super ...
+
+  before: =>
+    g.push!
+    p = @p!
+    offset = ad_curve p, 0, 0.1, 0.1, 1
+    g.translate 5*offset, 0
+
+  after: =>
+    g.pop!
 
 class Gunguy extends Enemy
   lazy sprite: -> Spriter "images/gunguy.png"
@@ -515,6 +538,7 @@ class Gunguy extends Enemy
 
     @shooting = @seqs\add Sequence ->
       wait 0.1
+      @effects\add ShoveEffect @facing
       @world.entities\add Bullet x,y, Vec2d vx, 0
       wait 0.3
       @shooting = false
