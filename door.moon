@@ -100,6 +100,7 @@ class Door extends Entity
   h: 70
   is_door: true
   filled: 0
+  have_energy: 0
 
   lazy sprite: => Spriter "images/door.png"
 
@@ -127,8 +128,6 @@ class Door extends Entity
       if e.has_energy
         @needed_energy += 1
 
-    print "need energy:", @needed_energy
-
     @setup_energy = ->
 
   update: (dt, @world) =>
@@ -137,6 +136,9 @@ class Door extends Entity
     @anim\update dt
 
     @vel += @world.gravity * dt
+
+    if @needed_energy > 0
+      @filled = smooth_approach @filled, @have_energy/@needed_energy, dt
 
     vx, vy = unpack @vel
     cx, cy = @fit_move vx * dt, vy * dt, @world
@@ -178,7 +180,9 @@ class Door extends Entity
   send_energy: (x, y) =>
     tx, ty = @center!
     @world.particles\add EnergyEmitter @world, x, y, tx, ty, ->
-      print "got it"
+      @have_energy += 1
+      if @have_energy/@needed_energy == 1
+        @after_filled!
 
 {
   :Door
