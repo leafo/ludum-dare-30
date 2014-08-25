@@ -83,13 +83,13 @@ class Gib extends Particle
     @max_life = @life
 
     @rot = rand 0, 2 * math.pi
-    @rot_speed = rand -0.5, 0.5
+    @drot = rand -0.5, 0.5
     @anim = with @sprite\seq {1,2,3,4,5,6,7}, 0.05
       .once = true
 
   update: (dt) =>
     @anim\update dt
-    @rot += dt * @rot_speed
+    @rot += dt * @drot
     super dt
 
   draw: =>
@@ -114,8 +114,61 @@ class GibEmitter extends Emitter
       y + (random_normal! - 0.5) * spread,
       Vec2d(0, -speed)\random_heading(80), Vec2d(0, 500)
 
+-- out and up
+-- rotates
+class Dust extends Particle
+  lazy sprite: => Spriter "images/smoke.png", 8, 8
+
+  new: (...) =>
+    super ...
+
+    @life = random_normal! * 0.8
+    @max_life = @life
+
+    @rot = rand 0, 2 * math.pi
+    @drot = rand -0.5, 0.5
+
+    @scale = 1
+    @dscale = rand 3, 6
+
+    @anim = @sprite\seq {0,1,2,3,4,5,6,7,8,9,10}, 0.05
+
+  update: (dt) =>
+    @anim\update dt
+    @rot += dt * @drot
+    @scale += dt * @dscale
+
+    if @vel[1] != 0
+      air_rate = 1
+      @vel[1] = dampen @vel[1], dt * 1000
+
+    super dt
+
+  draw: =>
+    COLOR\pusha 255 * @fade_out @max_life
+
+    g.push!
+    g.translate @x, @y
+    g.rotate @rot
+    g.scale @scale, @scale
+    @anim\draw -4, -4
+    g.pop!
+
+    COLOR\pop!
+
+class DustEmitter extends Emitter
+  count: 8
+
+  make_particle: (x,y) =>
+    dir = pick_dist { [Vec2d(1,0)]: 1, [Vec2d(-1,0)]: 1 }
+    dir = dir * rand 100,220
+
+    Dust x + (random_normal! - 0.5) * 10,
+      y, dir\random_heading(20), Vec2d(0, -100)
+
 {
   :DirtEmitter
   :BloodEmitter
   :GibEmitter
+  :DustEmitter
 }

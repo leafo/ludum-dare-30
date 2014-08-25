@@ -354,10 +354,6 @@ class Player extends Entity
     @velocity += @world.gravity * dt
     -- air resistance
     if @velocity[1] != 0
-      air_rate = 1
-      if dx != 0 and not (dx < 0 and @velocity[1] < 0)
-        air_rate *= 3
-
       @velocity[1] = dampen @velocity[1], dt * 200
 
     vx, vy = unpack @velocity
