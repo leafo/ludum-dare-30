@@ -186,13 +186,13 @@ class Player extends Entity
 
       COLOR\pop!
 
-    COLOR\pusha @alpha if alpha != 255
+    COLOR\pusha @alpha if @alpha != 255
 
     @effects\before!
     @anim\draw @x, @y
     @effects\after!
 
-    COLOR\pop! if alpha != 255
+    COLOR\pop! if @alpha != 255
 
     if DEBUG and @attack_box
       Box.outline @attack_box

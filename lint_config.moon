@@ -14,6 +14,7 @@ insert defines, "CONTROLLER"
 insert defines, "DISPATCHER"
 insert defines, "GAME_CONFIG"
 insert defines, "AUDIO"
+insert defines, "DEBUG"
 
 {
   whitelist_globals: {
