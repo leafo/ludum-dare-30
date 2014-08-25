@@ -156,7 +156,7 @@ class PlatformMap extends TileMap
 class World
   gravity: Vec2d 0, 500
 
-  new: (@game, map_name="maps.dev") =>
+  new: (@game, @map_name="maps.dev") =>
     @start_time = love.timer.getTime!
     @background = Background!
     @viewport = EffectViewport scale: GAME_CONFIG.scale
@@ -174,7 +174,7 @@ class World
 
       error "failed to find enemy: #{name}"
 
-    @map = PlatformMap\from_tiled map_name, {
+    @map = PlatformMap\from_tiled @map_name, {
       object: (o) ->
         switch o.name
           when "spawn"
@@ -284,7 +284,7 @@ class World
 
       if thing.is_door and thing\is_ready!
         thing.is_ready = -> false
-        @game\go_to_world thing.target_map
+        @game\complete_stage thing.target_map
 
   __tostring: =>
     "<World>"

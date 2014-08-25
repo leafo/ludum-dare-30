@@ -51,7 +51,15 @@ class Game
     @seqs\update dt
     @world\update dt
 
-  go_to_world: (map_name) =>
+  game_over: =>
+    import GameOverScreen, Transition from require "screens"
+    go = GameOverScreen ->
+      @set_world @world.map_name
+      DISPATCHER\pop!
+
+    DISPATCHER\push go, Transition
+
+  complete_stage: (map_name) =>
     import StageComplete from require "screens"
     elapsed = love.timer.getTime! - @world.start_time
     enemies_killed = 0
@@ -60,27 +68,22 @@ class Game
         enemies_killed += 1
 
     DISPATCHER\push StageComplete elapsed, enemies_killed, #@world.enemies, ->
-      world = World @, map_name
-      player = Player 0, 0
-      world\add_player player
-      @world = world
+      @set_world map_name
       DISPATCHER\pop!
+
+  set_world: (map_name) =>
+    world = World @, map_name
+    player = Player 0, 0
+    world\add_player player
+    @world = world
 
   on_key: (key) =>
     if key == "p"
       @paused = not @paused
 
-    if key == "t"
-      @go_to_world "maps.dev2"
-
-      -- import Dagger from require "dagger"
-      -- @world.the_enemy\shoot!
-
   mousepressed: (x,y) =>
+    return unless DEBUG
     x,y = @world.viewport\unproject x, y
     @world.door\send_energy x,y
-    -- @player\die!
-    -- idx = @world.map\pt_to_idx x, y
-    -- import DirtEmitter from require "particles"
 
 { :Game }

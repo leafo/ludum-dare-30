@@ -673,9 +673,7 @@ class Player extends Entity
         tween @, 0.5, alpha: 0
 
       wait 1.0
-
-      import GameOverScreen, Transition from require "screens"
-      DISPATCHER\replace GameOverScreen!, Transition
+      @world.game\game_over!
 
 
 { :Player }

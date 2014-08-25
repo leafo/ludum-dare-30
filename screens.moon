@@ -21,7 +21,7 @@ class Screen
   update: (dt) =>
 
 class GameOverScreen extends Screen
-  new: =>
+  new: (@callback_fn) =>
     super!
     @image = imgfy "images/game_over.png"
 
@@ -55,10 +55,8 @@ class GameOverScreen extends Screen
     return unless @ready
 
     if CONTROLLER\is_down "confirm", "cancel"
-      import Game from require "game"
-      DISPATCHER\replace Game!, Transition
+      @callback_fn and @callback_fn!
       @ready = false
-
 
 class TitleScreen extends Screen
   new: (@new_game) =>
