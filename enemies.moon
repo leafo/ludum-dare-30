@@ -667,7 +667,12 @@ class Fanguy extends Enemy
     @x + @w / 2, @y
 
   shoot: =>
-    @shoot_fan!
+    @shoot_circle!
+
+  shoot_dir: (dir) =>
+    dir *= (random_normal! + 0.5) * 200
+    x, y = @nozzle_pt!
+    @world.entities\add Bullet x,y, dir
 
   shoot_fan: (callback) =>
     @seqs\add Sequence ->
@@ -675,13 +680,35 @@ class Fanguy extends Enemy
       if fn = pick_dist { [shuffle]: 1, [reverse]: 2, [false]: 2 }
         fn angles
 
+      @effects\add ShakeEffect 0.2
+      wait 0.3
+
       for deg in *angles
-        dir = Vec2d.from_angle(deg) * 200
-        x, y = @nozzle_pt!
-        @world.entities\add Bullet x,y, dir
+        @shoot_dir Vec2d.from_angle deg
         wait 0.1
 
+      callback and callback!
+
   shoot_circle: (callback) =>
+    angles = [deg for deg=0, 359, 30]
+    import DustEmitter from require "particles"
+
+
+    @seqs\add Sequence ->
+      @effects\add ShakeEffect 0.4
+      wait 0.5
+
+      @world.particles\add DustEmitter @world, @x + @w / 2, @y + @h
+      @vel[2] = -200
+
+      wait 0.2
+
+
+      for deg in *angles
+        @shoot_dir Vec2d.from_angle deg
+        @vel[2] = -@vel[2] if @vel[2] > 0
+        wait 0.1
+
 
 {
   :Enemy
