@@ -24,7 +24,7 @@
     <property name="type" value="lilguy"/>
    </properties>
   </object>
-  <object name="enemy" x="250" y="286">
+  <object name="enemy" x="304" y="337">
    <properties>
     <property name="type" value="towerguy"/>
    </properties>

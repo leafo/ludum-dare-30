@@ -153,6 +153,7 @@ class World
 
     @entities = DrawList!
     @collider = UniformGrid!
+    @seqs = DrawList!
 
     enemies = require "enemies"
     find_enemy = (name) ->
@@ -222,6 +223,7 @@ class World
   update: (dt) =>
     @entities\update dt, @
     @particles\update dt, @
+    @seqs\update dt, @
 
     @collider\clear!
     for e in *@entities

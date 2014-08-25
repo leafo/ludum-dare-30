@@ -1,13 +1,14 @@
 
 {graphics: g} = love
 
-import BloodEmitter from require "particles"
+import BloodEmitter, GibEmitter from require "particles"
 
 class Enemy extends Entity
   is_enemy: true
   w: 10
   h: 15
   hp: 1
+  alpha: 255
 
   new: (x,y) =>
     super x,y
@@ -444,6 +445,23 @@ class Towerguy extends Enemy
       }
 
   make_ai: =>
+
+  draw: =>
+    COLOR\pusha @alpha
+    super!
+    COLOR\pop!
+
+  die: =>
+    cx, cy = @center!
+    y = @y + @h
+    for i=1,10
+      @world.particles\add GibEmitter @world, cx , y
+      y -= 10
+
+
+    @dying = @seqs\add Sequence ->
+      tween @, 0.5, alpha: 1
+      @alive = false
 
 {
   :Enemy
