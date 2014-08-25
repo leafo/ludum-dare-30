@@ -11,6 +11,7 @@ class Enemy extends Entity
   h: 15
   hp: 1
   alpha: 255
+  strafing: false
 
   new: (x,y) =>
     super x,y
@@ -53,11 +54,11 @@ class Enemy extends Entity
     vx += ix
     vy += iy
 
-    if vx > 0
-      @facing = "right"
-
-    if vx < 0
-      @facing = "left"
+    unless @strafing
+      if vx > 0
+        @facing = "right"
+      if vx < 0
+        @facing = "left"
 
     @set_state vx, vy
 
@@ -132,6 +133,13 @@ class Enemy extends Entity
 
       wait 0.5
       @taking_hit = nil
+
+  mover_fn: (floor) =>
+    (dt) ->
+      return "cancel" if @attacking or @shooting
+      if not floor\on_floor(@) and @impulses.move
+        @impulses.move[1] = -@impulses.move[1]
+
 
 class Lilguy extends Enemy
   hp: 2
@@ -264,15 +272,9 @@ class Lilguy extends Enemy
           dir = pick_dist [1]: 1, [-1]: 1
           dur = rand 0.8, 1.5
 
-          dist = speed * dir * dur
-
           if floor = @get_floor!
             @impulses.move = Vec2d speed * dir
-            during dur, (dt) ->
-              return "cancel" if @attacking
-              if not floor\on_floor(@) and @impulses.move
-                @impulses.move[1] = -@impulses.move[1]
-
+            during dur, @mover_fn floor
             @impulses.move = nil
 
       wait rand 0.2, 0.8
@@ -371,7 +373,6 @@ class Bullet extends Box
       }
 
   update: (dt, @world) =>
-
     @anim\update dt
     unless @dying
       @time += dt
@@ -429,6 +430,7 @@ class ShoveEffect extends Effect
 
 class Gunguy extends Enemy
   lazy sprite: -> Spriter "images/gunguy.png"
+  strafing: true
 
   make_sprite: =>
     @facing = "right"
@@ -443,16 +445,6 @@ class Gunguy extends Enemy
           oy: 3
         }, 0.2
 
-        walk_left: \seq {
-          "4,14,23,20"
-          "38,13,23,20"
-        }, 0.2
-
-        walk_left_back: \seq {
-          "4,46,23,20"
-          "35,46,23,20"
-        }, 0.2
-
         stand_right: \seq {
           "4,14,23,20"
 
@@ -462,16 +454,33 @@ class Gunguy extends Enemy
           flip_x: true
         }
 
+        walk_left: \seq {
+          "4,14,23,20"
+          "38,14,23,20"
+          ox: 6
+          oy: 3
+          rate: 0.2
+        }
+
         walk_right: \seq {
           "4,14,23,20"
-          "38,13,23,20"
+          "38,14,23,20"
+          ox: 6
+          oy: 3
+          rate: 0.2
           flip_x: true
-        }, 0.2
+        }
 
+        -- strafes
         walk_right_back: \seq {
           "4,46,23,20"
           "35,46,23,20"
           flip_x: true
+        }, 0.2
+
+        walk_left_back: \seq {
+          "4,46,23,20"
+          "35,46,23,20"
         }, 0.2
 
         -- these are the same
@@ -538,9 +547,9 @@ class Gunguy extends Enemy
     @world.particles\add GunSmokeEmitter @world, x, y
 
     vx = if @facing == "left"
-      -100
+      -130
     else
-      100
+      130
 
     @shooting = @seqs\add Sequence ->
       wait 0.1
@@ -553,6 +562,8 @@ class Gunguy extends Enemy
   set_state: =>
     motion = if @shooting
       "shoot"
+    elseif @impulses.move
+      "walk"
     else
       "stand"
 
@@ -581,9 +592,20 @@ class Gunguy extends Enemy
           in_sight = true
           "cancel"
 
-      if in_sight
+      if in_sight and chance 0.6
         await @shoot, @
-        wait 1.0
+        wait rand 0.5, 1.0
+      elseif floor = @get_floor!
+        speed = rand 20, 50
+        dir = pick_dist [1]: 1, [-1]: 1
+        dur = rand 0.8, 1.5
+
+        if floor = @get_floor!
+          @impulses.move = Vec2d speed * dir
+          during dur, @mover_fn floor
+          @impulses.move = nil
+      else
+        wait 1.0 -- nothing to do
 
       again!
 
