@@ -454,10 +454,12 @@ class Towerguy extends Enemy
   die: =>
     cx, cy = @center!
     y = @y + @h
+
     for i=1,10
       @world.particles\add GibEmitter @world, cx , y
       y -= 10
-
+    
+    @world.viewport\shake 0.2
 
     @dying = @seqs\add Sequence ->
       tween @, 0.5, alpha: 1

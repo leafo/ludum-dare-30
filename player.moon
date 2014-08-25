@@ -212,7 +212,6 @@ class Player extends Entity
 
     @seqs\update dt, @world
 
-    @position_attack_box!
 
     if @ledge_grabbing
       @update_for_ledge_grab dt
@@ -223,6 +222,8 @@ class Player extends Entity
 
     if not @can_attack
       @can_attack = not CONTROLLER\is_down "attack"
+
+    @position_attack_box!
 
     true
 
@@ -412,6 +413,7 @@ class Player extends Entity
     wx, wy
 
   against_wall: (dir) =>
+    return false if @stab_attacking
     wx, wy = @wall_test_coords dir
 
     return false unless @world.map\collides_pt wx, wy
