@@ -55,6 +55,7 @@ class GameOverScreen extends Screen
     return unless @ready
 
     if CONTROLLER\is_down "confirm", "cancel"
+      AUDIO\play "confirm"
       @callback_fn and @callback_fn!
       @ready = false
 
@@ -91,6 +92,7 @@ class TitleScreen extends Screen
     return unless @ready
 
     if CONTROLLER\is_down "confirm", "cancel"
+      AUDIO\play "confirm"
       DISPATCHER\replace @new_game, Transition
       @ready = false
 
@@ -122,6 +124,7 @@ class StageComplete extends Screen
     return unless @ready
 
     if CONTROLLER\is_down "confirm", "cancel"
+      AUDIO\play "confirm"
       @callback_fn and @callback_fn!
       @ready = false
 

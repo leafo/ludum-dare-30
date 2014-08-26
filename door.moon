@@ -184,6 +184,7 @@ class Door extends Entity
     @filled == 1
 
   send_energy: (x, y) =>
+    AUDIO\play "energy_appear"
     tx, ty = @center!
     @world.particles\add EnergyEmitter @world, x, y, tx, ty, ->
       @have_energy += 1

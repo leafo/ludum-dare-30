@@ -29,6 +29,8 @@ class Player extends Entity
   movement_locked: false
   dampen_movement: 1
   run_scale: 1
+  step_time: 0
+  step_rate: 0.2
 
   alpha: 255
 
@@ -39,6 +41,7 @@ class Player extends Entity
 
   new: (x,y) =>
     super x, y
+    @was_down = {}
     @seqs = DrawList!
     @seqs.annotate = true
     @effects = EffectList!
@@ -225,6 +228,12 @@ class Player extends Entity
 
     @position_attack_box!
 
+    if @step_time > @step_rate
+      AUDIO\play "step"
+
+      while @step_time > @step_rate
+        @step_time -= @step_rate
+
     true
 
   update_for_ledge_grab: (dt) =>
@@ -248,6 +257,8 @@ class Player extends Entity
   update_for_wall_run: (dt) =>
     dx, dy = unpack CONTROLLER\movement_vector! * dt * @speed
     @on_ground = false
+
+    @step_time += dt
 
     @anim\set_state "wall_run_#{@wall_run_up_key}"
 
@@ -298,23 +309,40 @@ class Player extends Entity
   movement_vector: (dt) =>
     dx, dy = unpack CONTROLLER\movement_vector! * dt * @speed
 
-    if CONTROLLER\is_down "left"
+    left_down = CONTROLLER\is_down "left"
+    right_down = CONTROLLER\is_down "right"
+
+    if left_down and not @was_down.left
+      @step_time = @step_rate
+
+    if right_down and not @was_down.right
+      @step_time = @step_rate
+
+    @was_down.left = left_down
+    @was_down.right = right_down
+
+    if not left_down and not right_down
+      @step_time = 0
+
+    if left_down
       if not @left_down_time
         @left_down_time = 0
     else
       @left_down_time = nil
 
-    if CONTROLLER\is_down "right"
+    if right_down
       unless @right_down_time
-        @right_down_time= 0
+        @right_down_time = 0
     else
       @right_down_time = nil
 
     if @left_down_time and @on_ground
       @left_down_time += dt
+      @step_time += dt
 
     if @right_down_time and @on_ground
       @right_down_time += dt
+      @step_time += dt
 
     accel_time = 0.2
     elapsed = if dx > 0
@@ -382,8 +410,9 @@ class Player extends Entity
 
             -- change shake intensity based on hit velocity
             p = math.min 1, math.max 0, (math.abs(@velocity[2]) - 300) / 200
-            p /= 2 unless @stab_attacking
+            p /= 2 unless @stab_attackin
 
+            AUDIO\play "land"
             @world.viewport\shake 0.2 + (.3 * p), 5, 1.5 + (3.5 * p)
 
         @on_ground = true
@@ -441,6 +470,8 @@ class Player extends Entity
 
   ledge_grab: (zone) =>
     @end_wall_run!
+    AUDIO\play "grab"
+
     @ledge_grabbing = zone
     @can_ledge_jump = false
 
@@ -457,6 +488,8 @@ class Player extends Entity
 
     -- cancel attack
     @end_attack!
+
+    @step_time = @step_rate
 
     @wall_running = @seqs\add S "wall run", ->
       @wall_run_up_key = @facing
@@ -488,6 +521,8 @@ class Player extends Entity
   attack: (downward) =>
     return if @attacking
     return unless @can_attack
+
+    AUDIO\play "player_attack"
 
     if downward
       @down_attack!
@@ -541,6 +576,7 @@ class Player extends Entity
     return if @jumping
     return unless @ledge_grabbing
     is_left = @ledge_grabbing.is_left
+    AUDIO\play "jump"
 
     @ledge_grabbing = false
     @jumping = @seqs\add S "ledge jump", ->
@@ -568,6 +604,7 @@ class Player extends Entity
   jump: =>
     return if @jumping
     return unless @on_ground or @wall_running
+    AUDIO\play "jump"
 
     @jumping = @seqs\add S "ground jump", ->
       vx, vy = if @wall_running
@@ -664,6 +701,7 @@ class Player extends Entity
         wait rand 0.1, 0.2
 
     @dying = @seqs\add S "dying", ->
+      AUDIO\play "player_die"
       await (done) ->
         speed = 200 + 300 * random_normal!
         dir = Vec2d(0, -1)\random_heading(140) * speed

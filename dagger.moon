@@ -31,11 +31,17 @@ class Dagger extends Entity
       if @vel[2] > 0
         @vel[1] = 0
         if not @on_ground
+          AUDIO\play "clink"
           @callback and @callback!
           @on_ground = true
 
       @vel[2] = 0
+
+
     if cx
+      if @vel[1] != 0
+        AUDIO\play "clink"
+
       @vel[1] = -@vel[1] / 1.5
 
     true

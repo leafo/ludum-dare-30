@@ -23,6 +23,24 @@ love.load = ->
   g.setFont fonts.default
   g.setBackgroundColor 13,15,12
 
+  export AUDIO = Audio "sounds"
+  AUDIO\preload {
+    "step"
+    "grab"
+    "land"
+    "hurt_enemy"
+    "jump"
+    "enemy_die"
+    "energy_appear"
+    "player_die"
+    "player_attack"
+    "level_complete"
+    "level_fail"
+    "clink"
+    "confirm"
+    "no_hurt"
+  }
+
   export FONTS = fonts
   export CONTROLLER = Controller GAME_CONFIG.keys
 

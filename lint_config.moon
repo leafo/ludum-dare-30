@@ -15,6 +15,7 @@ insert defines, "DISPATCHER"
 insert defines, "GAME_CONFIG"
 insert defines, "AUDIO"
 insert defines, "DEBUG"
+insert defines, "FONTS"
 
 {
   whitelist_globals: {

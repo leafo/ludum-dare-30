@@ -101,7 +101,9 @@ class Enemy extends Entity
       @alive = false
 
   on_die: =>
-    if true and @world.door
+    AUDIO\play "enemy_die"
+
+    if @world.door
       @world.door\send_energy @center!
 
   center: =>
@@ -113,9 +115,12 @@ class Enemy extends Entity
   take_hit: (world, thing, attack_box) =>
     return if @taking_hit or @dying
 
-    if @damage_box
-      -- play clink
-      return unless @damage_box!\touches_box attack_box
+    if @damage_box and not @damage_box!\touches_box attack_box
+      AUDIO\play "no_hurt" unless attack_box.clinked
+      attack_box.clinked = true
+      return
+
+    AUDIO\play "hurt_enemy"
 
     world.particles\add with BloodEmitter world, 0,0, thing\left_of @
       \attach (emitter) ->

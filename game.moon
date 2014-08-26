@@ -25,6 +25,9 @@ class Game
     @player = Player 0, 0
     @world\add_player @player
 
+  on_show: =>
+    AUDIO\play_music "level"
+
   draw: =>
     @world\draw!
     @hud_viewport\apply!
@@ -52,6 +55,8 @@ class Game
     @world\update dt
 
   game_over: =>
+    AUDIO\play "level_fail"
+
     import GameOverScreen, Transition from require "screens"
     go = GameOverScreen ->
       @set_world @world.map_name
@@ -61,6 +66,8 @@ class Game
 
   complete_stage: (map_name) =>
     import StageComplete from require "screens"
+    AUDIO\play "level_complete"
+
     elapsed = love.timer.getTime! - @world.start_time
     enemies_killed = 0
     for e in *@world.enemies
