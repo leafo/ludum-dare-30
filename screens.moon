@@ -100,6 +100,8 @@ class StageComplete extends Screen
   show_enemies: 0
   alpha: 0
 
+  lazy background: -> imgfy "images/stage_clear.png"
+
   new: (seconds, @enemies, @enemies_total, @callback_fn) =>
     super!
     @seconds = math.floor seconds % 60
@@ -132,25 +134,29 @@ class StageComplete extends Screen
     "%04d"\format math.floor num
 
   draw_inner: =>
-    g.setFont FONTS.number_font
+    @background\draw (@viewport.w - @background\width!) / 2
 
+
+    g.push!
+    g.translate 155, 150
+
+    g.setFont FONTS.number_font
     COLOR\pusha @alpha
-    g.print "#{"%02d"\format @minutes}:#{"%02d"\format @seconds}", 10, 10, 0, 2,2
+    g.print "#{"%02d"\format @minutes}:#{"%02d"\format @seconds}", 0, 0, 0, 2,2
     g.setFont FONTS.default
     COLOR\pop!
 
-    g.print "Elapsed", 10, 45
+    g.pop!
 
-    max_rect = 100
-    g.push!
-    g.translate 10, 100
+    max_rect = 142
+
+    p = @show_enemies/@enemies_total
 
     COLOR\push 240, 0, 0
-    g.rectangle "fill", 0, 0, @show_enemies/@enemies_total * max_rect, 20
+    g.rectangle "fill", 140, 112, p * max_rect, 10
     COLOR\pop!
 
-    g.print "#{@num @show_enemies} / #{@num @enemies_total}", max_rect + 5, 0
-    g.pop!
+    g.print "#{@num @show_enemies} / #{@num @enemies_total}", 160, 90
 
     if @visible
       @press_space\draw (@viewport.w - @press_space\width!) / 2,
