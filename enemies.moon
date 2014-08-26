@@ -654,6 +654,8 @@ class Towerguy extends Enemy
     cx, cy = @center!
     y = @y + @h
 
+    @world.checkpoint = Vec2d cx, cy
+
     for i=1,10
       @world.particles\add GibEmitter @world, cx , y
       y -= 10
@@ -663,6 +665,11 @@ class Towerguy extends Enemy
     @dying = @seqs\add Sequence ->
       @on_die!
       tween @, 0.5, alpha: 1
+
+      import CheckpointParticle from require "particles"
+      @world.particles\add CheckpointParticle cx, cy
+      AUDIO\play "confirm"
+
       @alive = false
 
 class Fanguy extends Enemy

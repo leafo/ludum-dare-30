@@ -29,7 +29,7 @@ class DirtEmitter extends ForeverEmitter
       180
     else
       0
-      
+
     vel = Vec2d.from_angle(angle)\random_heading(128) * rand(20, 40)
     Dirt x, y, vel
 
@@ -172,10 +172,21 @@ class GunSmokeEmitter extends Emitter
     spready = (random_normal! - 0.5) * 10
     Dust x + spreadx, y + spready, Vec2d(0,-5)\random_heading(60), Vec2d(0, -150)
 
+
+class CheckpointParticle extends ImageParticle
+  lazy sprite: => imgfy "images/checkpoint.png"
+
+  new: (...) =>
+    super ...
+    @w = @sprite\width!
+    @h = @sprite\height!
+    @accel[2] = -50
+
 {
   :DirtEmitter
   :BloodEmitter
   :GibEmitter
   :DustEmitter
   :GunSmokeEmitter
+  :CheckpointParticle
 }

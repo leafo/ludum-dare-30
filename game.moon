@@ -56,7 +56,7 @@ class Game
 
     import GameOverScreen, Transition from require "screens"
     go = GameOverScreen ->
-      @set_world @world.map_name
+      @set_world @world.map_name, @world.checkpoint
       DISPATCHER\pop!
 
     DISPATCHER\push go, Transition
@@ -75,11 +75,28 @@ class Game
       @set_world map_name
       DISPATCHER\pop!
 
-  set_world: (map_name) =>
+  set_world: (map_name, checkpoint) =>
+    old_world = @world
+
     world = World @, map_name
-    player = Player 0, 0
-    world\add_player player
+    @player = Player 0, 0
+    world\add_player @player
     @world = world
+
+    if checkpoint
+      if old_door = old_world.door
+        @world.door.have_energy = old_door.have_energy
+
+      killzone = Box 0, 0, @world.viewport.w/2, @world.viewport.h/2
+      killzone\move_center unpack checkpoint
+      for e in *@world.enemies
+        if e\touches_box killzone
+          if e.has_energy and @world.door
+            @world.door.have_energy += 1
+
+          @world.entities\remove e
+
+      @player.x, @player.y = unpack checkpoint
 
   on_key: (key) =>
     if key == "p"
@@ -88,6 +105,8 @@ class Game
   mousepressed: (x,y) =>
     return unless DEBUG
     x,y = @world.viewport\unproject x, y
-    @world.door\send_energy x,y
+    import CheckpointParticle from require "particles"
+    @world.particles\add CheckpointParticle x,y
+    -- @world.door\send_energy x,y
 
 { :Game }

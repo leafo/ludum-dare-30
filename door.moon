@@ -141,7 +141,7 @@ class Door extends Entity
     @vel += @world.gravity * dt
 
     if @needed_energy > 0
-      @filled = smooth_approach @filled, @have_energy/@needed_energy, dt
+      @filled = smooth_approach @filled, math.min(1,@have_energy/@needed_energy), dt
 
     vx, vy = unpack @vel
     cx, cy = @fit_move vx * dt, vy * dt, @world
@@ -189,7 +189,7 @@ class Door extends Entity
     tx, ty = @center!
     @world.particles\add EnergyEmitter @world, x, y, tx, ty, ->
       @have_energy += 1
-      if @have_energy/@needed_energy == 1
+      if @have_energy/@needed_energy >= 1
         @after_filled!
 
 {
