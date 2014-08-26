@@ -156,7 +156,7 @@ class PlatformMap extends TileMap
 class World
   gravity: Vec2d 0, 500
 
-  new: (@game, @map_name="maps.dev") =>
+  new: (@game, @map_name="maps.start") =>
     @start_time = love.timer.getTime!
     @background = Background!
     @viewport = EffectViewport scale: GAME_CONFIG.scale
@@ -213,6 +213,8 @@ class World
     assert @spawn_x, "map does not have spawn"
 
     @player.x, @player.y = @spawn_x, @spawn_y
+    @viewport\center_on_pt @player\center!
+
     @entities\add @player
 
   remove_player: =>

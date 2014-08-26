@@ -103,7 +103,7 @@ class Enemy extends Entity
   on_die: =>
     AUDIO\play "enemy_die"
 
-    if @world.door
+    if @world.door and @has_energy
       @world.door\send_energy @center!
 
   center: =>
