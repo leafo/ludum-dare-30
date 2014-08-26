@@ -18,5 +18,5 @@ love.conf = (t) ->
   t.window.width = 420 * GAME_CONFIG.scale
   t.window.height = 272 * GAME_CONFIG.scale
 
-  t.title = "the game"
-  t.author = "leafo + co"
+  t.title = "wallrun dot love"
+  t.author = "leafo + i.i"

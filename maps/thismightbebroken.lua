@@ -15,7 +15,7 @@ return {
       tileheight = 16,
       spacing = 0,
       margin = 0,
-      image = "../mappack2/images/tileset.png",
+      image = "../images/tileset.png",
       imagewidth = 144,
       imageheight = 144,
       properties = {},
