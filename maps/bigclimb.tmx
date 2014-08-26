@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="60" height="60" tilewidth="16" tileheight="16">
+ <tileset firstgid="1" name="tileset" tilewidth="16" tileheight="16">
+  <image source="../images/tileset.png" trans="ffffff" width="144" height="144"/>
+ </tileset>
+ <layer name="ground" width="60" height="60">
+  <data encoding="base64" compression="zlib">
+   eJztWslqAzEMHZpDIWnaQxZo6fIH3S7dLt0u3f7/d6pADUZIHtmSZZPmwYNmalt6I8nLzEyGYZgw1MJqHC04fTX09gBPvZPEby9gXWvgiriuwWE0NrbrDaxrDjwgrlvZ4X57wTOf54Rdb6Q0Tg39ouK7ZtrWRov5ucf47upXZ6f3+o3nbCs7AXtDv3qt4tvj+vuf6zfea1nY6b1+472WBmE/2Tq+1L7RO59bc8pcr62Xsyv9v7b9NsaXO/t56PUA1obPfin9WrTQG8Bp4s6+rfy0hDSPLfW2vo/eesM9XhiPm2vfSy9l0xveerFdb0i0ps6D+8BT4Fmh3TA2N8YBYf8ceIGu5figiW9pHqRsHRHtqL7SdlK7Ur0L1FbyfGDTLpz5cf8xnwdhu1p6c2sg1c/ymeWKGK+W3rHcpnLSAxq98XuS3LW1p/mZOkul+pe+g+lFr0c+4zEo4DWGetYScmxOtOf6S5iqMwu9OdT2bx1fao8Z/l4Kxo37b+aS4z+eEGNTpM7BHC6BV8Br4A3wtkBvQNyH8nNWOC62gUnNPxzugPfAB+Aj8EnQR+ufZg0bi3WYqzk8A1+Ar8A34Ptgq9fyW4P4uXBp/X4AP4FfwG/gj4FfGJZnSI3esftlDS+9kv45exTcP9dPvNamzoL4PMnVq9R3bXyl+ZVL7sylrV+tXm59nDHXMan1OeULZw+vwdwaoKmFMR80XKJ7MeYzXoM5pGrAWjMVc5y3XOxSWq3yOVezB7z0WnwDYoGUj5Kze25dtdZtkY+5mltBup9cJMbI1do6zh71W+ubgRiS5+0W329s/pfz3pwbV/p+IMdnKaXn/fjZUQ0/Skjl0lg8cs77uK9k/fdmSTykereF1HwqvWdj+cTNZ/E+sMYe25KxhtL6Dv1K+0u/weqxBnfcMZe/S6ch4Q==
+  </data>
+ </layer>
+ <layer name="collision layer" width="60" height="60" opacity="0.48">
+  <properties>
+   <property name="hidden" value="true"/>
+   <property name="solid" value="true"/>
+  </properties>
+  <data encoding="base64" compression="zlib">
+   eJztlksOwzAIROP7X7rbKLLj4TNAikfKIoYAT9TQ65prLM4lGk5xrEJq8OKtoEje8fIepaz+duA9/Y0XkpfV3yxF8T7fu/W34v31qqtSfy12SZ7T33id/avzkcbowNutvzPejAep1aosXm2tVmX3V1qrVZn3VZr7y7ya/Jl1eipyXt3zWeeJNT/i553z3/fvM15VXlZd2fP6zZ6Rl6kdL2LX7Djkv0HE2aw2xCbdcVreWU2ZvOgMzNhPnrzSmBXn1bWxr2yHV+fjLQ9eZJ5o4yO+mr0gzcGoAX2s32f39x5nTN6RWhGbF6/0GzQWY2dV4l3Fqcbr8Xve5e/Ee8/D5tXaGbvVi5dhR+uS+FXpr+R8FZ/9oDy72j3mM9I7aX/fZhyLV8vM7O+OZ2e33IWVP5uVzcuY1Vp58FpnfKQieCV+bHn0RzozMxXVX62/t5jzypKTpQxeNO/uW68dNYuvsTHrZorFq1E33gh15M26S5nqxnv0bf0Ak2sCZw==
+  </data>
+ </layer>
+ <objectgroup color="#29a456" name="objects" width="60" height="60">
+  <object name="spawn" x="157" y="642"/>
+  <object name="enemy" type="lilguy" x="576" y="800"/>
+  <object name="enemy" type="lilguy" x="576" y="800"/>
+  <object name="enemy" type="gunguy" x="784" y="784"/>
+  <object name="enemy" type="lilguy" x="512" y="608">
+   <properties>
+    <property name="has_energy" value="1"/>
+   </properties>
+  </object>
+  <object name="enemy" type="lilguy" x="496" y="208">
+   <properties>
+    <property name="has_energy" value="1"/>
+   </properties>
+  </object>
+  <object name="enemy" type="lilguy" x="560" y="208">
+   <properties>
+    <property name="has_energy" value="1"/>
+   </properties>
+  </object>
+  <object name="enemy" type="lilguy" x="624" y="208">
+   <properties>
+    <property name="has_energy" value="1"/>
+   </properties>
+  </object>
+  <object name="enemy" type="lilguy" x="704" y="208">
+   <properties>
+    <property name="has_energy" value="1"/>
+   </properties>
+  </object>
+  <object name="enemy" type="lilguy" x="784" y="208">
+   <properties>
+    <property name="has_energy" value="1"/>
+   </properties>
+  </object>
+  <object name="door" type="maps.start" x="688" y="96"/>
+  <object name="enemy" type="towerguy" x="822" y="560">
+   <properties>
+    <property name="has_energy" value="1"/>
+   </properties>
+  </object>
+  <object name="enemy" type="fanguy" x="608" y="381">
+   <properties>
+    <property name="has_energy" value="1"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="31" height="150" tilewidth="16" tileheight="16">
+ <tileset firstgid="1" name="dev_tiles" tilewidth="16" tileheight="16">
+  <image source="../mappack2/images/tileset.png" width="144" height="144"/>
+ </tileset>
+ <layer name="ground" width="31" height="150">
+  <data encoding="base64" compression="zlib">
+   eJztW4luFDEMHYEqEFugCBYJBKVQzpb7vu/75v9/BkfUkuU6jh0nmxZ40pN2Z5K8JOM4TiYzTYvBHLiXcdGgdRiBkdrY9lH4rz1GewV4pJBuifzeB9xP/kv5V4FnlPKWJ9s4PzRt9wmtqWG09vGO9dNwonCf6vO6zAr/F2Hvc6K7aG0JNdo0/VnguaD2QXKNjtk1lh7HHGIDuMnyW+vEbe6AcO0wy8NtXuo7rJNH2zsGEqQ50eM38De2ac7+e8Hrsw48L2jXlm9F8t9Xgdc660hI7bsHvD9I+znwxQDtNHY+AD8O0E7t/gn8NUhbGm/cH7UGjT04pGsRHy0hF49L1yR/aInLTgFPO+okabeM0fhcUNJOkNaNFvK5SIPmT6Nt9vjq9PwkG0vx2kklH71fSpvDboufWgHtZARGtZuO6d5+VsLovYi/AbjGroHXh+3JXK+B5M+ldUM0tvfot/bjPYFxyOoAbYxDRozdO8C7g7SfAp9Nf+x0BP7VeWK3zlHJN0v7KYi1afseaeQZ1/ozbCP6dw25PRnNn+b8euob6x7xZExTqovW/hbaPfBfe/FAm0026l0/R+GJddan7XuDNXsUuI8gjQtJO12T9gZrYoOSX7gipJf2BmtiA2yj5DNmQvp0XdobxNigl73iHCztDb4Dvu+oPW2VLe0Nfgf+6Kxd8s+t9+Q8QHtfm3aun0hjaZPkaQFpvEhrI1qnljaC+1uXgJczaaza1H5a2RLV1t5h0WezXEhbo51rt2eOaa2di89KkOY6ihWDNt5DW7Xuk2rvwfhza+0LLfH0orS9z83yDjeH6HtUKa5YNKit7/RYcrR26TyRF2lc4/gu2dHItcbo84g8vkq/pWeRG8fUpqP2nbOT3BpE84ve8R7RlujRp76OxiAl7ZQeYyA+r9aArt9yZeTmzKgd0/Wbt4zovjBdv0llaLFHdO1H129SGVrsEV370fWbVIZ2BqfF2k9bO5TO4ETmdbq/IEE7g2MZ+1ZK0M7gYF9JZXnfn0n9lq5r5zOs7Zfia+rjcn7NCu6DLgAvGvNGtSMYNce30NZ8YI027jlK70kS8Ax67hxi6d3nbKtcri2dZZLqi+Q+0Jtfu1e6L/nAiDaPEfhYp+NX8oE4znI+W/PnHtScQ4zEHlHsVu1onfl8Qs8jlr45ofXmaVec2t65tuUcbnnfyLU5eBkzZ5lzko/ntcAyn2v78FoMQGH5DqkGJV2apqc2B84VMyVNLfg8VKpb67Zbys09k6gdRNoU7QvM7/0+ocV7OtT2fp/QYq2G47/m+4Ron+N6zRsXaOf7NR2Lz7Ug6oOPNtC25JW0Iz6L518qpO3R55Q5f9NaW4sFStq0vyLfPmEdNNvR2tz72ydNu9e3T/x8i8Qe3z6V/EmvuXly6LbUtrT3WAdtTVeLpaUyvPD0c05buqbFSB670rRTObMpX58elOru1ebn07wsrRGuA28AbwJvAW+Te9K5VYu9W7/zfwB8CHwEfAx8EmindYxhupfAV8DXwDfAt5nyPP1v1f4E/Az8AvwK/JYpz9P/Vu0e1M4RbRjLiNp5hF47j5DPCTn+BmxqQ2U=
+  </data>
+ </layer>
+ <layer name="collision layer" width="31" height="150" opacity="0.49">
+  <properties>
+   <property name="hidden" value="true"/>
+   <property name="solid" value="true"/>
+  </properties>
+  <data encoding="base64" compression="zlib">
+   eJztl9sOwyAMQ9v//+k9IU1VAYfYBEosVdsE5GQst13XPN2PJ0Knsgs/2cmexUbi/VkT2M/K7J5UbFT34z3yOSLmduwpzN/Iyx71hRGHtX2M3EX0dhcou3beI0bdYGinXEp2spnsyByrsWf41GJHzkNqds+v6DlshlbMw2R/k134KZ+Uc/vKNTVjJ06n1qxkn8UufLV9Rl3z1E8Lu7ZHzbbczYgPLDZbyT6THTHr1HKztw9da+2PYJczLT+UbItOZRfGqtqhTtyPVwW/tYfNRrQL2zKHsNiqHoN+b1V/Q9mjdpF1dqwx51glu2XDw/ecnT0/tfyIZEfOkiv8Dkj+nhojhf/2vrZH6cfbXbT+B7DijMlm9Zge27Jm8cN7h8nmsdW1awV2bW1FNpL76DPCZvjQs6/WSKx9lT1LO7M9/RTp38r1ldiob1dl/eqseWtyz37vTFSM78pm5OUKM5O157F7uJXN/j6t84hQlsX3CPVqltIv9G5OYf/zVYrsE8lO9g5sRo/3sL093suePRt5+rCXXfNhJtujyLlB2R8jeiRiV8FGbbLZlnhvzdCjXOsZhg0Ve+T/h4XdsqXOw14uqtiMPclONmJXlb/R+gHhgwM8
+  </data>
+ </layer>
+ <objectgroup name="objects" width="31" height="150">
+  <object name="spawn" x="189" y="2323"/>
+  <object name="enemy" type="lilguy" x="80" y="1776"/>
+  <object name="enemy" type="lilguy" x="176" y="816"/>
+  <object name="enemy" type="lilguy" x="304" y="816"/>
+  <object name="enemy" type="lilguy" x="320" y="624"/>
+  <object name="enemy" type="gunguy" x="240" y="624"/>
+  <object name="enemy" type="lilguy" x="160" y="624"/>
+  <object name="enemy" type="lilguy" x="240" y="432"/>
+  <object name="enemy" type="lilguy" x="160" y="432"/>
+  <object name="enemy" type="gunguy" x="320" y="432"/>
+  <object name="enemy" type="lilguy" x="400" y="1520"/>
+  <object name="enemy" type="gunguy" x="480" y="960"/>
+  <object name="enemy" type="gunguy" x="432" y="1776"/>
+  <object name="enemy" type="lilguy" x="304" y="1520"/>
+  <object name="enemy" type="fanguy" x="400" y="1200"/>
+  <object name="enemy" type="towerguy" x="352" y="1440"/>
+  <object name="enemy" type="fanguy" x="215" y="224">
+   <properties>
+    <property name="has_energy" value="1"/>
+   </properties>
+  </object>
+  <object name="enemy" type="lilguy" x="345" y="1073"/>
+  <object name="enemy" type="towerguy" x="107" y="1079"/>
+  <object name="enemy" type="fanguy" x="65" y="491"/>
+  <object name="door" type="maps.bigclimb" x="384" y="49"/>
+ </objectgroup>
+</map>

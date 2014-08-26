@@ -55,4 +55,3 @@ love.load = ->
   DISPATCHER.default_transition = FadeTransition
   DISPATCHER\bind love
 
-

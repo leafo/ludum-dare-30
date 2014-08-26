@@ -197,7 +197,18 @@ class World
             @door = Door o.x, o.y
             @door.target_map = o.type
             @entities\add @door
+          when "directions"
+            img = imgfy "images/directions.png"
+            t = { a: 0 }
+            @seqs\add Sequence ->
+              tween t, 1.0, a: 255
 
+            @entities\add with Box o.x, o.y, 1,1
+              .draw = =>
+                COLOR\pusha t.a
+                img\draw @x, @y
+                COLOR\pop!
+              .update = => true
     }
 
     @map_box = @map\to_box!
@@ -305,7 +316,6 @@ class World
 
   stop_audio: (callback) =>
     @game.seqs\add AUDIO\fade_music 1.0, callback
-
 
   __tostring: =>
     "<World>"

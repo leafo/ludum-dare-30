@@ -143,7 +143,7 @@ return {
         },
         {
           name = "door",
-          type = "",
+          type = "maps.thismightbebroken",
           shape = "rectangle",
           x = 128,
           y = 48,
@@ -171,6 +171,17 @@ return {
           shape = "rectangle",
           x = 624,
           y = 352,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "directions",
+          type = "",
+          shape = "rectangle",
+          x = 321,
+          y = 417,
           width = 0,
           height = 0,
           visible = true,

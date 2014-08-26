@@ -19,12 +19,13 @@
  </layer>
  <objectgroup color="#29a456" name="objects" width="60" height="34">
   <object name="spawn" x="240" y="464"/>
-  <object name="door" x="128" y="48"/>
+  <object name="door" type="maps.thismightbebroken" x="128" y="48"/>
   <object name="enemy" type="lilguy" x="208" y="112">
    <properties>
     <property name="has_energy" value="1"/>
    </properties>
   </object>
   <object name="enemy" type="lilguy" x="624" y="352"/>
+  <object name="directions" x="321" y="417"/>
  </objectgroup>
 </map>
