@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="60" height="34" tilewidth="16" tileheight="16">
+ <tileset firstgid="1" name="tileset" tilewidth="16" tileheight="16">
+  <image source="../images/tileset.png" trans="ffffff" width="144" height="144"/>
+ </tileset>
+ <layer name="ground" width="60" height="34">
+  <data encoding="base64" compression="zlib">
+   eJztmOlKAzEURoN1QxRbRIUyKi71h/u+C+7gju//Mn6BDg4x272TxFDng0Nhsp7JTNqmJYRoif+Tlmh8BzmNLz2rYC3AXOpmGaw46tT1lW23wDahTRt0+p8hswE2xY+TDW5k22NwQmwT4z06BEcivq/ki9EmtO8HmBVpfDltYu2T3Qom/ylGv4XI09c2Xii446eIbr4zhuspfcs9u0MVIozHYR30+p/l+8Ed3+d63fjuYb5r2SWMPW/pK+ZznurZ1aXcN+csczLF9RvFVM51VecYMi5f170oy3XOf7W2tlTfM118fdU6heC5xlzbanqG6659Qpa79oVc1jZUdPeE6zudYL4xMsjrq0uOvoWjfKFG37n5Lnr0L8uXmP3n5Dvp2X9Zh/M/Loavz9mRmqqrzUX9/pT12g5MbUP5Us6OUjMRwZdydpQLO2AX7IF9cEDwvQLXGThQOAVn4BxcgEuC7yN4ysCBwg24BXfgHjwQfOXZ4GcGDhSewQt4BW/gXSkfA+OK5zAYAaMZzL8hHkMZzKHhN9+MTxhe
+  </data>
+ </layer>
+ <layer name="collision layer" width="60" height="34" opacity="0.48">
+  <properties>
+   <property name="hidden" value="true"/>
+   <property name="solid" value="true"/>
+  </properties>
+  <data encoding="base64" compression="zlib">
+   eJztl9EOgCAIRfH/f7qnttY0DLiIyNlcPQB6cjlsRNToHBqVb2bKNzda32jfq00ObX3pmqzh6q7yfT6t+drPjL6j+e73E321QzL/Cl9J7o6+0rl6eVa+6HPbM+9do+eF3HdJTXRvEdEXCeer6SWkPREabs0zvpZnTHRG50JW3x4R/10k5YvJiUJEX66+tgf2yPlTe8bXsyf0uJtbxI1yETmau6RFjNV99Y9vFspXFrML5SuL2QXUOVgUllz/hwDX
+  </data>
+ </layer>
+ <objectgroup color="#29a456" name="objects" width="60" height="34">
+  <object name="spawn" x="240" y="464"/>
+  <object name="door" x="128" y="48"/>
+  <object name="enemy" type="lilguy" x="208" y="112">
+   <properties>
+    <property name="has_energy" value="1"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>
