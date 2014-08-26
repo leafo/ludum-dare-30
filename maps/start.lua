@@ -164,6 +164,17 @@ return {
           properties = {
             ["has_energy"] = "1"
           }
+        },
+        {
+          name = "enemy",
+          type = "lilguy",
+          shape = "rectangle",
+          x = 624,
+          y = 352,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
         }
       }
     }

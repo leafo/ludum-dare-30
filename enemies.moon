@@ -333,6 +333,10 @@ class Lilguy extends Enemy
       callback and callback!
 
   die: =>
+    if @attacking
+      @attacking = false
+      @seqs\remove @attacking
+
     @anim\set_state "die_#{@facing}"
     @dying = @seqs\add Sequence ->
       @on_die!

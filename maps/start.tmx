@@ -25,5 +25,6 @@
     <property name="has_energy" value="1"/>
    </properties>
   </object>
+  <object name="enemy" type="lilguy" x="624" y="352"/>
  </objectgroup>
 </map>

@@ -702,6 +702,7 @@ class Player extends Entity
 
     @dying = @seqs\add S "dying", ->
       AUDIO\play "player_die"
+      @world\stop_audio!
       await (done) ->
         speed = 200 + 300 * random_normal!
         dir = Vec2d(0, -1)\random_heading(140) * speed

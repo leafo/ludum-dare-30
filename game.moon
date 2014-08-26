@@ -25,9 +25,6 @@ class Game
     @player = Player 0, 0
     @world\add_player @player
 
-  on_show: =>
-    AUDIO\play_music "level"
-
   draw: =>
     @world\draw!
     @hud_viewport\apply!

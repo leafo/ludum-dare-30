@@ -155,6 +155,7 @@ class PlatformMap extends TileMap
 
 class World
   gravity: Vec2d 0, 500
+  seen_enemy: false
 
   new: (@game, @map_name="maps.start") =>
     @start_time = love.timer.getTime!
@@ -267,6 +268,16 @@ class World
     @viewport\center_on @player, @map_box, dt
     -- @viewport\center_on @player, nil, dt
 
+    -- see if enemy in sight
+    unless @seen_enemy
+      b = Box(0,0, @viewport.w/2, @viewport.h/2)
+      b\move_center @player\center!
+
+      for thing in *@collider\get_touching b
+        continue unless thing.is_enemy
+        @seen_enemy = true
+        @start_audio!
+
     if attack_box = @player.attack_box
       for thing in *@collider\get_touching attack_box
         continue unless thing.is_enemy or thing.is_bullet
@@ -286,7 +297,15 @@ class World
 
       if thing.is_door and thing\is_ready!
         thing.is_ready = -> false
-        @game\complete_stage thing.target_map
+        @seqs\add @stop_audio ->
+          @game\complete_stage thing.target_map
+
+  start_audio: =>
+    AUDIO\play_music "level"
+
+  stop_audio: (callback) =>
+    @game.seqs\add AUDIO\fade_music 1.0, callback
+
 
   __tostring: =>
     "<World>"
