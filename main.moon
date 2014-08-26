@@ -39,6 +39,7 @@ love.load = ->
     "clink"
     "confirm"
     "no_hurt"
+    "door_ready"
   }
 
   export FONTS = fonts

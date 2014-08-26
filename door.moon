@@ -158,6 +158,7 @@ class Door extends Entity
     true
 
   after_filled: =>
+    AUDIO\play "door_ready"
     @filled = 1
     @anim\set_state "filled"
 
