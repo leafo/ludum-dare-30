@@ -136,7 +136,6 @@ class StageComplete extends Screen
   draw_inner: =>
     @background\draw (@viewport.w - @background\width!) / 2
 
-
     g.push!
     g.translate 155, 150
 

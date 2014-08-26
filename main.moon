@@ -1,14 +1,14 @@
 require "lovekit.all"
 
-if pcall(-> require"inotify")
-  require "lovekit.reloader"
+-- if pcall(-> require"inotify")
+--   require "lovekit.reloader"
 
 {graphics: g} = love
 
 import TitleScreen, GameOverScreen, StageComplete from require "screens"
 import Game from require "game"
 
-export DEBUG = true
+export DEBUG = false
 
 load_font = (img, chars)->
   font_image = imgfy img
