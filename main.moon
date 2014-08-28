@@ -43,7 +43,7 @@ love.load = ->
   }
 
   export FONTS = fonts
-  export CONTROLLER = Controller GAME_CONFIG.keys
+  export CONTROLLER = Controller GAME_CONFIG.keys, "auto"
 
   init = if DEBUG
     Game!
