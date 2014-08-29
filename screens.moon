@@ -50,11 +50,7 @@ class GameOverScreen extends Screen
   update: (dt) =>
     @seq\update dt
 
-
-  on_key: =>
-    return unless @ready
-
-    if CONTROLLER\is_down "confirm", "cancel"
+    if @ready and CONTROLLER\is_down "confirm", "cancel"
       AUDIO\play "confirm"
       @callback_fn and @callback_fn!
       @ready = false
@@ -78,6 +74,10 @@ class TitleScreen extends Screen
 
   update: (dt) =>
     @seq\update dt
+    if @ready and CONTROLLER\is_down "confirm", "cancel"
+      AUDIO\play "confirm"
+      DISPATCHER\replace @new_game, Transition
+      @ready = false
 
   draw_inner: =>
     COLOR\pusha @alpha
@@ -88,13 +88,6 @@ class TitleScreen extends Screen
       @press_space\draw (@viewport.w - @press_space\width!) / 2,
         @viewport.h - @press_space\height! - 30
 
-  on_key: =>
-    return unless @ready
-
-    if CONTROLLER\is_down "confirm", "cancel"
-      AUDIO\play "confirm"
-      DISPATCHER\replace @new_game, Transition
-      @ready = false
 
 class StageComplete extends Screen
   show_enemies: 0
@@ -121,11 +114,7 @@ class StageComplete extends Screen
   update: (dt) =>
     @seq\update dt
     @show_enemies = smooth_approach @show_enemies, @enemies, dt * 3
-
-  on_key: =>
-    return unless @ready
-
-    if CONTROLLER\is_down "confirm", "cancel"
+    if @ready and CONTROLLER\is_down "confirm", "cancel"
       AUDIO\play "confirm"
       @callback_fn and @callback_fn!
       @ready = false
