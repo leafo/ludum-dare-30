@@ -157,7 +157,7 @@ class World
   gravity: Vec2d 0, 500
   seen_enemy: false
 
-  new: (@game, @map_name="maps.start") =>
+  new: (@game, @map_name="maps.dev") =>
     @start_time = love.timer.getTime!
     @background = Background!
     @viewport = EffectViewport scale: GAME_CONFIG.scale
@@ -179,8 +179,7 @@ class World
       object: (o) ->
         switch o.name
           when "spawn"
-            @spawn_x = o.x
-            @spawn_y = o.y
+            @add_spawn o.x, o.y
           when "enemy"
             cls = find_enemy o.type
             e = cls o.x, o.y
@@ -218,6 +217,10 @@ class World
     import RedGlow from require "shaders"
     @shader = RedGlow @viewport
 
+  add_spawn: (sx,sy) =>
+    @spawn_x = sx
+    @spawn_y = sy
+
   add_player: (player) =>
     error "there is already a player" if @player
     @player = player
@@ -228,11 +231,6 @@ class World
     @viewport\center_on_pt @player\center!
 
     @entities\add @player
-
-  remove_player: =>
-    with @player
-      @entities\remove @player
-      @player = nil
 
   collides: (thing) =>
     return true unless @map_box\contains_box thing
@@ -273,11 +271,9 @@ class World
       @collider\add e
 
     @viewport\update dt
+    @viewport\center_on @, @map_box, dt
 
     return unless @player
-
-    @viewport\center_on @player, @map_box, dt
-    -- @viewport\center_on @player, nil, dt
 
     -- see if enemy in sight
     unless @seen_enemy
@@ -311,11 +307,14 @@ class World
         @seqs\add @stop_audio ->
           @game\complete_stage thing.target_map
 
+  looking_at: (...) =>
+    @player\looking_at ...
+
   start_audio: =>
-    AUDIO\play_music "level"
+    -- AUDIO\play_music "level"
 
   stop_audio: (callback) =>
-    @game.seqs\add AUDIO\fade_music 1.0, callback
+    -- @game.seqs\add AUDIO\fade_music 1.0, callback
 
   __tostring: =>
     "<World>"

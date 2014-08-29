@@ -17,7 +17,7 @@ class Game
   shroud_a: 0
   deaths: 0
 
-  new: =>
+  new: (@world_cls=World)=>
     @hud_viewport = EffectViewport scale: GAME_CONFIG.scale
     @set_world! -- loads default world
 
@@ -73,7 +73,7 @@ class Game
   set_world: (map_name, checkpoint) =>
     old_world = @world
 
-    world = World @, map_name
+    world = @world_cls map_name
     @player = Player CONTROLLER, 0, 0
     world\add_player @player
     @world = world

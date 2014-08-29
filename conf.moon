@@ -12,6 +12,14 @@ export GAME_CONFIG = {
     left: "left"
     right: "right"
   }
+
+  joystick_binding: {
+    confirm: { joystick: 1 }
+    cancel: { joystick: 2 }
+
+    attack: { joystick: 2 }
+    jump: { joystick: 1 }
+  }
 }
 
 love.conf = (t) ->
