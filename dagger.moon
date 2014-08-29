@@ -47,6 +47,12 @@ class Dagger extends Entity
     true
 
   draw: =>
+    if @shader
+      @shader\render @\draw_without_shader
+    else
+      @draw_without_shader!
+
+  draw_without_shader: =>
     if @on_ground
       @stopped\draw @x - @ox, @y - @oy
     else

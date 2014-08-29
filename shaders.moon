@@ -54,5 +54,34 @@ class RedGlow extends FullScreenShader
   ]]
     
 
+class ColorShader
+  new: (@source_color, @dest_color) =>
+    @shader = g.newShader @shader!
 
-{ :RedGlow  }
+  shader: -> [[
+    extern vec3 source_color;
+    extern vec3 dest_color;
+
+    vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords) {
+      vec4 c = Texel(texture, texture_coords);
+
+      if (c.rgb == source_color) {
+        c = vec4(dest_color, 1);
+      }
+
+      return c * color;
+    }
+  ]]
+
+  send: =>
+    @shader\send "source_color", @source_color
+    @shader\send "dest_color", @dest_color
+
+  render: (fn) =>
+    g.setShader @shader
+    @send!
+    fn!
+    g.setShader!
+
+
+{ :RedGlow, :ColorShader  }

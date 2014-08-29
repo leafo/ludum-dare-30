@@ -184,6 +184,14 @@ class Player extends Entity
 
       }
 
+  set_color: (r,g,b) =>
+    import ColorShader from require "shaders"
+    @shader = ColorShader {
+      240/255,0,0
+    }, {
+      r/255,g/255,b/255
+    }
+
   draw: (...) =>
     if DEBUG
       if @wall_running
@@ -198,7 +206,13 @@ class Player extends Entity
     COLOR\pusha @alpha if @alpha != 255
 
     @effects\before!
-    @anim\draw @x, @y
+
+    if @shader
+      @shader\render ->
+        @anim\draw @x, @y
+    else
+      @anim\draw @x, @y
+
     @effects\after!
 
     COLOR\pop! if @alpha != 255
@@ -707,6 +721,8 @@ class Player extends Entity
         speed = 200 + 300 * random_normal!
         dir = Vec2d(0, -1)\random_heading(140) * speed
         @lost_dagger = Dagger @x, @y, dir, done
+        @lost_dagger.shader = @shader
+
         @world.particles\add @lost_dagger
 
         tween @, 0.5, alpha: 0

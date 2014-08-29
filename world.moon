@@ -214,8 +214,8 @@ class World
     @particles = DrawList!
     @ledge_zones = @map\find_ledge_zones!
 
-    import RedGlow from require "shaders"
-    @shader = RedGlow @viewport
+    -- import RedGlow from require "shaders"
+    -- @shader = RedGlow @viewport
 
   add_spawn: (sx,sy) =>
     @spawn_x = sx
@@ -241,21 +241,27 @@ class World
     @map\collides_pt x,y
 
   draw: =>
-    @shader\render ->
-      @background\draw @viewport
+    if @shader
+      @shader\render @\draw_without_shader
+    else
+      @draw_without_shader!
 
-      @viewport\apply!
+  draw_without_shader: =>
+    @background\draw @viewport
 
-      @map\draw @viewport
-      @entities\draw!
-      @particles\draw!
+    @viewport\apply!
 
-      if DEBUG
-        COLOR\pusha 60
-        @ledge_zones\draw!
-        COLOR\pop!
+    @map\draw @viewport
+    @entities\draw!
+    @particles\draw!
 
-      @viewport\pop!
+    if DEBUG
+      COLOR\pusha 60
+      @ledge_zones\draw!
+      COLOR\pop!
+
+    @viewport\pop!
+
 
   update: (dt) =>
     @particles\update dt, @
