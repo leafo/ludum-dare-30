@@ -52,7 +52,7 @@ love.load = ->
   init = if true -- DEBUG
     Game MultiWorld, =>
       p2 = Player CONTROLLER_2, 0,0
-      p2\set_color 0,240,0
+      p2\set_color 60,60,240
       @world\add_player p2
   else
     TitleScreen Game!
