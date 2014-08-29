@@ -23,6 +23,7 @@ class Player extends Entity
   is_player: true
 
   speed: 100
+  run_speed: 160
   jump_power: 200
 
   on_ground: false
@@ -307,7 +308,7 @@ class Player extends Entity
 
   -- slow the dx based on how long they've been holding direciton
   movement_vector: (dt) =>
-    dx, dy = unpack CONTROLLER\movement_vector! * dt * @speed
+    dx, dy = unpack CONTROLLER\movement_vector!
 
     left_down = CONTROLLER\is_down "left"
     right_down = CONTROLLER\is_down "right"
@@ -352,7 +353,6 @@ class Player extends Entity
 
     if elapsed
       @run_scale = math.min(accel_time, elapsed) / accel_time * 0.4 + 0.6
-      dx = @run_scale * dx
 
     dx, dy
 
@@ -366,10 +366,10 @@ class Player extends Entity
       @facing = if dx < 0 then "left" else "right"
 
     unless @taking_hit or @dying or @stunned
-      if CONTROLLER\is_down "jump"
+      if not @jumping and CONTROLLER\is_down "jump"
         @jump!
-      elseif CONTROLLER\is_down "attack"
-        @attack not @on_ground and dy > 0
+      elseif not @attacking and CONTROLLER\is_down "attack"
+        @attack not @on_ground and CONTROLLER\direction_is_down "down"
 
     motion = if @attacking
       "attack"
@@ -391,7 +391,7 @@ class Player extends Entity
       @velocity[1] = dampen @velocity[1], dt * 200
 
     vx, vy = unpack @velocity
-    vx += dx * @speed * @dampen_movement
+    vx += dx * @run_scale * @run_speed * @dampen_movement
 
     cx, cy = @fit_move vx * dt, vy * dt, @world
 
