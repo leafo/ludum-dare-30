@@ -272,7 +272,9 @@ class World
 
     @viewport\update dt
     @viewport\center_on @, @map_box, dt
+    @update_player dt
 
+  update_player: (dt) =>
     return unless @player
 
     -- see if enemy in sight
@@ -306,6 +308,7 @@ class World
         thing.is_ready = -> false
         @seqs\add @stop_audio ->
           @game\complete_stage thing.target_map
+
 
   looking_at: (...) =>
     @player\looking_at ...

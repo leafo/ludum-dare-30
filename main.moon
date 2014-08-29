@@ -44,11 +44,18 @@ love.load = ->
 
   export FONTS = fonts
   export CONTROLLER = Controller GAME_CONFIG.keys, "auto"
+  export CONTROLLER_2 = Controller GAME_CONFIG.joystick_binding, "auto"
 
-  init = if DEBUG
-    Game!
+  import MultiWorld from require "multi_world"
+  import Player from require "player"
+
+  init = if true -- DEBUG
+    Game MultiWorld, =>
+      print "post setup"
+      @world\add_player Player CONTROLLER_2, 0,0
   else
     TitleScreen Game!
+
 
   export DISPATCHER = Dispatcher init
 

@@ -34,4 +34,16 @@ class MultiWorld extends World
     count = #@players
     sum_x / count, sum_y / count
 
+  update_player: (dt) =>
+    for player in *@players
+      attack_box = player.attack_box
+      continue unless attack_box
+
+      for thing in *@collider\get_touching attack_box
+        continue if thing == player
+
+        if thing.take_hit
+          thing\take_hit @, player, attack_box
+          player\after_hit @, thing
+
 { :MultiWorld }

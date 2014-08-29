@@ -645,7 +645,6 @@ class Player extends Entity
       cx + 20, cy
 
   take_hit: (world, thing) =>
-    return if true
     return if @taking_hit or @dying
     @end_wall_run!
     @end_attack!

@@ -17,7 +17,7 @@ class Game
   shroud_a: 0
   deaths: 0
 
-  new: (@world_cls=World)=>
+  new: (@world_cls=World, @post_world_fn) =>
     @hud_viewport = EffectViewport scale: GAME_CONFIG.scale
     @set_world! -- loads default world
 
@@ -92,6 +92,8 @@ class Game
           @world.entities\remove e
 
       @player.x, @player.y = unpack checkpoint
+
+    @post_world_fn!
 
   on_key: (key) =>
     if key == "p"
