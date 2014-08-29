@@ -19,11 +19,7 @@ class Game
 
   new: =>
     @hud_viewport = EffectViewport scale: GAME_CONFIG.scale
-    @seqs = DrawList!
-
-    @world = World @
-    @player = Player 0, 0
-    @world\add_player @player
+    @set_world! -- loads default world
 
   draw: =>
     @world\draw!
@@ -48,7 +44,6 @@ class Game
 
   update: fixed_time_step 60, (dt) =>
     return if @paused
-    @seqs\update dt
     @world\update dt
 
   game_over: =>
@@ -79,7 +74,7 @@ class Game
     old_world = @world
 
     world = World @, map_name
-    @player = Player 0, 0
+    @player = Player CONTROLLER, 0, 0
     world\add_player @player
     @world = world
 

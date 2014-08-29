@@ -40,7 +40,7 @@ class Player extends Entity
 
   lazy sprite: -> Spriter "images/protagonist.png"
 
-  new: (x,y) =>
+  new: (@controller, x,y) =>
     super x, y
     @was_down = {}
     @seqs = DrawList!
@@ -225,7 +225,7 @@ class Player extends Entity
       @update_for_gravity dt
 
     if not @can_attack
-      @can_attack = not CONTROLLER\is_down "attack"
+      @can_attack = not @controller\is_down "attack"
 
     @position_attack_box!
 
@@ -238,7 +238,7 @@ class Player extends Entity
     true
 
   update_for_ledge_grab: (dt) =>
-    dx, dy = unpack CONTROLLER\movement_vector! * dt * @speed
+    dx, dy = unpack @controller\movement_vector! * dt * @speed
     @on_ground = false
 
     dir = @ledge_grabbing.is_left and "left" or "right"
@@ -250,13 +250,13 @@ class Player extends Entity
     @y = @ledge_grabbing.tile.y
 
     if not @can_ledge_jump
-      @can_ledge_jump = not CONTROLLER\is_down "jump"
+      @can_ledge_jump = not @controller\is_down "jump"
 
-    if @can_ledge_jump and CONTROLLER\is_down "jump"
+    if @can_ledge_jump and @controller\is_down "jump"
       @ledge_jump dx, dy
 
   update_for_wall_run: (dt) =>
-    dx, dy = unpack CONTROLLER\movement_vector! * dt * @speed
+    dx, dy = unpack @controller\movement_vector! * dt * @speed
     @on_ground = false
 
     @step_time += dt
@@ -275,7 +275,7 @@ class Player extends Entity
 
     @feet_emitter.x, @feet_emitter.y = @feet_position!
 
-    if CONTROLLER\is_down @wall_run_up_key
+    if @controller\is_down @wall_run_up_key
       @velocity[2] = -math.abs(dx) * @speed
     else
       if @velocity[2] < 0
@@ -284,9 +284,9 @@ class Player extends Entity
       @velocity += @world.gravity * dt
 
     if not @can_wall_jump
-      @can_wall_jump = not CONTROLLER\is_down "jump"
+      @can_wall_jump = not @controller\is_down "jump"
 
-    if @can_wall_jump and CONTROLLER\is_down "jump"
+    if @can_wall_jump and @controller\is_down "jump"
       @jump @world
 
     cx, cy = @fit_move @velocity[1] * dt, @velocity[2] * dt, @world
@@ -308,10 +308,10 @@ class Player extends Entity
 
   -- slow the dx based on how long they've been holding direciton
   movement_vector: (dt) =>
-    dx, dy = unpack CONTROLLER\movement_vector!
+    dx, dy = unpack @controller\movement_vector!
 
-    left_down = CONTROLLER\is_down "left"
-    right_down = CONTROLLER\is_down "right"
+    left_down = @controller\is_down "left"
+    right_down = @controller\is_down "right"
 
     if left_down and not @was_down.left
       @step_time = @step_rate
@@ -366,10 +366,10 @@ class Player extends Entity
       @facing = if dx < 0 then "left" else "right"
 
     unless @taking_hit or @dying or @stunned
-      if not @jumping and CONTROLLER\is_down "jump"
+      if not @jumping and @controller\is_down "jump"
         @jump!
-      elseif not @attacking and CONTROLLER\is_down "attack"
-        @attack not @on_ground and CONTROLLER\direction_is_down "down"
+      elseif not @attacking and @controller\is_down "attack"
+        @attack not @on_ground and @controller\direction_is_down "down"
 
     motion = if @attacking
       "attack"
@@ -645,6 +645,7 @@ class Player extends Entity
       cx + 20, cy
 
   take_hit: (world, thing) =>
+    return if true
     return if @taking_hit or @dying
     @end_wall_run!
     @end_attack!
