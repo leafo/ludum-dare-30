@@ -93,7 +93,8 @@ class Game
 
       @player.x, @player.y = unpack checkpoint
 
-    @post_world_fn!
+    if @post_world_fn
+      @post_world_fn!
 
   on_key: (key) =>
     if key == "p"
