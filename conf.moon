@@ -1,11 +1,11 @@
 export GAME_CONFIG = {
   scale: 2
   keys: {
-    confirm: { "x", " ", joystick: 1 }
+    confirm: { "x", "space", joystick: 1 }
     cancel: { "c", joystick: 2 }
 
     attack: { "c", "return", joystick: 2 }
-    jump: { "x", " ", joystick: 1 }
+    jump: { "x", "space", joystick: 1 }
 
     up: "up"
     down: "down"

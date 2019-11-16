@@ -11,8 +11,7 @@ import Game from require "game"
 export DEBUG = false
 
 load_font = (img, chars)->
-  font_image = imgfy img
-  g.newImageFont font_image.tex, chars
+  g.newImageFont img, chars
 
 love.load = ->
   fonts = {
@@ -44,19 +43,18 @@ love.load = ->
 
   export FONTS = fonts
   export CONTROLLER = Controller GAME_CONFIG.keys, "auto"
-  export CONTROLLER_2 = Controller GAME_CONFIG.joystick_binding, "auto"
 
   import MultiWorld from require "multi_world"
   import Player from require "player"
 
-  init = if true -- DEBUG
+  init = if DEBUG
     Game MultiWorld, =>
+      export CONTROLLER_2 = Controller GAME_CONFIG.joystick_binding, "auto"
       p2 = Player CONTROLLER_2, 0,0
       p2\set_color 60,60,240
       @world\add_player p2
   else
     TitleScreen Game!
-
 
   export DISPATCHER = Dispatcher init
 
