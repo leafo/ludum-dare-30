@@ -44,10 +44,10 @@ love.load = ->
   export FONTS = fonts
   export CONTROLLER = Controller GAME_CONFIG.keys, "auto"
 
-  import MultiWorld from require "multi_world"
   import Player from require "player"
 
   init = if DEBUG
+    import MultiWorld from require "multi_world"
     Game MultiWorld, =>
       export CONTROLLER_2 = Controller GAME_CONFIG.joystick_binding, "auto"
       p2 = Player CONTROLLER_2, 0,0

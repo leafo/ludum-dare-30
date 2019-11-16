@@ -157,7 +157,7 @@ class World
   gravity: Vec2d 0, 500
   seen_enemy: false
 
-  new: (@game, @map_name="maps.dev") =>
+  new: (@game, @map_name="maps.start") =>
     @start_time = love.timer.getTime!
     @background = Background!
     @viewport = EffectViewport scale: GAME_CONFIG.scale
