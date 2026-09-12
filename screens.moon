@@ -52,8 +52,16 @@ class GameOverScreen extends Screen
 
   update: (dt) =>
     @seq\update dt
+    return unless @ready
 
-    if @ready and CONTROLLER\is_down "confirm", "cancel"
+    -- start abandons the run and goes back to the title
+    if CONTROLLER\downed "pause"
+      AUDIO\play "confirm"
+      DISPATCHER\reset new_title!
+      @ready = false
+      return
+
+    if CONTROLLER\is_down "confirm", "cancel"
       AUDIO\play "confirm"
       @callback_fn and @callback_fn!
       @ready = false

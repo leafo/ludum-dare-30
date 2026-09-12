@@ -114,7 +114,8 @@ love.load = (args) ->
       p2\set_color 60,60,240
       @world\add_player p2
 
-  export DISPATCHER = Dispatcher TitleScreen Game!, new_multiplayer_game
+  export new_title = -> TitleScreen Game!, new_multiplayer_game
+  export DISPATCHER = Dispatcher new_title!
 
   DISPATCHER.default_transition = FadeTransition
   DISPATCHER\bind love
