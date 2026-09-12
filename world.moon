@@ -160,7 +160,7 @@ class World
   new: (@game, @map_name="maps.start") =>
     @start_time = love.timer.getTime!
     @background = Background!
-    @viewport = EffectViewport scale: GAME_CONFIG.scale
+    @viewport = EffectViewport scale: GAME_CONFIG.scale, snap: true
 
     @entities = DrawList!
     @collider = UniformGrid!
