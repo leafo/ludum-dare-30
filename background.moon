@@ -38,7 +38,14 @@ class Background
     w = img\width!
     h = img\height!
 
-    q = g.newQuad t % w, 0, @viewport.w, @viewport.h, w, h
+    -- one quad per layer, moved instead of allocated every frame
+    @quads or= {}
+    q = @quads[img]
+    unless q
+      q = g.newQuad 0, 0, @viewport.w, @viewport.h, w, h
+      @quads[img] = q
+
+    q\setViewport t % w, 0, @viewport.w, @viewport.h
     img\draw q, 0,0
 
   draw_fit: (img) =>
