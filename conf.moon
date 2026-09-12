@@ -21,6 +21,20 @@ export GAME_CONFIG = {
     pause: "p"
   }
 
+  -- player two on the keyboard for the hidden versus mode
+  keys2: {
+    confirm: "g"
+    cancel: "h"
+
+    attack: "h"
+    jump: "g"
+
+    up: "w"
+    down: "s"
+    left: "a"
+    right: "d"
+  }
+
   -- gamepad button names
   gamepad: {
     confirm: { "a", "x" }

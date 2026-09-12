@@ -10,6 +10,8 @@ Keyboard:
 * x or space: jump, wall run, confirm
 * c or enter: attack, dive attack while holding down
 * p: pause
+* hold c on the title screen and press space for two player versus mode.
+  player two uses wasd, g to jump and h to attack
 
 Gamepad:
 
@@ -18,6 +20,8 @@ Gamepad:
 * b or y: attack, dive attack while holding down
 * start: pause
 * hold select: menu, a quits, x toggles the fps counter
+* hold b on the title screen and press a for two player versus mode with a
+  second gamepad
 
 ## Building
 

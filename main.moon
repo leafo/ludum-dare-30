@@ -89,17 +89,17 @@ love.load = (args) ->
 
   import Player from require "player"
 
-  init = if DEBUG
+  -- hidden two player versus mode, reached by a button combo on the title
+  -- screen. player two is the second gamepad or wasd on the keyboard
+  new_multiplayer_game = ->
     import MultiWorld from require "multi_world"
     Game MultiWorld, =>
-      export CONTROLLER_2 = controls.make_controller 2
+      export CONTROLLER_2 = controls.make_controller 2, GAME_CONFIG.keys2
       p2 = Player CONTROLLER_2, 0,0
       p2\set_color 60,60,240
       @world\add_player p2
-  else
-    TitleScreen Game!
 
-  export DISPATCHER = Dispatcher init
+  export DISPATCHER = Dispatcher TitleScreen Game!, new_multiplayer_game
 
   DISPATCHER.default_transition = FadeTransition
   DISPATCHER\bind love

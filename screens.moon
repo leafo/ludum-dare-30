@@ -59,7 +59,7 @@ class GameOverScreen extends Screen
       @ready = false
 
 class TitleScreen extends Screen
-  new: (@new_game) =>
+  new: (@new_game, @new_multiplayer_game) =>
     super!
 
     @image = imgfy "images/title.png"
@@ -75,11 +75,19 @@ class TitleScreen extends Screen
         @visible = false
         wait 0.25
 
+  -- holding attack while confirming starts the two player versus mode
+  multiplayer_held: =>
+    @new_multiplayer_game and CONTROLLER\is_down "attack"
+
   update: (dt) =>
     @seq\update dt
-    if @ready and CONTROLLER\is_down "confirm", "cancel"
+    return unless @ready
+
+    if CONTROLLER\downed "confirm"
+      multiplayer = @multiplayer_held!
       AUDIO\play "confirm"
-      DISPATCHER\replace @new_game, Transition
+      game = if multiplayer then @new_multiplayer_game! else @new_game
+      DISPATCHER\replace game, Transition
       @ready = false
 
   draw_inner: =>
@@ -87,7 +95,10 @@ class TitleScreen extends Screen
     @image\draw (@viewport.w - @image\width!) / 2
     COLOR\pop!
 
-    if @visible
+    if @multiplayer_held!
+      g.printf "press #{controls.prompts.confirm!} to start multiplayer",
+        0, @viewport.h - 16 - 30, @viewport.w, "center"
+    elseif @visible
       @draw_prompt!
 
 

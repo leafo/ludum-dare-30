@@ -6,9 +6,9 @@ find_pads = ->
   [j for j in *joystick.getJoysticks! when j\isGamepad!]
 
 -- controller for the nth mapped gamepad, keyboard only if there isn't one
-make_controller = (pad_idx=1) ->
+make_controller = (pad_idx=1, keys=GAME_CONFIG.keys) ->
   pad = find_pads![pad_idx]
-  controller = Controller GAME_CONFIG.keys, pad
+  controller = Controller keys, pad
 
   if pad
     controller\add_mapping {name, {joystick: btns} for name, btns in pairs GAME_CONFIG.gamepad}
