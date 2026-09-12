@@ -1,3 +1,5 @@
 lovekit
 *.lua
 !maps/*.lua
+*.love
+*.zip
