@@ -2,6 +2,9 @@
 
 import World from require "world"
 import Player from require "player"
+import draw_overlay from require "ui"
+
+controls = require "controls"
 
 fixed_time_step = (rate, fn) ->
   target_dt = 1 / rate
@@ -42,9 +45,19 @@ class Game
 
     @hud_viewport\pop!
 
-  update: fixed_time_step 60, (dt) =>
-    return if @paused
+    -- a frozen screen looks like a crash on a handheld
+    if @paused
+      draw_overlay { "paused", "press #{controls.prompts.pause!} to resume" }
+
+  update_world: fixed_time_step 60, (dt) =>
     @world\update dt
+
+  update: (dt) =>
+    if CONTROLLER\downed "pause"
+      @paused = not @paused
+
+    return if @paused
+    @update_world dt
 
   game_over: =>
     AUDIO\play "level_fail"
@@ -95,10 +108,6 @@ class Game
 
     if @post_world_fn
       @post_world_fn!
-
-  on_key: (key) =>
-    if key == "p"
-      @paused = not @paused
 
   mousepressed: (x,y) =>
     return unless DEBUG

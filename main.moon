@@ -7,8 +7,17 @@ require "lovekit.all"
 
 import TitleScreen, GameOverScreen, StageComplete from require "screens"
 import Game from require "game"
+import draw_overlay from require "ui"
+
+controls = require "controls"
 
 export DEBUG = false
+export CONTROLLER, SHOW_FPS
+
+menu_actions = {
+  {"menu_quit", "a: quit", -> love.event.push "quit"}
+  {"menu_fps", "x: toggle fps", -> SHOW_FPS = not SHOW_FPS}
+}
 
 load_font = (img, chars)->
   with g.newImageFont img, chars
@@ -76,14 +85,14 @@ love.load = (args) ->
   }
 
   export FONTS = fonts
-  export CONTROLLER = Controller GAME_CONFIG.keys, "auto"
+  CONTROLLER = controls.make_controller!
 
   import Player from require "player"
 
   init = if DEBUG
     import MultiWorld from require "multi_world"
     Game MultiWorld, =>
-      export CONTROLLER_2 = Controller GAME_CONFIG.joystick_binding, "auto"
+      export CONTROLLER_2 = controls.make_controller 2
       p2 = Player CONTROLLER_2, 0,0
       p2\set_color 60,60,240
       @world\add_player p2
@@ -94,4 +103,31 @@ love.load = (args) ->
 
   DISPATCHER.default_transition = FadeTransition
   DISPATCHER\bind love
+
+  love.joystickadded = controls.refresh_controller
+  love.joystickremoved = controls.refresh_controller
+
+  -- the menu pauses everything underneath while select is held
+  dispatch_update = love.update
+  love.update = (dt) ->
+    if controls.menu_open!
+      for {name, _, fn} in *menu_actions
+        fn! if CONTROLLER\downed name
+      return
+
+    dispatch_update dt
+
+  dispatch_draw = love.draw
+  love.draw = ->
+    dispatch_draw!
+
+    if SHOW_FPS
+      g.push!
+      g.origin!
+      g.scale GAME_CONFIG.scale
+      g.print tostring(love.timer.getFPS!), 2, 2
+      g.pop!
+
+    if controls.menu_open!
+      draw_overlay [label for {_, label} in *menu_actions]
 

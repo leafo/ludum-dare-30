@@ -5,25 +5,36 @@ export GAME_CONFIG = {
 
   -- pixel scale, replaced at startup by the scale that fits the screen
   scale: 2
-  keys: {
-    confirm: { "x", "space", joystick: 1 }
-    cancel: { "c", joystick: 2 }
 
-    attack: { "c", "return", joystick: 2 }
-    jump: { "x", "space", joystick: 1 }
+  keys: {
+    confirm: { "x", "space" }
+    cancel: "c"
+
+    attack: { "c", "return" }
+    jump: { "x", "space" }
 
     up: "up"
     down: "down"
     left: "left"
     right: "right"
+
+    pause: "p"
   }
 
-  joystick_binding: {
-    confirm: { joystick: 1 }
-    cancel: { joystick: 2 }
+  -- gamepad button names
+  gamepad: {
+    confirm: { "a", "x" }
+    cancel: { "b", "y" }
 
-    attack: { joystick: 2 }
-    jump: { joystick: 1 }
+    attack: { "b", "y" }
+    jump: { "a", "x" }
+
+    pause: "start"
+
+    -- holding select opens the menu, the face buttons pick an action
+    menu: "back"
+    menu_quit: "a"
+    menu_fps: "x"
   }
 }
 

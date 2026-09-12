@@ -197,7 +197,11 @@ class World
             @door.target_map = o.type
             @entities\add @door
           when "directions"
-            img = imgfy "images/directions.png"
+            controls = require "controls"
+            img = imgfy if controls.has_pad!
+              "images/directions_pad.png"
+            else
+              "images/directions.png"
             t = { a: 0 }
             @seqs\add Sequence ->
               tween t, 1.0, a: 255

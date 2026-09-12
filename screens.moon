@@ -1,15 +1,19 @@
 
 {graphics: g} = love
 
+controls = require "controls"
+
 class Transition extends FadeTransition
   time: 1.5
   color: {10, 10, 10}
 
 class Screen
-  lazy press_space: -> imgfy "images/press_space.png"
-
   new: =>
     @viewport = Viewport scale: GAME_CONFIG.scale
+
+  -- "press space" prompt along the bottom, names the pad button when there is one
+  draw_prompt: =>
+    g.printf "press #{controls.prompts.confirm!}", 0, @viewport.h - 16 - 30, @viewport.w, "center"
 
   draw: =>
     @viewport\apply!
@@ -43,8 +47,7 @@ class GameOverScreen extends Screen
 
     if @visible
       COLOR\pusha @alpha
-      @press_space\draw (@viewport.w - @press_space\width!) / 2,
-        @viewport.h - @press_space\height! - 30
+      @draw_prompt!
       COLOR\pop!
 
   update: (dt) =>
@@ -85,8 +88,7 @@ class TitleScreen extends Screen
     COLOR\pop!
 
     if @visible
-      @press_space\draw (@viewport.w - @press_space\width!) / 2,
-        @viewport.h - @press_space\height! - 30
+      @draw_prompt!
 
 
 class StageComplete extends Screen
@@ -149,8 +151,7 @@ class StageComplete extends Screen
     g.print "#{@num @show_enemies} / #{@num @enemies_total}", ox + 190, 90
 
     if @visible
-      @press_space\draw (@viewport.w - @press_space\width!) / 2,
-        @viewport.h - @press_space\height! - 30
+      @draw_prompt!
 
 {
   :TitleScreen
