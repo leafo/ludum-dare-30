@@ -12,12 +12,27 @@ import draw_overlay from require "ui"
 controls = require "controls"
 
 export DEBUG = false
-export CONTROLLER, SHOW_FPS
+export CONTROLLER, SHOW_FPS, MUSIC_OFF
 
+toggle_music = ->
+  MUSIC_OFF = not MUSIC_OFF
+  if MUSIC_OFF
+    AUDIO.music\stop! if AUDIO.music
+  else
+    -- pick the music back up if the current level already started it
+    game = DISPATCHER\top!
+    if game.world and game.world.seen_enemy
+      game.world\start_audio!
+
+-- labels can be functions for ones that show state
 menu_actions = {
   {"menu_quit", "a: quit", -> love.event.push "quit"}
   {"menu_fps", "x: toggle fps", -> SHOW_FPS = not SHOW_FPS}
+  {"menu_music", (-> if MUSIC_OFF then "b: music off" else "b: music on"), toggle_music}
 }
+
+menu_labels = ->
+  [(if type(label) == "function" then label! else label) for {_, label} in *menu_actions]
 
 load_font = (img, chars)->
   with g.newImageFont img, chars
@@ -129,5 +144,5 @@ love.load = (args) ->
       g.pop!
 
     if controls.menu_open!
-      draw_overlay [label for {_, label} in *menu_actions]
+      draw_overlay menu_labels!
 

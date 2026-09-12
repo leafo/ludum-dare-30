@@ -316,7 +316,7 @@ class World
 
       if thing.is_door and thing\is_ready!
         thing.is_ready = -> false
-        @seqs\add @stop_audio ->
+        @stop_audio ->
           @game\complete_stage thing.target_map
 
 
@@ -324,10 +324,16 @@ class World
     @player\looking_at ...
 
   start_audio: =>
-    -- AUDIO\play_music "level"
+    return if MUSIC_OFF
+    AUDIO\play_music "level"
 
+  -- fades the music out then runs the callback
   stop_audio: (callback) =>
-    -- @game.seqs\add AUDIO\fade_music 1.0, callback
+    fade = AUDIO\fade_music 1.0, callback
+    fade or= Sequence ->
+      callback! if callback
+
+    @seqs\add fade
 
   __tostring: =>
     "<World>"

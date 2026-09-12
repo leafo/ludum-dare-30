@@ -49,6 +49,7 @@ export GAME_CONFIG = {
     menu: "back"
     menu_quit: "a"
     menu_fps: "x"
+    menu_music: "b"
   }
 }
 

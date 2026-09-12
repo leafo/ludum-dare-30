@@ -19,7 +19,7 @@ Gamepad:
 * a or x: jump, wall run, confirm
 * b or y: attack, dive attack while holding down
 * start: pause
-* hold select: menu, a quits, x toggles the fps counter
+* hold select: menu, a quits, x toggles the fps counter, b toggles music
 * hold b on the title screen and press a for two player versus mode with a
   second gamepad
 
