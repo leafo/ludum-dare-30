@@ -11,16 +11,50 @@ import Game from require "game"
 export DEBUG = false
 
 load_font = (img, chars)->
-  g.newImageFont img, chars
+  with g.newImageFont img, chars
+    \setFilter "nearest", "nearest"
 
-love.load = ->
+TITLE = "wallrun dot love"
+
+-- windowed at the design size, fullscreen on displays too small for it
+-- (the RG35XX is 640x480)
+-- `love . --window 640x480` or WALLRUN_WINDOW=640x480 forces a windowed size for testing
+open_window = (args={}) ->
+  size = os.getenv "WALLRUN_WINDOW"
+  for i, arg in ipairs args
+    size = args[i + 1] if arg == "--window"
+
+  design_w = GAME_CONFIG.viewport_width * GAME_CONFIG.scale
+  design_h = GAME_CONFIG.viewport_height * GAME_CONFIG.scale
+
+  if size
+    w, h = size\match "^(%d+)x(%d+)$"
+    error "bad --window size, expected WxH: #{size}" unless w
+    love.window.setMode tonumber(w), tonumber(h)
+  else
+    dw, dh = love.window.getDesktopDimensions!
+    if dw < design_w or dh < design_h
+      love.window.setMode 0, 0, fullscreen: true, fullscreentype: "desktop"
+      love.mouse.setVisible false
+    else
+      love.window.setMode design_w, design_h
+
+  love.window.setTitle TITLE
+
+  -- integer pixel scale closest to the design width: 2 at 840 wide, 2 at 640
+  GAME_CONFIG.scale = math.max 1, math.floor g.getWidth! / GAME_CONFIG.viewport_width + 0.5
+
+love.load = (args) ->
+  open_window args
+
   fonts = {
     default: load_font "images/font1.png", [[ ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~!"#$%&'()*+,-./0123456789:;<=>?]]
     number_font: load_font "images/number_font.png", [[0123456789:]]
   }
 
   g.setFont fonts.default
-  g.setBackgroundColor 13,15,12
+  -- matches the edge color of the full screen art so letterbox margins blend
+  g.setBackgroundColor 26/255, 20/255, 20/255
 
   export AUDIO = Audio "sounds"
   AUDIO\preload {

@@ -1,4 +1,9 @@
 export GAME_CONFIG = {
+  -- design size of the pixel viewport, scale is chosen from the screen in main
+  viewport_width: 420
+  viewport_height: 272
+
+  -- pixel scale, replaced at startup by the scale that fits the screen
   scale: 2
   keys: {
     confirm: { "x", "space", joystick: 1 }
@@ -23,8 +28,10 @@ export GAME_CONFIG = {
 }
 
 love.conf = (t) ->
-  t.window.width = 420 * GAME_CONFIG.scale
-  t.window.height = 272 * GAME_CONFIG.scale
+  t.version = "11.5"
+  t.identity = "wallrun"
+  -- the window is opened in love.load once the display size is known
+  t.window = nil
 
   t.title = "wallrun dot love"
   t.author = "leafo + i.i"

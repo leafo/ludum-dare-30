@@ -123,10 +123,12 @@ class StageComplete extends Screen
     "%04d"\format math.floor num
 
   draw_inner: =>
-    @background\draw (@viewport.w - @background\width!) / 2
+    -- the art is wider than the viewport, position the stats relative to it
+    ox = math.floor (@viewport.w - @background\width!) / 2
+    @background\draw ox
 
     g.push!
-    g.translate 155, 150
+    g.translate ox + 185, 150
 
     g.setFont FONTS.number_font
     COLOR\pusha @alpha
@@ -141,10 +143,10 @@ class StageComplete extends Screen
     p = @show_enemies/@enemies_total
 
     COLOR\push 240, 0, 0
-    g.rectangle "fill", 140, 112, p * max_rect, 10
+    g.rectangle "fill", ox + 170, 112, p * max_rect, 10
     COLOR\pop!
 
-    g.print "#{@num @show_enemies} / #{@num @enemies_total}", 160, 90
+    g.print "#{@num @show_enemies} / #{@num @enemies_total}", ox + 190, 90
 
     if @visible
       @press_space\draw (@viewport.w - @press_space\width!) / 2,
