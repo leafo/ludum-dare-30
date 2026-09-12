@@ -2,7 +2,7 @@
 
 LOVE_VERSION = 11.5
 LOVE_FILE = wallrun-love$(LOVE_VERSION).love
-ITCH_TARGET = leafo/wallrun:love-$(LOVE_VERSION)
+ITCH_TARGET = leafo/wallrun-dot-love:love-$(LOVE_VERSION)
 USER_VERSION = love$(LOVE_VERSION)-$(shell git rev-parse --short HEAD)
 
 build:
