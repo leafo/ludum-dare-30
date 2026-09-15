@@ -10,6 +10,7 @@ import Game from require "game"
 import draw_overlay from require "ui"
 
 controls = require "controls"
+import open_window from require "lovekit.window"
 
 export DEBUG = false
 export CONTROLLER, SHOW_FPS, MUSIC_OFF
@@ -40,36 +41,17 @@ load_font = (img, chars)->
 
 TITLE = "wallrun dot love"
 
--- windowed at the design size, fullscreen on displays too small for it
--- (the RG35XX is 640x480)
--- `love . --window 640x480` or WALLRUN_WINDOW=640x480 forces a windowed size for testing
-open_window = (args={}) ->
-  size = os.getenv "WALLRUN_WINDOW"
-  for i, arg in ipairs args
-    size = args[i + 1] if arg == "--window"
-
-  design_w = GAME_CONFIG.viewport_width * GAME_CONFIG.scale
-  design_h = GAME_CONFIG.viewport_height * GAME_CONFIG.scale
-
-  if size
-    w, h = size\match "^(%d+)x(%d+)$"
-    error "bad --window size, expected WxH: #{size}" unless w
-    love.window.setMode tonumber(w), tonumber(h)
-  else
-    dw, dh = love.window.getDesktopDimensions!
-    if dw < design_w or dh < design_h
-      love.window.setMode 0, 0, fullscreen: true, fullscreentype: "desktop"
-      love.mouse.setVisible false
-    else
-      love.window.setMode design_w, design_h
-
-  love.window.setTitle TITLE
-
-  -- integer pixel scale closest to the design width: 2 at 840 wide, 2 at 640
-  GAME_CONFIG.scale = math.max 1, math.floor g.getWidth! / GAME_CONFIG.viewport_width + 0.5
-
 love.load = (args) ->
-  open_window args
+  open_window {
+    title: TITLE
+    env: "WALLRUN_WINDOW"
+    :args
+    design_w: GAME_CONFIG.viewport_width * GAME_CONFIG.scale
+    design_h: GAME_CONFIG.viewport_height * GAME_CONFIG.scale
+  }
+
+  -- whole scale that covers the screen: 2 at 840x544 and 640x480, 3 at 1024x768
+  GAME_CONFIG.scale = pixel_scale_for GAME_CONFIG.viewport_width, GAME_CONFIG.viewport_height, cover: true
 
   fonts = {
     default: load_font "images/font1.png", [[ ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~!"#$%&'()*+,-./0123456789:;<=>?]]
